@@ -1,0 +1,80 @@
+---
+layout: page
+title: "자연어 처리"
+subtitle: "정보추출 - 개체명 인식(NER)"
+author:
+    name: xwMOOC
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+    highlight: tango
+    code_folding: show
+    number_section: true
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
+                      comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
+
+library(reticulate)
+use_condaenv("anaconda3")
+# reticulate::repl_python()
+```
+
+
+# 개체명 인식(NER) [^wikidocs-nlp] {#nlp-ner}
+
+[^wikidocs-nlp]: [유원준 (2019), "딥 러닝을 이용한 자연어 처리 입문"](https://wikidocs.net/book/2155)
+
+문서에서 **개체명 인식(NER, Named Entity Recognition)**은 유명인, 장소, 제품 등등 인식해서 자동으로 추출해 내는 기법을 통칭한다. 개체명 인식은 정보추출의 한 방법으로 BI, 이력서 수집, 미디어 분석, 감성 탐지, 특허 검색, 전자우편 검색 등 활용사례가 많다.
+
+`spaCy` [Annotation Specification](https://spacy.io/api/annotation#section-named-entities)을 참조하면 다양한 개체명 인식 결과를 통해 영감을 얻을 수가 있다.
+
+|  유형  |	  설명              |
+|--------|------------------------------|
+| PERSON |	People, including fictional.|
+| NORP   |	Nationalities or religious or political groups.|
+| FAC    |	Buildings, airports, highways, bridges, etc.|
+| ORG    |	Companies, agencies, institutions, etc.|
+| GPE    |	Countries, cities, states.|
+| LOC    |	Non-GPE locations, mountain ranges, bodies of water.|
+| PRODUCT |	Objects, vehicles, foods, etc. (Not services.)|
+| EVENT   |	Named hurricanes, battles, wars, sports events, etc.|
+| WORK_OF_ART |	Titles of books, songs, etc.|
+| LAW      |	Named documents made into laws.|
+| LANGUAGE |	Any named language.|
+| DATE     |	Absolute or relative dates or periods.|
+| TIME     |	Times smaller than a day.|
+| PERCENT  |	Percentage, including ”%“.|
+| MONEY    |	Monetary values, including unit.|
+| QUANTITY |	Measurements, as of weight or distance.|
+| ORDINAL  |	“first”, “second”, etc.|
+| CARDINAL |	Numerals that do not fall under another type.|
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+<div class = "blue">
+
+**IOB** (inside, outside, beginning) 형식은 계산언어학(Computational Linguistics) 개체명인식에서 많이 사용되는 태깅 형식으로 Ramshaw and Marcus (1995) "Text Chunking using Transformation-Based Learning", 논문에서 처음 제안되었다. [^IOB-tagging]
+
+[^IOB-tagging]: [영문 위키사전, "Inside–outside–beginning (tagging)"](https://en.wikipedia.org/wiki/Inside%E2%80%93outside%E2%80%93beginning_(tagging))
+
+</div>
+
+일반적인 개체명인식 작업절차는 다음과 같다.
+
+1. 문서(document)를 우선 문장(sentence) 단위로 쪼갠다.
+1. 문장(sentence)을 단어(word) 혹은 토큰(token)으로 쪼갠다.
+1. 문장의 품서(Parts of Speech)를 식별한다.
+1. 문장에서 연속 단어 뭉치를 추출한다.
+1. 뭉치 패턴에 기반하여 IOB 태그를 단다.
+
+
+
+

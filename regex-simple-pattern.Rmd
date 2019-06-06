@@ -1,0 +1,466 @@
+---
+layout: page
+title: "자연어 처리 - 정규표현식"
+subtitle: "간단한 패턴"
+author:
+    name: xwMOOC
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+    highlight: tango
+    code_folding: show
+    number_section: true
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
+                      comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
+
+library(reticulate)
+use_condaenv("anaconda3")
+# reticulate::repl_python()
+```
+
+
+# 데이터 불러 읽어오기 {#import-data}
+
+`data` 디렉토리에 저장된 `notebook-1.txt`, `notebook-2.txt` 파일 두개를 불러 읽어오자.
+각 파일에 머리헤더 행은 버려버리고, 그다음 첫 6행을 작업한다.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python read-data}
+readings = []
+for filename in ('data/notebook-1.txt', 'data/notebook-2.txt'):
+    lines = open(filename, 'r').read().strip().split('\n')
+    readings += lines[1:7] # We are ignoring the header line (lines[0]) here.
+
+for r in readings:
+    print( r )
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-read-data}
+library(tidyverse)
+
+file_lst <- list("data/notebook-1.txt", "data/notebook-2.txt")
+
+readings <- map(file_lst , read_lines, skip=1, n_max=6) %>% unlist
+
+for(i in 1:length(readings)) {
+  cat(readings[i], "\n")
+}
+
+? read_lines
+```
+
+
+  </div>
+</div>
+
+
+상기 프로그램을 실행하면, 첫번째 데이터 파일에서 6줄, 두번째 데이터 파일에서 6줄을 
+`readings` 리스트로 저장한다:
+
+`readings` 각 요소는 대학원생이 생성한 *레코드* 에 해당한다.
+정규표현식을 각 레코드에 테스트해서 
+앞으로 사용할 수 있도록 서로 형식/스타일이 다른 레코드를 얼마나 잘 매칭할 수 있는지 살펴볼 것이다. 
+
+# 패턴 매칭 {#regex-pattern-matching}
+
+[정규표현식 소개](regex-intro.html)할 때 정의했듯이,
+정규표현식은 문자열을 매칭할 수 있는 패턴에 지나지 않는다.
+이번 학습에서 날짜 필드 정보에 기초한 레코드(Record, 즉 데이터 문자열)를 매칭하는
+정규표현식을 도출하는데 집중한다. 5월(May)에 생성된 모든 레코드 목록을 만들어 내게 한다.
+
+정규표현식이 없이, 레코드 `r`에 `in` 키워드를 사용해서 "06"월이 담겼는지 
+판단할 수 있다(즉, 본질적으로 레코드 `r`에 문자열 "06"이 포함되었는지 질문한다?):
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python simple-pattern}
+for r in readings:
+    if '06' in r:
+        print( r )
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-simple-pattern}
+for(i in 1:length(readings)) {
+  if(str_detect(readings[i], "06")) {
+    cat(readings[i])
+  }
+}
+```
+
+
+  </div>
+</div>
+
+두달에 걸친 모든 레코드를 뽑아내려면, `or` 키워드를 사용한다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python simple-pattern-or}
+for r in readings:
+    if ('06' in r) or ('07' in r):
+        print( r )
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-simple-pattern-or}
+for(i in 1:length(readings)) {
+  if(str_detect(readings[i], "06") | str_detect(readings[i], "07")) {
+    cat(readings[i], "\n")
+  }
+}
+```
+
+  </div>
+</div>
+
+
+
+하지만, `'05' in r` 로 표기하면, 
+날짜 "05" 일 뿐만 아니라 "05" 월도 함께 매칭할 수 있다.
+이것은 원하는 바는 아니다.
+문자열에 특정한 위치에 숫자 두개로 된 달만 검색하는 더 복잡한 구문을 작성하고자 한다.
+대신에 이 작업을 수행하는데 정규표현식을 사용해보자.
+
+단계별로 정규표현식을 사용해서 해결책에 도달하도록 한다.
+`re` 정규표현식 라이브러리를 가져오기 한다.
+그리고 나서, `readings` 리스트에 각 레코드를 면밀히 살펴본다.
+그리고 나서, `re.search` 함수를 사용해서 해당 레코드에 `'06'` 문자열을
+매칭해서 찾는다.
+만약 매칭되는 것을 찾게 되면, 해당 레코드를 바로 출력한다.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-intro}
+import re
+
+for r in readings:
+    if re.search('06', r):
+        print( r )
+
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-intro}
+library(stringr)
+
+for(i in 1:length(readings)) {
+  if(str_detect(readings[i], "06")) {
+    cat(readings[i], "\n")
+  }
+}
+
+```
+
+
+  </div>
+</div>
+
+
+
+`re.search` 함수에 첫번째 인자는 검색하고자 하는 패턴으로 문자열로 작성됨에 주의한다.
+두번째 인자는 검색하는 데이터가 온다.
+실수로 두개 인자 순서를 바꾸기 쉽다. 즉, 데이터를 먼저, 패턴을 두번째에 넣는다.
+이런 일이 발생되면 추적하기가 만만치 않다. 그래서 특별한 주의를 기울인다.
+
+지금까지, `re.search` 함수를 사용한 코드는 `'06' in r` 과 동일한 작업을 수행했다.
+하지만, `'06'` 혹은 `'07'`을 매칭하고자 한다면, 정규표현식으로 비교 두개를 조합해서 단일 
+표현식으로 작성할 수 있다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-or}
+for r in readings:
+    if re.search('06|07', r):
+        print( r )
+
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-or}
+for(i in 1:length(readings)) {
+  if(str_detect(readings[i], "06|07")) {
+    cat(readings[i], "\n")
+  }
+}
+
+```
+
+
+  </div>
+</div>
+
+
+패턴에 사용된 수직막대는 "또는(or)"을 의미한다.
+수직막대 왼쪽에 명세된 텍스트 *또는* 수직막대 좌측에 명세된 텍스트를
+매칭하고자 한다고 수직막대가 정규표현식에 의도를 전달한다.
+
+데이터에 정규표현식을 다수 던질 예정이다.
+그래서 다양한 정규표현식이 올바른 작업을 수행하는 테스트하는데 도움이 되도록, 
+특정 패턴과 매칭되는 레코드 정보를 제공하는 함수를 작성하자.
+`show_matches` 함수는 패턴과 문자열 리스트를 인자로 받는다.
+만약 패턴이 문자열과 매칭되면 표식으로 별 두개를 출력하고, 만약
+패턴이 문자열과 매칭되지 않으면 단지 공백 두칸을 들여쓰기 한다.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-show-matches}
+def show_matches(pattern, strings):
+    for s in strings:
+        if re.search(pattern, s):
+            print( '**', s )
+        else:
+            print( '  ', s )
+
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-show-matches}
+show_matches <- function(pattern, strings) {
+  for(i in 1:length(strings)) {
+    if(str_detect(strings[i], pattern)) {
+      cat('**', strings[i], "\n")
+    } else {
+      cat('  ', strings[i], "\n")
+    }
+  }
+}
+  
+```
+
+  </div>
+</div>
+
+
+상기 함수를 앞에서 불러 읽은 데이터에 `'06|07'` 패턴과 매칭시키면,
+`'06'` 월 혹은 `'07'` 월을 갖는 두 레코드 옆에 별을 함께 출력한다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-show-matches-run}
+show_matches('06|07', readings)
+
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-show-matches-run}
+show_matches('06|07', readings)
+
+```
+
+
+  </div>
+</div>
+
+
+하지만, 패턴 `'06|7'`로 변경시키면('7' 앞에 '0'이 없음),
+`'06'` 월 혹은 `'07'` 월을 갖지 않는 레코드를 많이 패칭하는 것으로 보인다. 
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-show-matches-run-another}
+show_matches('06|7', readings)
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-show-matches-run-another}
+show_matches('06|7', readings)
+```
+
+  </div>
+</div>
+
+
+
+원인을 이해하기 위해서, 예전에 배운 수학을 생각해보자.
+수식 *ab+c* 는 "a 곱하기 b, 더하기 c"로, 
+곱셈이 덧셈보다 연산 우선순위를 갖는다.
+만약 다른 의미로 계산을 하려면, 괄호를 사용해서 *a(b+c)* 와 같이 작성해야 된다.
+
+동일한 사항이 정규표현식에도 적용된다.
+인접성(Adjacency)이 "or" 보다 더 높은 우선 순위를 갖는다.
+그래서 패턴 `'06|7'`은 "`'06'` 혹은 숫자 `'7'`"을 의미한다.
+데이터를 다시 살펴보면, 파일에 7이 엄청 많고 패턴이 이 모든 것을 매칭하고 있다.
+
+숫자 '0'을 반복하지 않고 `'06'` 혹은 `'07'`을 매칭하고자 하면,
+괄호를 쳐서 `'0(6|7)'` 처럼 표현한다.
+아마도 `'06|07'` 표현식이 가독성이 대부분 사람에게는 더 좋을 것이다.
+괄호 내부 표현식도 그 자체로 올바른 정규표현식이다. 따라서,
+이를 *하위-표현식(sub-expression)* 으로 부른다.
+
+함수와 데이터로 되돌아 가자. `'05'` 패턴을 사용하면,
+앞에서 언급했듯이, '05' 월 뿐만 아니라 '05' 일도 갖는 레코드를 매칭한다.
+문맥을 이용해서, 매칭이 제대로 되도록 만들 수 있다.
+날짜가 YYYY-MM-DD 형식으로 되어있다면,
+`'-'` 대쉬가 월 앞뒤에 붙어야 되고, 날짜는 앞에만 붙게된다.
+따라서, `'-05-'` 패턴은 '05' 월만 매칭하게 된다.
+물론, 해당 패턴을 작성한 함수에 넣게 되면, 어떤 레코드도 매칭하지 못한다.
+이것이 정답인데, 이유는 표본 데이터에 5월에 대한 어떤 기록도 존재하지 않기 때문이다.
+
+# 데이터 추출하기 {#regex-extract-data}
+
+매칭이 유용하지만, 정말 수행하고자 하는 작업은 년, 월, 일 정보를 데이터에서 추출해서
+년,월,일을 다시 재가공하는 것이다.
+여기서 괄호가 물론 도움이 될 수 있다:
+정규표현식이 텍스트 일부와 매칭될 때, 라이브러리는 자동으로 
+모든 괄호쳐진 하위-표현식에 대해 매칭한 것을 기억한다.
+
+다음에 간단한 예제가 나와 있다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-extract}
+match = re.search('(2009|2010|2011)',
+                   'Baker 1\t2009-11-17\t1223.0')
+print( match.group(1) )
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-extract}
+str_match <- str_match('Baker 1\t2009-11-17\t1223.0', '(2009|2010|2011)')
+str_match[,2]
+```
+
+
+  </div>
+</div>
+
+
+첫번째 문자열은 패턴으로, 2009, 2010, 2011을 매칭한다.
+년도를 둘러싼 괄호는 문자열 세개 중 어느 것이 매칭되었는지 라이브러리가 기억하게 만든다.
+두번째 문자열은 데이터에서 추출된 첫번째 레코드다. (기억할 것은 `\t`가 탭을 나타낸다는 점이다.)
+
+`re.search`함수가 호출될 때, 매칭되는 것을 찾지 목하면,
+`None`을 반환하거나, 만약 매칭되는 것을 찾게 되면, 특수한
+[매칭 객체(match object)](https://docs.python.org/2/library/re.html#match-objects)를 반환한다.
+`match.group` 함수를 호출하면 명세된 괄호 내부 왼쪽에서 계수를 시작하여 하위-표현식과 매칭되는 텍스트를 반환한다.
+패턴에 괄호 집합이 하나만 있기 때문에, `match.group(1)`은 괄호내부에 매칭되는 텍스트 어떤 것이든 반환한다.
+
+하위-표현식이 번호매겨진 방식이 사람들로 하여금 실수를 하게 만든다.
+정상적으로 파이썬에서 0에서부터 계수를 시작하지만,
+정규표혐식에서 첫번째 매칭결과를 `match.group(1)`으로 뽑아내고,
+두번째는 2로 쭉 이런 방식으로 뽑아낸다.
+이유는 `match.group(0)`가 전체 패턴을 매칭하는 모든 텍스트를 반환하기 때문이다.
+
+# '점(dot)' 문자 {#regex-dot}
+
+월 뿐만 아니라 년도 매칭하고자 한다면 어떨까?
+적법한 월을 매칭하는 정규표현식은 `'(01|02|03|04|05|06|07|08|09|10|11|12)'`이 될 것이다.
+날짜를 매칭하는 정규표현식은 세배 더 길 것이고, 타이핑하기 힘들고 (더 중요하게는) 가독성이 떨어질 것이다.
+
+대신에, 점표기법 `'.'`을 사용해서 어떤 문자 하나만 매칭한다.
+예를 들어, `'....'` 표현식은 정확하게 문자 네개를 매칭한다.
+`'....-..-..'` 표현식은 문자 네개, 대쉬, 문자 두개 더, 또다른 대쉬, 문자 두개 더...이런 패턴과 매칭된다.
+`'(....)-(..)-(..)'`처럼 괄호로 각 점집합을 놓게 되면,
+매번 성공적으로 매칭할 때마다, 세 그룹 집단은 년, 월, 일을 기록한다.
+
+`re.search` 함수를 호출해서 방금 기술한 패턴을 데이터 첫번째 레코드로 테스트 해보자:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python regex-dot-run}
+match = re.search('(....)-(..)-(..)',
+                   'Baker 1\t2009-11-17\t1223.0')
+print( match.group(1), match.group(2), match.group(3) )
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-regex-dot-run}
+date_match <- str_match('Baker 1\t2009-11-17\t1223.0', '(....)-(..)-(..)')
+cat(date_match[,2], "-", date_match[,3], "-", date_match[,4])
+```
+
+
+  </div>
+</div>
+
+
+
+세 그룹집단을 출력하면, 원하던 바와 같이 `'2009'`, `'11'`, `'17'` 이 출력된다.
+동일한 작업을 하위문자열(substring) 검색으로 수행해 보세요.
+
+
+> **Tip** 
+>
+> 실제 점/마침표/구두점 즉 '.' 문자와 매칭하려면,
+> 점 앞에 역슬래쉬를 하나 놓아야 된다 (즉, `'\.'`). 
+> 그자체로 점 하나만 사용(즉, `'.'`)하게 되면 위에서 시연했듯이 *임의* 문자 하나만 얻게된다.
+
+> **도전과제 1**
+>
+> 다음 이진 문자열을 각각을 매칭하는 정규표현식을 작성한다: `000`, `101`, `111`
+
+> **도전과제 2**
+>
+> 적어도 한자리수 그리고 많아봐야 4자리수를 갖는 모든 이진 문자열을 매칭하는 정규표현식을 작성한다.
+
+> **도전과제 3**
+>
+> 다음 단어를 포함하는 파일을 불러 읽어오는 프로그램을 작성한다: `hello, working, telling, as, meaningful, cold, world, caring, ingrid`. 정규표현식을 사용해서 'ing'로 끝나는 모든 단어를 매칭한다.
+

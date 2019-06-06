@@ -1,2 +1,2 @@
-# nlp2
-한국어 자연어 처리 - 문서를 향해서!!!
+# nlp
+한국어 자연어 처리 - Korean Natural Language Processing

@@ -1,0 +1,761 @@
+---
+layout: page
+title: "자연어 처리 - 정규표현식"
+subtitle: "연산자"
+author:
+    name: xwMOOC
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+    highlight: tango
+    code_folding: show
+    number_section: true
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
+                      comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
+
+library(reticulate)
+use_condaenv("anaconda3")
+# reticulate::repl_python()
+```
+
+
+# 연산자 {#operators}
+
+측정치로 되돌아가 보자. Notebook 1 파일에는 장소, 날짜, 
+그리고 구분자로 탭으로 구부된 악마레벨이 기록되어 있다.
+일부 장소명(site)에는 공백이 있고, 날짜(date)는
+YYYY-MM-DD 국제표준형식으로 되어 있다.
+하지만, Notebook 2 파일에 필드는 슬래쉬 구분자로 구분되고,
+해당 월 정보를 숫자 대신에 영문월이 사용되어 있다.
+좀더 보면, 일부 월명칭이 문자 세자리인 반면, 다른 월명칭은 네자리고,
+날짜는 한자리 혹은 두자리로 기록되어 있다.
+
+# 단순한 문자열 연산을 사용하면 재빨리 싫증나는 노가다가 된다. {#operators-dry}
+
+Notebook 2 파일에서 데이터를 추출하는 정규표현식 사용법을 살펴보기 전에,
+단순한 문자열 연산으로 동일한 작업을 수행하는 법을 살펴보자.
+레코드가 `'Davison/May 22, 2010/1721.3'` 처럼 보인다면,
+슬래쉬를 구분자로 사용해서 장소, 일자, 측정값 필드로 쪼갤 수 있다.
+그리고 나서, 월,일,연도로 쪼개는데 공백을 사용하고 나서,
+일자에 콤마가 있는 경우 콤마를 제거한다(일부 측정값의 경우 날짜 다음뒤에 콤마가 없다).
+
+이런 방식으로 문제를 해결하는 것이 **절차적(procedural)** 방식으로 [절차적 프로그래밍(procedural programming)](https://en.wikipedia.org/wiki/Procedural_programming)에 기반하고 있다:
+컴퓨터에게 정답을 얻는데 단계별로 수행해야 되는 절차를 명세해서 전달한다.
+이와는 대조적으로 정규표현식은 **선언적(declarative)** 방식으로 [선언적 프로그래밍(declarative programming)](https://en.wikipedia.org/wiki/Declarative_programming):
+"이것이 원하는 것이다" 선언하고, 컴퓨터가 연산하는 방식을 알아내도록 한다.
+
+훌륭한 정의는 다른 문자를 대신해서 문자를 정의하는 것에 달려있다.
+문자열을 나열해서 명시적으로 정의하는 것은 큰 도움이 되지 못한다.
+따라서, 일반적인 패턴을 정의하는 뭔가가 필요하다. 이 지점이 정규표현식에 연산자가 
+도움이 되는 곳이다.
+
+
+# 정규표현식을 단순화하는데 연산자로 패턴을 명세한다. {#regex-operators-pattern}
+
+연산자는 정규표현식에 있어 밥과 김치같이 가장 기본적인 구성요소다.
+연산자는 단순히 보면 다른 패턴 (종종 가변길이를 갖는)문자를 명세하는 문자다.
+
+앞서 연산자 활용을 살펴봤다. 다수 GUI 찾기 기능 혹은 명령-라인 와일드카드에서 친숙한
+`*` 연산자가 매우 흔한 활용 사례다.
+`\s` 같은 문자열 조합도 또한 연산자.
+
+다음에 퀴즈가 하나 있다. `txt/files/file.txt` 텍스트 파일에서 `txt/files/(*.txt)`
+패턴을 사용하려고 하면 결과는 어떨까?
+
+1. `file.txt` 파일을 매칭한다.
+2. 문자열 전체를 매칭한다.
+3. 절대로 동작하지 않는다 (정규표현식이 패턴을 컴파일하지 않는다)
+
+놀랍게도, 정답은 `3` 이다. 정규표현식이 패턴을 컴파일하지 않는데,
+이유는 `.`와 `*`은 GUI 검색상자처럼 동일한 것을 의미하는 연산자는 아니고,
+정규표현식을 생성할 때 갓차(gotcha)[^1]의 원천이 된다.
+
+[^1]: [Gotcha (programming)](https://en.wikipedia.org/wiki/Gotcha_(programming)) 프로그래밍에서 갓차는 적법한 구성체로 문서에 기술된 대로 동작하지만, 실수를 유발하고 직관에 반대되는 결과를 가져온다.
+
+
+# 연산자 사용하기 {#regex-operator-use}
+
+데이터를 파싱하는 첫번째 시도는 `*` 연산자를 사용하는 것이다. `*` 연산자는 
+후위 연산자(postfix operator)로 "연산자 앞에 오는 패턴에 대한 0 혹은 그 이상 반복"을 의미한다.
+예를 들어, `a*`는 `a` 문자 혹은 그 이상 `a`문자를 매칭한다.
+반면에, `.*`는 (빈 문자열을 포함해서) 임의 연속된 문자를 매칭한다. 이유는 `.`이 임의 문자를 
+매칭하고, `*`이 반복되기 때문이다.
+`.*`로 매칭되는 문자가 모두 같을 필요는 *없다*: 매칭규칙이
+"점에 대해 문자를 매칭하고 나서 0번 혹은 그 이상 패칭을 반복하는 것"이 아니라,
+오히려 "0번 혹은 그 이상 어떤 문자든 매칭하라"는 의미이기 때문이다.
+
+다음에 `.*`를 사용한 간단한 매칭 테스트가 나와 있다:
+
+전체 패턴이 매칭되려면, 슬래쉬 `/`가 정확하게 줄맞춰 있어야 된다.
+왜냐하면, '/'은 그자체로 매칭되기 때문이다.
+이 제약조건으로 `.*`를 세번 사용해서 사이트명, 날짜, 측정값을 매칭할 수 있다.
+물론, 결과는 다음과 같다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python python-operator}
+import re 
+
+match = re.search('(.*)/(.*)/(.*)',
+                  'Davison/May 22, 2010/1721.3')
+print( match.group(1) )
+print( match.group(2) )
+print( match.group(3) )
+```
+
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-operator}
+library(stringr)
+
+match <- str_match('Davison/May 22, 2010/1721.3', '(.*)/(.*)/(.*)')
+
+match[,2]
+match[,3]
+match[,4]
+
+```
+
+  </div>
+</div>
+
+
+
+불행하게도, 너무나도 사용자를 배려하지 않았다.
+출력결과 각 그룹집단마다 꺾쇠 괄호를 쳐서 매칭된 것을 보기 쉽게하고 나서,
+`'//'` 문자열에 동일한 패턴을 매칭하자.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python python-operator-format-2}
+match = re.search('(.*)/(.*)/(.*)',
+                  '//')
+print('[' + match.group(1) + ']')
+print('[' + match.group(2) + ']')
+print('[' + match.group(3) + ']')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-operator-format}
+match <- str_match('//', '(.*)/(.*)/(.*)')
+
+cat("[", match[,2], "]\n")
+cat("[", match[,3], "]\n")
+cat("[", match[,4], "]\n")
+```
+
+  </div>
+</div>
+
+
+작성된 패턴이 위와 같은 적법하지 않는 레코드에 매칭시키고 싶지는 않다.
+("Fail early, fail often" 원칙을 기억하라)
+하지만, `.*` 패턴은 빈 문자열도 매칭할 수 있는데, 이유는
+문자가 0번 출현해도 적용되기 때문이다.
+
+`*` 대신에 `+`로 변형해서 시도해 보자.
+`+`도 후위 연산자로 "하나 혹은 그이상" 의미를 담고 있다.
+즉, 후위연산자 앞에 오는 패턴이 적어도 1회 매칭되어야만 된다.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python python-operator-format}
+match = re.search('(.+)/(.+)/(.+)',
+                  '//')
+print(match)
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-operator-format2}
+match <- str_match('//', '(.*)/(.*)/(.*)')
+
+match
+```
+
+  </div>
+</div>
+
+
+보시다시피, `(.+)/(.+)/(.+)` 패턴은 슬래쉬만 담긴 문자열은 매칭하지 *않는다*.
+왜냐하면, 슬래쉬 다음에 혹은 앞에, 사이에 문자가 없기 때문이다.
+다시 거슬러 올라가서 적법한 데이터에 적용시키면,
+올바르게 작업하는 것처럼 보인다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python python-operators}
+m = re.search('(.+)/(.+)/(.+)', 'Davison/May 22, 2010/1721.3')
+
+print('[' + m.group(1) + ']')
+print('[' + m.group(2) + ']')
+print('[' + m.group(3) + ']')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-operators}
+match <- str_match('Davison/May 22, 2010/1721.3', '(.*)/(.*)/(.*)')
+
+cat("[", match[,2], "]\n")
+cat("[", match[,3], "]\n")
+cat("[", match[,4], "]\n")
+```
+
+  </div>
+</div>
+
+
+문자열 다수에 많은 패턴을 패칭할 예정이라,
+함수로 작성해서 패턴을 텍스트에 적용시키고, 매칭되는지 되지 않는지 
+출력하고 나서, 매칭되는 것이 있다면 매칭되는 그룹집단을 출력한다.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python python-operator-function}
+def show_groups(pattern, text):
+    m = re.search(pattern, text)
+    if m is None:
+        print('NO MATCH')
+        return
+    for i in range(1, 1 + len(m.groups())):
+        print('%2d: %s' % (i, m.group(i)))
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-operator-function}
+show_groups <- function(pattern, text) {
+  
+    m <- str_match(text, pattern)
+    
+    if (is.na(m[,1])) {
+      return('NO MATCH')
+    }
+        
+    for(i in 2:ncol(m)) {
+      cat(i-1, ":", m[, i], "\n")
+    }
+}
+
+```
+
+  </div>
+</div>
+
+
+방금 전에 사용한 레코드 두개에 대해 작성한 함수를 테스트해 본다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+``` {python python-operator-function-run}
+show_groups('(.+)/(.+)/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+``` {r r-operator-function-run}
+show_groups('(.+)/(.+)/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+  </div>
+</div>
+
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-function-run-none}
+show_groups('(.+)/(.+)/(.+)',
+            '//')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-function-run-none}
+show_groups('(.+)/(.+)/(.+)',
+            '//')
+```
+
+  </div>
+</div>
+
+
+
+좋아요: 정규표현식을 사용해서 장소명, 날짜 측정값을 추출했으면,
+패턴을 더 추가해서 날짜에 대해 날짜를 더 쪼개는 것은 어떤가요?
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-funciton-extened}
+show_groups('(.+)/(.+) (.+), (.+)/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-funciton-extened}
+show_groups('(.+)/(.+) (.+), (.+)/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+  </div>
+</div>
+
+하지만, 잠시만: 왜 동작하지 않을까요?
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-funciton-extened-run}
+show_groups('(.+)/(.+) (.+), (.+)/(.+)',
+            'Davison/May 22 2010/1721.3')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-funciton-extened-run}
+show_groups('(.+)/(.+) (.+), (.+)/(.+)',
+            'Davison/May 22 2010/1721.3')
+```
+
+
+  </div>
+</div>
+
+
+문제는 매칭하려는 문자열이 날짜 뒤에 콤마가 없기 때문이다. 
+패턴에 이런 경우가 있어서, 매칭이 실패했다.
+
+이 문제를 해결하는데 `*`를 콤마 뒤에 넣는 패턴을 작성할 수 있지만,
+데이터에 연속된 콤마도 매칭하게 되서 원하는 바는 아니다.
+대신에, 또다른 후위 연산자 `?` 물음표를 사용한다. `?`는 "바로 앞에 오는 것이 0회 혹은 1회"라는
+의미를 갖는다. 이를 달리 말하면, 물음표 앞에 오는 패턴은 선택옵션이 된다.
+테스트를 다시 돌리면, 두 경우 모두에 정답이 도출된다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-funciton-extened-comma}
+# 데이터에 콤마가 있는 경우
+show_groups('(.+)/(.+) (.+),? (.+)/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-funciton-extened-comma}
+# 데이터에 콤마가 있는 경우
+show_groups('(.+)/(.+) (.[0-9]),? (.+)/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+  </div>
+</div>
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-funciton-extened-comma-no}
+# 데이터에 콤마가 없는 경우
+show_groups('(.+)/(.+) (.+),? (.+)/(.+)',
+            'Davison/May 22 2010/1721.3')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-funciton-extened-comma-no}
+# 데이터에 콤마가 없는 경우
+show_groups('(.+)/(.+) (.[0-9]),? (.+)/(.+)',
+            'Davison/May 22 2010/1721.3')
+```
+
+
+  </div>
+</div>
+
+
+패턴을 좀더 엄격하게 작성해 보자.
+다음 레코드는 매칭하고 싶지 *않다*:
+
+```{python python-operator-funciton-extened-oh-no, eval=FALSE}
+Davison/May 22, 201/1721.3
+```
+
+누군가 연도를 잘못 타이핑해서, 4자리 대신에 3자리를 입력했다. (만일
+이 기록이 맞다면, 물리학과 타이머신을 사용했을 수도 있다)
+정확하세 숫자 4자리를 매칭하는 패턴을 강제하는데 연속해서 점을 네개 찍는다.
+
+```{python python-operator-funciton-extened-rerun-regex, eval=FALSE}
+(.+)/(.+) (.+),? (....)/(.+)
+```
+
+하지만, 상기 패턴방식은 가독성에 있어 장점이 없다.
+대신에, 점 뒤에 `{}` 괄호 내부에 숫자 `4`를 넣자:
+
+```{python python-operator-fix, eval=FALSE}
+(.+)/(.+) (.+),? (.{4})/(.+)
+```
+
+정규표현식에서, 괄호 사이 숫자는 "정확하게 해당 숫자만큼 패턴을 매칭"하라는 의미가 된다.
+`.`은 임의 문자를 매칭하고, `.{4}`는 "임의 문자 4회 매칭"하라를 의미한다.
+
+테스트를 더 수행해 보자. 다음에 날짜가 올바르거나 손상된 레코드가 일부 있다:
+
+```{python python-operator-fix-test}
+tests = (
+    'Davison/May , 2010/1721.3',
+    'Davison/May 2, 2010/1721.3',
+    'Davison/May 22, 2010/1721.3',
+    'Davison/May 222, 2010/1721.3',
+    'Davison/May 2, 201/1721.3',
+    'Davison/ 22, 2010/1721.3',
+    '/May 22, 2010/1721.3',
+    'Davison/May 22, 2010/'
+)
+```
+
+그리고, 올바른 모든 레코드는 매칭해야 하지만,
+훼손된 모든 레코드는 매칭을 하면 안된다:
+
+```{python python-operator-fix-test-pattern}
+pattern = '(.+)/(.+) (.{1,2}),? (.{4})/(.+)'
+```
+
+연도에 대해 숫자 4자리를 예상하고 있고, 일자에 대해 1자리 혹은 2자리만
+허용하고 있는데 이유는 표현식 `{M,N}`은 M번부터 N번까지 패턴을 매칭하기 때문이다.
+
+테스트 데이터에 상기 패턴을 매칭하면, 레코드 3개가 매칭된다:
+
+```{python python-operator-fix-test-run}
+def show_matches(pattern, strings):
+    for s in strings:
+        if re.search(pattern, s):
+            print('**', s)
+        else:
+            print('  ', s)
+            
+show_matches(pattern, tests)
+```
+
+두번째와 세번째 매칭은 이해가 간다:`May 2` 와 `May 22`은 둘다 적법하다.
+하지만, 날짜가 없는 `May` 모두를 왜 상기 패턴이 매칭할까?
+테스트 사례를 좀더 자세히 살펴보자:
+
+```{python python-operator-fix-test-show}
+show_groups('(.+)/(.+) (.{1,2}),? (.{4})/(.+)',
+            'Davison/May , 2010/1721.3')
+```
+
+
+출력결과를 살펴보면 `Davison` (맞음), `May` (맞음), `,` 그 자체로 출력 (분명히 틀림),
+년도와 측정값 (맞음).
+
+패턴 실행결과 실행된 사항은 다음과 같다.
+`May` 뒤에 공백 ' &nbsp; ' 은 패턴에 공백 ' &nbsp; ' 와 매칭된다.
+"임의 문자 1 혹은 2회 출현" 표현식은 콤마 `,` 와 매칭된다.
+왜냐하면 `,` 는 문자로 한번 출현했기 때문이다.
+그리고 나서, ',&nbsp;' 표현식은 어떤 것과도 매칭되지 않는데, 이유는
+0번 문자와 매칭되기 때문이다.
+`?` 은 "선택옵션"을 의미한다. 이번 경우에,
+정규표현식 패턴 매칭로직은 어떤 것에 대해서도 매칭하지 않는데,
+이유는 전체 문자열을 매칭하는데 패턴 전체를 가져오는 유일한 방법이기 때문이다.
+그 다음에, 두번째 공백이 데이터에 있는 두번째 공백을 매칭한다.
+이것은 분명히 원하는 바가 아니라서, 다시 패턴을 변형하자:
+
+```{python python-operator-fix-test-another}
+show_groups('(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)',
+            'Davison/May , 2010/1721.3')
+```
+
+```{python python-operator-fix-test-again}
+show_groups('(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)',
+            'Davison/May 22, 2010/1721.3')
+```
+
+`(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)` 패턴은 
+일자가 없는 경우에 올바른 작업을 수행하고, 일자가 있는 경우에도 
+올바른 작업을 수행한다. 이것이 동작하는 이유는 `.` 대신에
+`[0-9]`를 사용했기 때문이다.
+
+정규표현식에서 꺾쇠 괄호 `[]`를 사용해서 문자집합(종종 문자 클래스라고 부름)을 생성한다.
+예를 들어, 표현식 `[aeiou]`은 정확하게 모음 하나만 매칭한다. 즉, 집합에서 
+임의 문자 일회 출현. 모음에 수행한 것처럼 문자마다 하나씩 작성하거나, 문자가 연속된 범위에 있다면
+"첫문자 `-` 마지막 문자" 형식으로 작성할 수 있다. 이런 연유로 `[0-9]` 표현식이 정확하게 
+숫자 한자리만 매칭하게 된다.
+
+다음에 완성된 패턴이 나와 있다:
+
+```{python python-operator-fix-test-final, eval=FALSE}
+(.+)/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/(.+)
+```
+
+기능 한가지 더 추가하자: 월명칭은 대문자로 시작되어야만 한다. 
+즉, `[A-Z]` 문자집합에서 대문자 한개가 나오가 나서 `[a-z]` 집합에서
+소문자 한개 혹은 그 이상 나와야만 된다.
+
+이러한 패턴이 여전히 완벽하지는 않다: 일자는 숫자 `0`에서 `9`까지
+1회 혹은 그이상 출현하는데, "일자"를 `0`, `00`, `99`처럼 허용할 수 있다.
+일자를 정수로 전환한 후에 이러한 실수를 검사하는 것은 쉽다.
+이유는 정규표현식으로 윤년같은 날짜 정보를 처리하면 맥마이버칼로 집을 짓는 것과 같다.
+
+마지막으로, 최종 패턴에 년도는 정확하게 숫자 4자리다. 그래서, `[0-9]`가
+4회 반복하는 집합이다. 다시, 정수로 변환한 후에, `0000` 같이
+적법하지 않은 값을 검사한다.
+
+지금까지 개발한 도구를 사용해서, 간단한 함수로 작성해서
+Notebook 1,2 파일에서 나온 날짜를 추출해서 년, 월, 일을 문자열로 
+반환한다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-fix-test-get-date}
+def get_date(record):
+    '''Return (Y, M, D) as strings, or None.'''
+    # 2010-01-01
+    m = re.search('([0-9]{4})-([0-9]{2})-([0-9]{2})', record)
+    if m:
+        return m.group(1), m.group(2), m.group(3)
+    # Jan 1, 2010 (콤마는 선택옵션이고, 일자는 1자리 혹은 2자리다.)
+    m = re.search('/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/', record)
+    if m:
+        return m.group(3), m.group(1), m.group(2)
+    return None
+    
+get_date('2010-01-01')
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-fix-test-get-date}
+get_date <- function(record) {
+    # Return (Y, M, D) as strings, or None.
+    # 2010-01-01
+    m <- str_match(record, '([0-9]{4})-([0-9]{2})-([0-9]{2})')
+    
+    if (!is.na(m[,2])) {
+      return (paste(m[,2], m[,3], m[,4], sep=","))
+    }
+    # Jan 1, 2010 (콤마는 선택옵션이고, 일자는 1자리 혹은 2자리다.)
+    m <- str_match(record, '/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/')
+    if (!is.na(m[,2])) {
+      return (paste(m[,4], m[,2], m[,3], sep=","))
+    } else {
+      return()
+    }
+}
+    
+get_date('2010-01-01')
+```
+
+  </div>
+</div>
+
+
+레코드에 ISO-형식 YYYY-MM-DD 날짜가 있는 검사하면서 함수가 시작된다.
+만약 날짜가 ISO-형식이면, 필드 세개를 바로 반환한다.
+그렇지 않은 경우, 두번째 패턴으로 레코드를 검사해서 월명칭을 찾고, 일자에 대해 
+한자리 혹은 두자리, 년도에 대해 4자리 숫자를 찾는데 각 필드는 슬래쉬로 구분된다.
+두번째 경우라면, 찾은 것을 년, 월, 일 순서로 바꿔서 반환한다.
+마지막으로, 매칭되는 패턴이 없다면, `None`을 반환해서 데이터에서 어떤 것도 
+검색할 수 없다는 신호를 반환한다.
+
+아마도 이것이 가장 흔한 정규표현식 사용법이다:
+즉, 모든 것을 조합해서 어마어마한 패턴 하나로 조합하기 보다는,
+적법한 각 경우에 대해서 패턴을 하나씩 쌓아나간다.
+이런 경우에 대해 순사적으로 테스트를 진행해 나간다:
+매칭되면, 매칭한 것을 반환하고, 만약 매칭되지 않는 경우, 다음 패턴으로 넘어간다.
+코드를 이런 방식으로 작성하면 엄청난 괴물 패턴 하나를 사용하는 것에 비해
+이해하기 훨씬 더 쉽고, 다양한 데이터 형식을 갖는 경우 확장하기 더 쉽다.
+
+### 앵커(Anchor)로 고정시킨다
+
+문자열 특정 부분에 패턴을 앵커로 고정시킬 수 있다.
+그렇게 함으로써 문자열 시작 혹은 끝처럼 한 부분만 매칭할 수 있다.
+`^` 앵커연산자는 문자열 시작 지점 이후 연속된 패턴을 매칭한다.
+마찬가지로 `$` 앵커연산자는 라인 마지막에 위치한 이전 패턴만 매칭한다.
+예제를 살펴보자. 특정 장소에서 추출된 자료만 관심있다고 가정하자.
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-anchor}
+m = re.search('(^Davison.*)', 'Davison/May 22, 2010/1721.3')
+print( m.group(1) )
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-anchor}
+m <- str_match('Davison/May 22, 2010/1721.3', '(^Davison.*)')
+m[,2]
+```
+
+  </div>
+</div>
+
+반면에,
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-anchor-new}
+m = re.search('(^Baker.*)', 'Davison/May 22, 2010/1721.3')
+print( m )
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-anchor-new}
+m <- str_match('Davison/May 22, 2010/1721.3', '(^Baker.*)')
+m
+```
+
+  </div>
+</div>
+
+
+마찬가지로, 칼럼 순서를 바꾸면:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-anchor-2}
+m = re.search('(^Davison)', '1721.3/May 22, 2010/Davison')
+print(m)
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-anchor-2}
+m <- str_match('1721.3/May 22, 2010/Davison', '(^Davison)')
+m
+```
+
+  </div>
+</div>
+
+
+`^Davison`을 문자열 시작부에 출현되는 경우만 매칭하기 때문이다.
+
+문자열 마지막에 매칭하는 경우도 유사하게 동작한다:
+
+<div class = "row">
+  <div class = "col-md-6">
+**파이썬 코드**
+
+```{python python-operator-anchor--end}
+m = re.search('(.*Davison$)', '1721.3/May 22, 2010/Davison')
+print( m.group(1))
+```
+
+  </div>
+  <div class = "col-md-6">
+**R 코드**
+
+```{r r-operator-anchor--end}
+m <- str_match('1721.3/May 22, 2010/Davison', '(.*Davison$)')
+m[,2]
+```
+
+
+  </div>
+</div>
+
+
+### 메타문자(Meta-character)
+
+정규표현식에서 흔한 것이 메타문자다.
+메타문자는 문자 클래스를 표기하는 특수 문자로 정규표현식에 더 나은 가독성을 부여한다.
+메타문자를 사용하는 특수한 구문은 없고, 단일 문자와 같고 다음에 표가 나와 있다.
+
+| 메타문자 | 표현 |
+|--------|------------------------------------------|
+| `\t`   | 탭(tab)                                   |
+| `\s`   | 임의 공백                                   |
+| `\w`   | 임의 단어문자 (`[aA-zZ0-9_]`와 동일            |
+| `\d`   | 임의 숫자 (`[0-9]`와 동일                    |
+| `\W`   | 단어가 아닌 임의 문자                         |
+| `\D`   | 숫자가 아닌 임의 문자                         |
+
+>  **도전과제 1**
+>
+> 퀴즈에 도전할 충분한 지식을 갖추었다.
+> `How much wood, would a woodchuck chuck?` 문자열에 
+> `(wo.+d)` 패턴매칭 결과 반환되는 값이 무엇일까?
+> 즉, 다음 코드를 실행하면 출력결과는 무엇일까?
+>
+> ``` {python python-challenge}
+> m = re.search('(wo.+d)', "How much wood, would a woodchuck chuck?")
+> print(m.group(1))
+> ```
+>
+> 1. `wood`
+> 2. `wood, would a wood`
+> 3. `would, would`
+>

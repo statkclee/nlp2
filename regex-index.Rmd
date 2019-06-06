@@ -1,0 +1,98 @@
+---
+layout: page
+title: "데이터 사이언스 - 자연어 처리"
+subtitle: "정규표현식(Regular Expression)"
+author:
+    name: xwMOOC
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+    highlight: tango
+    code_folding: show
+    number_section: true
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
+                      comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
+
+library(reticulate)
+use_condaenv("anaconda3")
+# reticulate::repl_python()
+```
+
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+<div class = "blue">
+
+본 정규표현식 교재는 [Software Carpentry](http://software-carpentry.org/) 
+[Regular Expression](http://swcarpentry.github.io/v4/regexp/index.html)을 번역한 것입니다.
+기본적인 프로그래밍 개념을 이미 이해하고 있고, 파이썬 기본구성요소에 친숙하거나 신속히 숙달할 수 있음을 가정한다.
+또한, 데이터 사이언스 R 언어도 동일한 사항을 다루고 있어 파이썬 코드를 R코드로 변역을 하였고 
+텍스트에 정규표현식 교육을 위해서 개발된 R 학습교재와 팩키도 함께 반영한 것입니다.
+
+</div>
+
+
+**정규표현식(Regular Expression)**은 연관된 문자열 집합을 매칭하는 패턴이다.
+정규표현식이 매칭에 실패하는 패턴도 있지만, 
+레거시 텍스트 파일에서 정보를 추출할 때, 프로그래머 대부분이 사용하는 강력한 도구다.
+
+> **주요점(key points)**
+>
+> * 정규표현식은 문자열로 작성한다(따라서, 표기법이 다소 세련되지 못하다).
+> * 알파벳과 숫자는 그 자체로 매칭되고, 한글도 매칭된다.
+> * 반복되는 문자에 대해 `*`, `+`, `?` 특수기호를 사용한다.
+> * `|`을 사용해서 또는 혹은 문자 집합을 매칭한다.
+> * 괄호를 사용해서 문자열을 집단으로 묶고, 매칭되는 정보를 추출한다.
+> * 정규표현식 라이브러리를 사용해서 매칭되는 모든 것을 찾고, 문자열을 바꾸고, 기타 연산작업을 수행한다.
+
+- 학습 목차
+    - [정규표현식 소개](regex-intro.html)
+    - [간단한 패턴](regex-simple-pattern.html)
+    - [연산자](regex-operators.html)
+    - [작동원리](regex-under-the-hood.html)
+    - [추가 패턴](regex-more-pattern.html)
+    - [참고문헌 사례](regex-last-wrinkle.html)
+    - [요약](regex-wrapup.html)
+
+# 소프트웨어 카펜트리 V4 동영상 {#software-carepntry-v4}
+
+| 소개 및 간단한 패턴  | 연산자 | 동작원리 |
+|:------------------------------------------------------------------:|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
+| <iframe width="250" src="https://www.youtube.com/embed/c-Ov1JUMDv4" frameborder="0" allowfullscreen></iframe> | <iframe width="250" src="https://www.youtube.com/embed/G7_HnivvnyE" frameborder="0" allowfullscreen></iframe> | <iframe width="250" src="https://www.youtube.com/embed/iixnLh55wp0" frameborder="0" allowfullscreen></iframe> |
+
+| 추가 패턴  | 참고문헌 사례 | 
+|:------------------------------------------------------------------:|:------------------------------------------------------------------:|
+| <iframe width="250" src="https://www.youtube.com/embed/FgxQyukp39A" frameborder="0" allowfullscreen></iframe> | <iframe width="250" src="https://www.youtube.com/embed/RGN5tS-2Zmo" frameborder="0" allowfullscreen></iframe> |
+
+# 자주 사용되는 정규식 [^regex-reference] {#frequent-usage}
+
+[^regex-reference]: [자주 쓰이는 정규식(Regular Expression)](http://gocoding.tistory.com/93)
+
+```{r frequent-reg, eval=FALSE}
+* 전자우편 주소: /^[a-z0-9_+.-]+@([a-z0-9-]+\.)+[a-z0-9]{2,4}$/  
+* URL: /^(file|gopher|news|nntp|telnet|https?|ftps?|sftp):\/\/([a-z0-9-]+\.)+[a-z0-9]{2,4}.*$/  
+* HTML 태그 - HTML tags: /\<(/?[^\>]+)\>/  
+* 전화 번호 - 예, 123-123-2344 혹은 123-1234-1234: /(\d{3}).*(\d{3}).*(\d{4})/  
+* 날짜 - 예, 3/28/2007 혹은 3/28/07: /^\d{1,2}\/\d{1,2}\/\d{2,4}$/  
+* jpg, gif 또는 png 확장자를 가진 그림 파일명: /([^\s]+(?=\.(jpg|gif|png))\.\2)/  
+* 1부터 50 사이의 번호 - 1과 50 포함: /^[1-9]{1}$|^[1-4]{1}[0-9]{1}$|^50$/  
+* 16 진수로 된 색깔 번호: /#?([A-Fa-f0-9]){3}(([A-Fa-f0-9]){3})?/  
+* 적어도 소문자 하나, 대문자 하나, 숫자 하나가 포함되어 있는 문자열(8글자 이상 15글자 이하) - 올바른 암호 형식을 확인할 때 사용될 수 있음: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}/  
+```
+
+
+
+# R 참고문헌 {#regex-reference}
+
+- [R 정규표현식과 문자데이터 - `regexplain`](https://statkclee.github.io/ds-authoring/regex-r-char.html)
+- [Rsquared Academy (2019-05-27), "Demystifying Regular Expressions in R"](https://blog.rsquaredacademy.com/regular-expression-in-r/)
+
