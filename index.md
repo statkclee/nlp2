@@ -17,11 +17,15 @@ title: 자연어 처리 (NLP)
     - [참고문헌 사례](regex-last-wrinkle.html)
     - [요약](regex-wrapup.html)
     - [`regex` 나래를 펴라!!!](regex-ai-nlp.html)
-- [파이썬 자연어 처리 기초](nlp-python-basic.html)
-- [형태소 분석과 품사 태깅](nlp-pos-tagging.html)
-- [워드2벡(word2vec)](nlp-word2vec-python.html)
-    - 추천시스템
-- [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
-- [챗봇(chatbot)](nlp-chatbot.html)
-- [기계학습 모형 배포: `flask` + `pickle`](nlp-ml-deployment.html) 
-    - NLP 예측모형 
+- 탐색적 데이터 분석(EDA)
+    - [파이썬 자연어 처리 기초](nlp-python-basic.html)
+    - [형태소 분석과 품사 태깅](nlp-pos-tagging.html)
+    - [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
+- 모형
+    - [기계학습 모형 배포: `flask` + `pickle`](nlp-ml-deployment.html) 
+        - NLP 예측모형 
+    - [워드2벡(word2vec)](nlp-word2vec-python.html)
+        - 추천시스템
+- 제품과 서비스
+    - [챗봇(chatbot)](nlp-chatbot.html)
+    - [특허(patent)](nlp-patent.html)
