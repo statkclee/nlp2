@@ -23,7 +23,7 @@ title: 자연어 처리 (NLP)
     - [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
 - 모형
     - [기계학습 모형 배포: `flask` + `pickle`](nlp-ml-deployment.html) 
-        - NLP 예측모형 
+    - [트위터 감성 예측](nlp-twitter-ml.html)
     - [워드2벡(word2vec)](nlp-word2vec-python.html)
         - 추천시스템
 - 제품과 서비스
