@@ -1,0 +1,20 @@
+From: Person-1 [email@person-1.com]
+Sent: Tuesday, April 18, 2017 11:24 AM
+To: email@person-2.com
+Subject: Important Subject
+
+User, 
+
+Below is your search alert.
+
+Target: text
+
+Attribute: text
+
+Label: abcdef
+
+Time: Apr 18, 2017 11:24 EDT
+
+Full Text: Text of various length exists here. Some files even have links. I'm not sure how I would capture a varied length field.
+
+Recording: abcde & fghijk lmnop
