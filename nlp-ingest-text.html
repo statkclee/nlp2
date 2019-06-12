@@ -11798,11 +11798,9 @@ $( document ).ready(function(){
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1>전자우편 텍스트 &rarr; CSV</h1>
-<ul>
-<li><a href="https://stackoverflow.com/questions/44335814/python-multiple-text-files-to-dataframe">stackoverflow, "Python: Multiple Text Files to Dataframe"</a></li>
-</ul>
-<p>텍스트로 작성된 전자우편 내용에서 필요한 필드만 추출하여 데이터프레임 형태 데이터로 변환시키는 프로젝트를 진행하고 있다.</p>
-<p>작업디렉토리(working_directory)</p>
+<p>전자우편 데이터가 아래와 같은 형식으로 쭉 연결되어 있다고 가정하다.
+이러한 전자우편 텍스트 데이터에서 정규표현식을 동원하여 텍스트 일부를 추출하여 데이터프레임 형태로 변형시켜보자.</p>
+<h2 id="&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;&#49483;">&#51204;&#51088;&#50864;&#54200; &#45936;&#51060;&#53552;&#49483;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;&#49483;">&#182;</a></h2><p><a href="https://www.py4e.com/">"Python for Everybody"</a> 교재에서 활용된 <a href="(https://www.py4e.com/code3/">파이썬 코드와 데이터가 공개된 웹사이트</a>)에서 전자우편 데이터(<code>mbox-short.txt</code>) 비정형 데이터를 대상으로 정형데이터로 변환시키는 코드를 작성한다.</p>
 
 </div>
 </div>
@@ -11810,6 +11808,382 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># To: source@collab.sakaiproject.org</span>
+<span class="c1"># From: stephen.marquard@uct.ac.za</span>
+<span class="c1"># Subject: [sakai] svn commit: r39772 - content/branches/sakai_2-5-x/content-impl/impl/src/java/org/sakaiproject/content/impl</span>
+<span class="c1"># X-Content-Type-Outer-Envelope: text/plain; charset=UTF-8</span>
+<span class="c1"># X-Content-Type-Message-Body: text/plain; charset=UTF-8</span>
+<span class="c1"># Content-Type: text/plain; charset=UTF-8</span>
+<span class="c1"># X-DSPAM-Result: Innocent</span>
+<span class="c1"># X-DSPAM-Processed: Sat Jan  5 09:14:16 2008</span>
+<span class="c1"># X-DSPAM-Confidence: 0.8475</span>
+<span class="c1"># X-DSPAM-Probability: 0.0000</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;-&#48520;&#47084;&#50724;&#44592;">&#51204;&#51088;&#50864;&#54200; &#45936;&#51060;&#53552; &#48520;&#47084;&#50724;&#44592;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;-&#48520;&#47084;&#50724;&#44592;">&#182;</a></h2><p>하드디스크에 저장된 'mbox-short.txt' 파일을 처리할 수 있도록 파이썬 언어로 메모리로 불러 읽어 들인다.
+결과는 <code>print()</code> 문을 통해서 확인할 수 있다.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 디렉토리 + 파일명</span>
+<span class="n">working_directory</span> <span class="o">=</span> <span class="s2">&quot;data/email/&quot;</span>
+<span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;mbox-short.txt&#39;</span>
+<span class="n">file_path</span> <span class="o">=</span> <span class="n">working_directory</span> <span class="o">+</span> <span class="n">file_name</span>
+
+<span class="c1"># 파일 불러들이기</span>
+<span class="n">file_handler</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">email_data</span> <span class="o">=</span> <span class="n">file_handler</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="c1"># 파일 내부 읽어들임</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">email_data</span><span class="p">[:</span><span class="mi">100</span><span class="p">])</span>
+<span class="n">file_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>From stephen.marquard@uct.ac.za Sat Jan  5 09:14:16 2008
+Return-Path: &lt;postmaster@collab.sakaiprojec
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2>비정형 데이터 &rarr; 정형데이터</h2>
+<p>일반 텍스트 전자우편 문서에서 규칙을 찾아 데이터를 정제하는 작업을 수행한다.
+이를 위해서 정규표현식을 사용한다. 즉, 보낸사람(<code>To:</code>), 받는 사람(<code>From:</code>), 제목 <code>Subject:</code>,
+스팸처리시간(<code>X-DSPAM-Processed</code>), 스팸확신도(<code>X-DSPAM-Confidence</code>),
+스팸확률(<code>X-DSPAM-Probability</code>)을 우선 추출해낸다.</p>
+<ul>
+<li>To: source@collab.sakaiproject.org</li>
+<li>From: stephen.marquard@uct.ac.za</li>
+<li>Subject: [sakai] svn commit: r39772 - content/branches/sakai_2-5-x/content-impl/impl/src/java/org/sakaiproject/content/impl</li>
+<li>X-DSPAM-Processed: Sat Jan  5 09:14:16 2008</li>
+<li>X-DSPAM-Confidence: 0.8475</li>
+<li>X-DSPAM-Probability: 0.0000</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#51204;&#51088;&#50864;&#54200;-&#54620;&#51460;&#50640;&#49436;-&#51204;&#51088;&#50864;&#54200;&#51452;&#49548;&#47564;-&#52628;&#52636;">&#51204;&#51088;&#50864;&#54200; &#54620;&#51460;&#50640;&#49436; &#51204;&#51088;&#50864;&#54200;&#51452;&#49548;&#47564; &#52628;&#52636;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;-&#54620;&#51460;&#50640;&#49436;-&#51204;&#51088;&#50864;&#54200;&#51452;&#49548;&#47564;-&#52628;&#52636;">&#182;</a></h3><p>가장 먼저 전자우편 주소에서 전자우편만 추출하는 간단한 코드를 작성해보자</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;From: stephen.marquard@uct.ac.za&#39;</span>
+<span class="n">field_regex</span> <span class="o">=</span> <span class="s2">&quot;From:\s(.+)&quot;</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">field_regex</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&#39;stephen.marquard@uct.ac.za&#39;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#51204;&#51088;&#50864;&#54200;-&#51452;&#49548;-&#48143;-&#49828;&#54072;&#54869;&#47456;-&#52628;&#52636;">&#51204;&#51088;&#50864;&#54200; &#51452;&#49548; &#48143; &#49828;&#54072;&#54869;&#47456; &#52628;&#52636;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;-&#51452;&#49548;-&#48143;-&#49828;&#54072;&#54869;&#47456;-&#52628;&#52636;">&#182;</a></h3><p>전자우편 보낸사람(<code>From</code>), 전자우편 받은 사람(<code>To</code>)에서 전자우편 주소와 스팸확률(<code>X-DSPAM-Probability</code>) 추출해 보자.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">       From: stephen.marquard@uct.ac.za</span>
+<span class="s1">       To: source@collab.sakaiproject.org</span>
+<span class="s1">       X-DSPAM-Probability: 0.8475</span>
+<span class="s1">       &#39;&#39;&#39;</span>
+<span class="c1"># field_regex = &quot;\w+:\s(.+)&quot;</span>
+<span class="n">field_regex</span> <span class="o">=</span> <span class="s2">&quot;(From|To|X\-DSPAM\-Confidence):(.*)&quot;</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">field_regex</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[(&#39;From&#39;, &#39; stephen.marquard@uct.ac.za&#39;), (&#39;To&#39;, &#39; source@collab.sakaiproject.org&#39;)]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="&#54028;&#51068;&#51012;-&#50676;&#50612;&#49436;-&#51204;&#51088;&#50864;&#54200;&#51452;&#49548;-&#52628;&#52636;">&#54028;&#51068;&#51012; &#50676;&#50612;&#49436; &#51204;&#51088;&#50864;&#54200;&#51452;&#49548; &#52628;&#52636;<a class="anchor-link" href="#&#54028;&#51068;&#51012;-&#50676;&#50612;&#49436;-&#51204;&#51088;&#50864;&#54200;&#51452;&#49548;-&#52628;&#52636;">&#182;</a></h3><p>가장 먼저 파일을 열어서 앞서 정의한 정규표현식을 활용하여 전자우편 보낸사람(<code>From</code>), 전자우편 받은 사람(<code>To</code>), 스팸확률(<code>X-DSPAM-Confidence</code>)을 필드로 추출해 보자</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 파일 불러들이기</span>
+<span class="n">file_handler</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+
+<span class="c1"># 정규표현식</span>
+<span class="n">field_regex</span> <span class="o">=</span> <span class="s2">&quot;(From|To|X\-DSPAM\-Probability):(.*)&quot;</span>
+
+<span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file_handler</span><span class="p">:</span>
+    <span class="n">matches</span> <span class="o">+=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">field_regex</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+<span class="n">file_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[(&#39;From&#39;, &#39; stephen.marquard@uct.ac.za&#39;), (&#39;X-DSPAM-Probability&#39;, &#39; 0.0000&#39;), (&#39;To&#39;, &#39; source@collab.sakaiproject.org&#39;), (&#39;From&#39;, &#39; louis@media.berkeley.edu&#39;), (&#39;X-DSPAM-Probability&#39;, &#39; 0.0000&#39;), (&#39;To&#39;, &#39; source@collab.sakaiproject.org&#39;), (&#39;From&#39;, &#39; zqian@umich.edu&#39;), (&#39;X-DSPAM-Probability&#39;, &#39; 0.0000&#39;), (&#39;To&#39;, &#39; source@collab.sakaiproject.org&#39;)]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3>튜플 리스트 &rarr; 데이터프레임</h3>
+<p>정규표현식을 사용해서 원하는 정보를 추출하는데 일단 성공했으면 다음으로 후속 데이터 분석을 위해서 데이터프레임 형태로 데이터를 가공하는 것이 편하다. 이를 위해서 튜플 리스트를 데이터르페임으로 변환시킨다.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span> 
+
+<span class="c1">#                    key                            value</span>
+<span class="c1"># 0                   To   source@collab.sakaiproject.org</span>
+<span class="c1"># 1                 From       stephen.marquard@uct.ac.za</span>
+<span class="c1"># 2  X-DSPAM-Probability                           0.0000</span>
+<span class="c1"># 3                   To   source@collab.sakaiproject.org</span>
+<span class="c1"># 4                 From         louis@media.berkeley.edu</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>To</td>
+      <td>source@collab.sakaiproject.org</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>From</td>
+      <td>stephen.marquard@uct.ac.za</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>X-DSPAM-Probability</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>To</td>
+      <td>source@collab.sakaiproject.org</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>From</td>
+      <td>louis@media.berkeley.edu</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>X-DSPAM-Probability</td>
+      <td>0.0000</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>To</td>
+      <td>source@collab.sakaiproject.org</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>From</td>
+      <td>zqian@umich.edu</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>X-DSPAM-Probability</td>
+      <td>0.0000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="&#52280;&#44256;-&#53076;&#46300;">&#52280;&#44256; &#53076;&#46300;<a class="anchor-link" href="#&#52280;&#44256;-&#53076;&#46300;">&#182;</a></h1><ul>
+<li><a href="https://stackoverflow.com/questions/44335814/python-multiple-text-files-to-dataframe">stackoverflow, "Python: Multiple Text Files to Dataframe"</a></li>
+</ul>
+<p>텍스트로 작성된 전자우편 내용에서 필요한 필드만 추출하여 데이터프레임 형태 데이터로 변환시키는 프로젝트를 진행하고 있다.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -11879,65 +12253,6 @@ Successfully read 2 files.
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="&#51204;&#51088;&#50864;&#54200;">&#51204;&#51088;&#50864;&#54200;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;">&#182;</a></h1><p>전자우편 데이터가 아래와 같은 형식으로 쭉 연결되어 있다고 가정하다.
-이러한 전자우편 텍스트 데이터에서 정규표현식을 동원하여 텍스트 일부를 추출하여 데이터프레임 형태로 변형시켜보자.</p>
-<h2 id="&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;&#49483;">&#51204;&#51088;&#50864;&#54200; &#45936;&#51060;&#53552;&#49483;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;&#49483;">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># To: source@collab.sakaiproject.org</span>
-<span class="c1"># From: stephen.marquard@uct.ac.za</span>
-<span class="c1"># Subject: [sakai] svn commit: r39772 - content/branches/sakai_2-5-x/content-impl/impl/src/java/org/sakaiproject/content/impl</span>
-<span class="c1"># X-Content-Type-Outer-Envelope: text/plain; charset=UTF-8</span>
-<span class="c1"># X-Content-Type-Message-Body: text/plain; charset=UTF-8</span>
-<span class="c1"># Content-Type: text/plain; charset=UTF-8</span>
-<span class="c1"># X-DSPAM-Result: Innocent</span>
-<span class="c1"># X-DSPAM-Processed: Sat Jan  5 09:14:16 2008</span>
-<span class="c1"># X-DSPAM-Confidence: 0.8475</span>
-<span class="c1"># X-DSPAM-Probability: 0.0000</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;-&#51204;&#52376;&#47532;">&#51204;&#51088;&#50864;&#54200; &#45936;&#51060;&#53552; &#51204;&#52376;&#47532;<a class="anchor-link" href="#&#51204;&#51088;&#50864;&#54200;-&#45936;&#51060;&#53552;-&#51204;&#52376;&#47532;">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>working_directory = "data/email/"
-file_name = 'mbox-short.txt'</p>
-<p>file_path = working_directory + file_name</p>
-<p>email_dict = dict()</p>
-<p>file_handler = open(file_path)</p>
-<p>for line in file_handler:
-    if not line.startswith('From: '): continue
-    pieces = line.split() 
-    email = pieces[1]
-    email_dict[email] = email_dict.get(email, 0) + 1</p>
-<p>print(email_dict)</p>
-
-</div>
-</div>
 </div>
     </div>
   </div>
