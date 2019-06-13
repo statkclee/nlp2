@@ -23,14 +23,18 @@ title: 자연어 처리 (NLP)
     - [파이썬 자연어 처리 기초](nlp-python-basic.html)
     - [형태소 분석과 품사 태깅](nlp-pos-tagging.html)
     - [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
+    - [텍스트 NLP 기술통계](nlp-twitter-describe.html)
 - 모형
     - [기계학습 모형 배포: `flask` + `pickle`](nlp-ml-deployment.html) 
     - [파이썬 파이프라인(pipeline)](nlp-python-pipeline.html) 
     - [트위터 감성 예측](nlp-twitter-ml.html)
         - [`spaCy` 품사 태깅](nlp-twitter-ml-pos.html)
-        - [TF-IDF 예측모형](nlp-twitter-ml-tfidf.html)
+        - [BoW 예측모형](nlp-twitter-ml-bow.html)
     - [워드2벡(word2vec)](nlp-word2vec-python.html)
         - 추천시스템
 - 제품과 서비스
     - [챗봇(chatbot)](nlp-chatbot.html)
     - [특허(patent)](nlp-patent.html)
+
+
+jupyter nbconvert --execute --to html nlp-.ipynb --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2
