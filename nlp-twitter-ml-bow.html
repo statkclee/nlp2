@@ -11767,28 +11767,6 @@ div#notebook {
     });
     </script>
     <!-- End of mathjax configuration --></head>
-
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
-
-<link rel="stylesheet" type="text/css" href="https://rawgit.com/ipython-contrib/jupyter_contrib_nbextensions/master/src/jupyter_contrib_nbextensions/nbextensions/toc2/main.css">
-
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<script src="https://rawgit.com/ipython-contrib/jupyter_contrib_nbextensions/master/src/jupyter_contrib_nbextensions/nbextensions/toc2/toc2.js"></script>
-
-<script>
-$( document ).ready(function(){
-
-            var cfg = {"base_numbering": 1, "nav_menu": {}, "number_sections": true, "sideBar": true, "skip_h1_title": false, "title_cell": "Table of Contents", "title_sidebar": "Contents", "toc_cell": false, "toc_position": {}, "toc_section_display": true, "toc_window_display": false};
-
-            // fire the main function with these parameters
-            require(['nbextensions/toc2/toc2'], function (toc2) {
-                toc2.table_of_contents(cfg);
-            });
-    });
-</script>
 <body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
@@ -11814,7 +11792,7 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[79]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
@@ -11838,7 +11816,7 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[1]:</div>
+<div class="prompt output_prompt">Out[79]:</div>
 
 
 
@@ -11864,7 +11842,7 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[80]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
@@ -11935,7 +11913,7 @@ Name: lemma_text, dtype: object
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[81]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">CountVectorizer</span>
@@ -11982,7 +11960,7 @@ Name: lemma_text, dtype: object
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[82]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">twitter_bow_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">twitter_bow</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
@@ -12048,7 +12026,7 @@ Name: lemma_text, dtype: object
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[83]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 나이브 베이즈 모형</span>
@@ -12093,7 +12071,7 @@ Name: lemma_text, dtype: object
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>시험 데이터셋으로 검정한 감성 분류 예측모형 정확도: 0.653
+<pre>시험 데이터셋으로 검정한 감성 분류 예측모형 정확도: 0.603
 </pre>
 </div>
 </div>
@@ -12107,6 +12085,7 @@ Name: lemma_text, dtype: object
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="&#53581;&#49828;&#53944;-&#53685;&#44228;-&#51648;&#54364;-+-BoW">&#53581;&#49828;&#53944; &#53685;&#44228; &#51648;&#54364; + BoW<a class="anchor-link" href="#&#53581;&#49828;&#53944;-&#53685;&#44228;-&#51648;&#54364;-+-BoW">&#182;</a></h1><p><a href="nlp-twitter-ml">트위터 감성 예측 - 텍스트 통계지표</a> 모형에 BoW를 결합시켜 예측모형의 정확도를 높여본다.</p>
+<p><img src="fig/nlp-ml-feature-bow.png" alt="텍스트 통계지표 + BoW" width="57%" /></p>
 <h2 id="&#53581;&#49828;&#53944;-&#53685;&#44228;-&#51648;&#54364;">&#53581;&#49828;&#53944; &#53685;&#44228; &#51648;&#54364;<a class="anchor-link" href="#&#53581;&#49828;&#53944;-&#53685;&#44228;-&#51648;&#54364;">&#182;</a></h2><p>텍스트 통계 지표를 <a href="nlp-twitter-ml">트위터 감성 예측 - 텍스트 통계지표</a>에서 가져온다.</p>
 
 </div>
@@ -12114,7 +12093,7 @@ Name: lemma_text, dtype: object
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[84]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">####################################################################</span>
@@ -12171,7 +12150,7 @@ Name: lemma_text, dtype: object
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[6]:</div>
+<div class="prompt output_prompt">Out[84]:</div>
 
 
 
@@ -12257,44 +12236,60 @@ Name: lemma_text, dtype: object
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="BoW-&#47784;&#54805;">BoW &#47784;&#54805;<a class="anchor-link" href="#BoW-&#47784;&#54805;">&#182;</a></h2><p>BoW 모형을 다시 나이브베이즈 예측모형과 결합시켜 예측력을 높여본다.</p>
+<h2 id="BoW-&#47784;&#54805;">BoW &#47784;&#54805;<a class="anchor-link" href="#BoW-&#47784;&#54805;">&#182;</a></h2><p>BoW 모형을 다시 나이브베이즈 예측모형과 결합시켜 예측력을 높여본다.
+이를 위해서 몇가지 사전 작업을 다음과 같이 진행한다.</p>
+<ol>
+<li><code>CountVectorizer()</code> 생성자를 사용해서 BoW 객체를 생성한다.</li>
+<li><code>cv.fit_transform()</code>은 훈련데이터에 적용하고, <code>cv.transform()</code>은 시험데이터에 적용시킨다.</li>
+<li>BoW 객체를 X_train_bow.toarray()와 같이 <code>.toarray()</code> 메쏘드를 통해서 배열로 변환시킨 후에 데이터프레임으로 변환시킨다.<ul>
+<li><code>.reset_index(drop=True, inplace=True)</code> 메쏘드를 통해서 두 데이터프레임 행결합을 준비한다.</li>
+</ul>
+</li>
+<li><code>pd.concat()</code> 메쏘드를 통해서 두 데이터프레임을 결합시킨다.    </li>
+</ol>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[85]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span>  <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">feature_df</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 훈련/시험 데이터 분리</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span>  <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">feature_df</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
-<span class="c1"># BoW Feature </span>
-<span class="n">vect</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">analyzer</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
+<span class="c1"># BoW 생성자 </span>
+<span class="c1"># cv = CountVectorizer(min_df=0.01, max_df=0.99)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">analyzer</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">)</span>
 
-<span class="n">X_train_bow</span> <span class="o">=</span> <span class="n">vect</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">])</span>
-<span class="n">X_test_bow</span> <span class="o">=</span> <span class="n">vect</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">])</span>
+<span class="n">X_train_bow</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">])</span>
+<span class="n">X_test_bow</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">])</span>
 
-<span class="n">X_train_vect_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_train_bow</span><span class="o">.</span><span class="n">todense</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">vect</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span>
-<span class="n">X_train_vect_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_train</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">X_train_vect_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">X_train_vect_df</span> <span class="o">=</span> <span class="n">X_train_vect_df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># 훈련 데이터: 통계 데이터프레임 + BoW 데이터프레임 ----- </span>
+<span class="n">X_train_vect_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_train_bow</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="s1">&#39;Count_&#39;</span><span class="p">)</span>
 
-<span class="n">X_test_vect_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_test_bow</span><span class="o">.</span><span class="n">todense</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">vect</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span>
-<span class="n">X_test_vect_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_test</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">X_test_vect_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">X_test_vect_df</span> <span class="o">=</span> <span class="n">X_test_vect_df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
+<span class="c1">## 인덱스 정리</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">X_train_vect_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-</div>
-</div>
-</div>
+<span class="c1">## 통계 + BoW 결합</span>
+<span class="n">X_train_concat_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_train</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">X_train_vect_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X_train_concat_df</span> <span class="o">=</span> <span class="n">X_train_concat_df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">X_train_vect_df</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test_vect_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># 시험 데이터: 통계 데이터프레임 + BoW 데이터프레임 -----</span>
+<span class="n">X_test_vect_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_test_bow</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">())</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="s1">&#39;Count_&#39;</span><span class="p">)</span>
+
+<span class="c1">## 인덱스 정리</span>
+<span class="n">X_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">X_test_vect_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">## 통계 + BoW 결합</span>
+<span class="n">X_test_concat_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_test</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;lemma_text&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">X_test_vect_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X_test_concat_df</span> <span class="o">=</span> <span class="n">X_test_concat_df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train_vect_df</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test_concat_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12311,7 +12306,7 @@ Name: lemma_text, dtype: object
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(1393, 1790) (599, 1790)
+<pre>(700, 1817) (300, 1821)
 </pre>
 </div>
 </div>
@@ -12322,21 +12317,245 @@ Name: lemma_text, dtype: object
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[86]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train_concat_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[86]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>char_cnt</th>
+      <th>hashtag_cnt</th>
+      <th>word_cnt</th>
+      <th>mention_cnt</th>
+      <th>Count_aarooonnnn</th>
+      <th>Count_abandon</th>
+      <th>Count_able</th>
+      <th>Count_absolute</th>
+      <th>Count_absolutely</th>
+      <th>Count_access</th>
+      <th>...</th>
+      <th>Count_youuu</th>
+      <th>Count_yr</th>
+      <th>Count_yu</th>
+      <th>Count_yuk</th>
+      <th>Count_yummy</th>
+      <th>Count_yung</th>
+      <th>Count_yup</th>
+      <th>Count_zac</th>
+      <th>Count_zealand</th>
+      <th>Count_zombie</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>33</td>
+      <td>0</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>13</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 1821 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>기존 통계지표가 담긴 데이터프레임(X_train, X_test)과 BoW 모형이 결합된 데이터프레임을 결합시킨 후에 예측모형에 적합시킨다.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[87]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 예측모형 적합</span>
 <span class="n">clf</span> <span class="o">=</span> <span class="n">MultinomialNB</span><span class="p">()</span>
 
-<span class="c1"># Fit the classifier</span>
-<span class="c1">#clf.fit(X_train_vect_df, y_train)</span>
+<span class="c1"># 분류모형 적합</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_concat_df</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 
-<span class="c1"># Measure the accuracy</span>
-<span class="c1"># accuracy = clf.score(X_test_vect_df, y_test)</span>
-<span class="c1"># print(f&quot;시험 데이터셋으로 검정한 감성 분류 예측모형 정확도: {accuracy:.3f}&quot;)</span>
+<span class="c1"># 모형 정확도</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test_concat_df</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;시험 데이터셋으로 검정한 감성 분류 예측모형 정확도: </span><span class="si">{accuracy:.3f}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>시험 데이터셋으로 검정한 감성 분류 예측모형 정확도: 0.640
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
