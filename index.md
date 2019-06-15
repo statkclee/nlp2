@@ -31,7 +31,8 @@ title: 자연어 처리 (NLP)
         - [`spaCy` 품사 태깅](nlp-twitter-ml-pos.html)
         - [BoW 예측모형](nlp-twitter-ml-bow.html)
     - [워드2벡(word2vec)](nlp-word2vec-python.html)
-        - 추천시스템
+    - **자연어 처리 스터디 @삼정 KPMG**
+        - [문서분류 - 헬로월드](nlp-classification.html)
 - 제품과 서비스
     - [챗봇(chatbot)](nlp-chatbot.html)
     - [특허(patent)](nlp-patent.html)
