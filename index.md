@@ -39,4 +39,4 @@ title: 자연어 처리 (NLP)
     - [특허(patent)](nlp-patent.html)
 
 
-`jupyter nbconvert --execute --to html nlp-.ipynb --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2`
+`jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-.ipynb`
