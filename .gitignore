@@ -47,3 +47,6 @@ flaskapp/lib/
 flaskapp/data/
 flaskapp/bin/
 
+
+# Python Cache
+code/__pycache__/
