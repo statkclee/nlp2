@@ -7,6 +7,7 @@ title: 자연어 처리 (NLP)
     - 장소 및 일시: 역삼역 인근 / 매주 혹은 격주 
     - [R/파이썬 분석환경 준비](nlp-toolchain.html)
     - [텐서플로우(tensorflow) 설치](nlp-tensorflow-install.html)
+- [NLP 도구](nlp-tools.html)
 - [다양한 텍스트 데이터 가져오기](regex-import-text.html)
     - [전자우편 텍스트 &rarr; CSV](nlp-ingest-text.html)
 - [정규표현식](regex-index.html)
@@ -37,4 +38,4 @@ title: 자연어 처리 (NLP)
     - [특허(patent)](nlp-patent.html)
 
 
-jupyter nbconvert --execute --to html nlp-.ipynb --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2
+`jupyter nbconvert --execute --to html nlp-.ipynb --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2`
