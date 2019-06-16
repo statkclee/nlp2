@@ -34,6 +34,8 @@ title: 자연어 처리 (NLP)
     - [워드2벡(word2vec)](nlp-word2vec-python.html)
     - **자연어 처리 스터디 @삼정 KPMG**
         - [문서분류 - 헬로월드](nlp-classification.html)
+        - [문서분류 - 뉴스기사 분류 (M/L)](nlp-newsgroup-classification.html)
+        - [문서분류 - 뉴스기사 분류 (D/L)](nlp-newsgroup-classification-dl.html)
 - 제품과 서비스
     - [챗봇(chatbot)](nlp-chatbot.html)
     - [특허(patent)](nlp-patent.html)

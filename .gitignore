@@ -50,3 +50,5 @@ flaskapp/bin/
 
 # Python Cache
 code/__pycache__/
+
+data/clean_newsgroups.csv
