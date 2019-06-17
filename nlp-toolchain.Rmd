@@ -161,5 +161,22 @@ c.NotebookApp.notebook_dir = 'D:/docs/nlp'
 - `Shift` + `Space`: 노트북 위로 스크롤
 - `Space`: 노트북 아래로 스크롤
 
+# 쥬피터 노트북 폰트 [^custom-fonts] {#jupyter-nb-font}
 
+[^custom-fonts]: [Jupyter Notebook 화면 조절 (폰트, 폰트 크기, 줄 간격)](https://pinkwink.kr/1039)
 
+쥬피터 노트북으로 개발을 하게 되면 아무래도 한글폰트가 마음에 들지 않는 경우가 생기는데, 이런 경우 한글 폰트를 지정하여 개발환경을 쾌적하게 만들 수 있다.
+
+결론은 `C:\Users\<사용자명>\.jupyter\custom\custom.css` 파일을 생성하고 
+`custom.css` 파일 내부에 `D2Coding`와 같이 데이터 사이언스 한글 코딩 폰트를 명세하면 된다.
+
+```{r custom-css, eval=FALSE}
+# custom.css
+
+.CodeMirror pre {font-family: D2Coding; font-size: 14pt; line-height: 140%;}
+```
+
+1. 윈도우 탐색기를 열고 ``C:\Users\<사용자명>\.jupyter` 디렉토리로 이동
+1. `custom` 디렉토리 생성
+1. `custom.css` 파일생성
+    - `.CodeMirror pre {font-family: D2Coding; font-size: 12pt; line-height: 120%;}` 와 같이 폰트, 글꼴 크기, 행높이를 명세함.

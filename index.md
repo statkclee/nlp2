@@ -25,6 +25,7 @@ title: 자연어 처리 (NLP)
     - [형태소 분석과 품사 태깅](nlp-pos-tagging.html)
     - [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
     - [텍스트 NLP 기술통계](nlp-twitter-describe.html)
+    - [`textblob` - `NLTK` 도우미](nlp-textblob.html)
 - 모형
     - [기계학습 모형 배포: `flask` + `pickle`](nlp-ml-deployment.html) 
     - [파이썬 파이프라인(pipeline)](nlp-python-pipeline.html) 
