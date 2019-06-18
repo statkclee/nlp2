@@ -19,7 +19,7 @@ title: 자연어 처리 (NLP)
     - [참고문헌 사례](regex-last-wrinkle.html)
     - [요약](regex-wrapup.html)
     - [`regex` 나래를 펴라!!!](regex-ai-nlp.html)
-    - [파이썬3 정규표현식](regex-python3.html)    
+    - [파이썬3 정규표현식](regex-python3.html)
 - 탐색적 데이터 분석(EDA)
     - [파이썬 자연어 처리 기초](nlp-python-basic.html)
     - [형태소 분석과 품사 태깅](nlp-pos-tagging.html)
@@ -40,6 +40,7 @@ title: 자연어 처리 (NLP)
 - 제품과 서비스
     - [챗봇(chatbot)](nlp-chatbot.html)
     - [특허(patent)](nlp-patent.html)
+    - [텍스트 삭제(text redaction)](nlp-text-redaction.html)
 
 
 `jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-.ipynb`
