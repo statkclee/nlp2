@@ -43,4 +43,6 @@ title: 자연어 처리 (NLP)
     - [텍스트 삭제(text redaction)](nlp-text-redaction.html)
 
 
-`jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-.ipynb`
+`jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-` <br>
+
+`jupyter notebook --notebook-dir='d:\docs\sw4ds'`
