@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>nlp-ner-python</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>nlp-ner-python-crawling</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11797,9 +11797,17 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="&#51221;&#44508;&#54364;&#54788;&#49885;">&#51221;&#44508;&#54364;&#54788;&#49885;<a class="anchor-link" href="#&#51221;&#44508;&#54364;&#54788;&#49885;">&#182;</a></h1><p>개체명 인식(named entity recognition)을 위해서 가장 먼저 활용할 수 있고 단순한 방법이 <strong>정규표현식(regular expression)</strong> 을 사용하는 것이다.
-예를 들어 대문자로 시작되는 단어를 개체명(entity)으로 인식하는 사례를 가장 처음 떠올릴 수가 있다.
-정규표현식으로 대문자 첫자로 시작되는 단어를 개체명으로 잡아낼 수 있도록 작성하게 되면 문장에서 이러한 패턴을 따르는 것을 뽑아낼 순서대로 뽑아낼 수가 있다.</p>
+<h1>뉴스 &rarr; 크롤링 &rarr; NER</h1>
+<p><a href="https://towardsdatascience.com/named-entity-recognition-with-nltk-and-spacy-8c4a7d88e7da">Susan Li (Aug 17, 2018), "Named Entity Recognition with NLTK and SpaCy - NER is used in many fields in Natural Language Processing (NLP)"</a>에서 구현된 웹사이트를 크롤링하여 텍스트를 가져오고 여기에서 개체명(Named Entity)를 추출하는 사례를 살펴보자.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="&#45684;&#49828;&#44592;&#49324;-&#53356;&#47204;&#47553;">&#45684;&#49828;&#44592;&#49324; &#53356;&#47204;&#47553;<a class="anchor-link" href="#&#45684;&#49828;&#44592;&#49324;-&#53356;&#47204;&#47553;">&#182;</a></h1><p><code>requests</code>를 이용하여 웹사이트를 가져오고 <code>bs4</code> 라이브러리를 활용하여 뉴스기사만 추출해낸다.</p>
 
 </div>
 </div>
@@ -11809,12 +11817,21 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
-<span class="n">entity_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[A-Z]</span><span class="si">{1}</span><span class="s2">[a-zA-Z]*&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">url_to_string</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html5lib&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">soup</span><span class="p">([</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="s2">&quot;style&quot;</span><span class="p">,</span> <span class="s1">&#39;aside&#39;</span><span class="p">]):</span>
+        <span class="n">script</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\n\t]+&#39;</span><span class="p">,</span> <span class="n">soup</span><span class="o">.</span><span class="n">get_text</span><span class="p">()))</span>
 
-<span class="n">another_sentence</span> <span class="o">=</span> <span class="s2">&quot;John is from Atlanta&quot;</span>
-<span class="n">entity_pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">another_sentence</span><span class="p">)</span>
+<span class="n">ny_bb</span> <span class="o">=</span> <span class="n">url_to_string</span><span class="p">(</span><span class="s1">&#39;https://www.nytimes.com/2018/08/13/us/politics/peter-strzok-fired-fbi.html?hp&amp;action=click&amp;pgtype=Homepage&amp;clickSource=story-heading&amp;module=first-column-region&amp;region=top-news&amp;WT.nav=top-news&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ny_bb</span><span class="p">[:</span><span class="mi">100</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -11827,15 +11844,13 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[1]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;John&#39;, &#39;Atlanta&#39;]</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>     F.B.I. Agent Peter Strzok, Who Criticized Trump in Texts, Is Fired - The New York Times        
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -11846,7 +11861,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#44060;&#52404;&#47749;-&#51064;&#49885;&#51032;-&#51221;&#44508;&#54364;&#54788;&#49885;">&#44060;&#52404;&#47749; &#51064;&#49885;&#51032; &#51221;&#44508;&#54364;&#54788;&#49885;<a class="anchor-link" href="#&#44060;&#52404;&#47749;-&#51064;&#49885;&#51032;-&#51221;&#44508;&#54364;&#54788;&#49885;">&#182;</a></h2><p>상기와 같이 개체명인식이 나름 성공적인 사례도 있지만, 다음과 같이 챗봇을 개발할 때 하나의 사례로 인사를 하는 것을 살펴보자. 즉, 챗봇이 "인사"라는 의도를 잡아내는데 <strong>정규표현식</strong> 을 적용한 사례로 ... 결론은 "인사" 의도(intent)를 잡아낼 수는 있으나 망가지기 쉬워 일일이 코딩이 필요한 사례로 정규표현식의 가능성과 한계를 명확히 보여주고 있다.</p>
+<h1 id="&#44060;&#52404;&#47749;-&#52628;&#52636;">&#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h1><p><code>spacy</code> 라이브러리를 통해서 개체명을 추출해낸다.</p>
 
 </div>
 </div>
@@ -11856,20 +11871,15 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">identify_greeting</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 인사 패턴과 매칭되면 인식된 인사를 반환.</span>
-<span class="sd">        예를 들어, 안녕 등&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;안녕&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;안녕&#39;</span><span class="p">,</span> <span class="s1">&#39;안녕하세요 &#39;</span><span class="p">,</span> <span class="s1">&#39;안녕ㅎ&#39;</span><span class="p">,</span> <span class="s1">&#39;안녕!&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">string</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello &#39;</span><span class="p">,</span> <span class="s1">&#39;Hello,&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello!&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;방&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;방가&#39;</span><span class="p">,</span> <span class="s1">&#39;방가방가 &#39;</span><span class="p">,</span> <span class="s1">&#39;방가워요&#39;</span><span class="p">,</span> <span class="s1">&#39;방갑습니다&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span>
-    <span class="k">return</span> <span class="kc">None</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
+<span class="kn">from</span> <span class="nn">spacy</span> <span class="k">import</span> <span class="n">displacy</span>
+<span class="kn">import</span> <span class="nn">en_core_web_sm</span>
 
-<span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;안녕하세요.&#39;</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">en_core_web_sm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="n">article</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">ny_bb</span><span class="p">)</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">article</span><span class="o">.</span><span class="n">ents</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11888,7 +11898,7 @@ $( document ).ready(function(){
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;안녕&#39;</pre>
+<pre>173</pre>
 </div>
 
 </div>
@@ -11896,13 +11906,26 @@ $( document ).ready(function(){
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="&#44060;&#52404;&#47749;-&#44592;&#52488;&#53685;&#44228;">&#44060;&#52404;&#47749; &#44592;&#52488;&#53685;&#44228;<a class="anchor-link" href="#&#44060;&#52404;&#47749;-&#44592;&#52488;&#53685;&#44228;">&#182;</a></h1><p>추출된 개체명을 바탕으로 기초통계 작업을 수행해보자.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;방가워요&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+
+<span class="c1">## labels</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">label_</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">article</span><span class="o">.</span><span class="n">ents</span><span class="p">]</span>
+<span class="n">Counter</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11921,7 +11944,7 @@ $( document ).ready(function(){
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;방가워요&#39;</pre>
+<pre>[(&#39;PERSON&#39;, 83), (&#39;ORG&#39;, 39), (&#39;DATE&#39;, 23), (&#39;GPE&#39;, 16), (&#39;CARDINAL&#39;, 5)]</pre>
 </div>
 
 </div>
@@ -11935,7 +11958,10 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;만나서 반갑습니다.&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## 토큰</span>
+
+<span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">article</span><span class="o">.</span><span class="n">ents</span><span class="p">]</span>
+<span class="n">Counter</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11948,13 +11974,15 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[4]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>None
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(&#39;Strzok&#39;, 28), (&#39;F.B.I.&#39;, 13), (&#39;Trump&#39;, 12), (&#39;Russia&#39;, 7), (&#39;Clinton&#39;, 5)]</pre>
 </div>
+
 </div>
 
 </div>
@@ -11965,20 +11993,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>identify_greeting()</code> 함수는 문자열에 안녕 혹은 방가</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="NLTK-&#44060;&#52404;&#47749;-&#51064;&#49885;">NLTK &#44060;&#52404;&#47749; &#51064;&#49885;<a class="anchor-link" href="#NLTK-&#44060;&#52404;&#47749;-&#51064;&#49885;">&#182;</a></h1><p>NLTK 라이브러리를 사용한 개체명 인식(Named Entity Recognition, NER) 방법을 살펴보자</p>
-<ul>
-<li><a href="https://wikidocs.net/30682">NLTK를 이용한 개체명 인식(Named Entity Recognition using NTLK)</a></li>
-<li><a href="https://towardsdatascience.com/named-entity-recognition-with-nltk-and-spacy-8c4a7d88e7da">Susan Li (Aug 17, 2018), "Named Entity Recognition with NLTK and SpaCy - NER is used in many fields in Natural Language Processing (NLP)"</a></li>
-</ul>
+<h1 id="&#44592;&#49324;&#50640;&#49436;-&#47928;&#51109;-&#47924;&#51089;&#50948;-&#52628;&#52636;">&#44592;&#49324;&#50640;&#49436; &#47928;&#51109; &#47924;&#51089;&#50948; &#52628;&#52636;<a class="anchor-link" href="#&#44592;&#49324;&#50640;&#49436;-&#47928;&#51109;-&#47924;&#51089;&#50948;-&#52628;&#52636;">&#182;</a></h1><p><code>random</code> 라이브러리에서 문장을 무작위로 추출한다.</p>
 
 </div>
 </div>
@@ -11988,14 +12003,13 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
-<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="k">import</span> <span class="n">word_tokenize</span>
-<span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="k">import</span> <span class="n">pos_tag</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
 
-<span class="n">sentence</span> <span class="o">=</span> <span class="s2">&quot;European authorities fined Google a record $5.1 billion on Wednesday for abusing its power </span><span class="se">\</span>
-<span class="s2">            in the mobile phone market and ordered the company to alter its practices&quot;</span>
-<span class="n">sentence_pos</span> <span class="o">=</span> <span class="n">pos_tag</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span> <span class="c1"># 토큰화와 품사 태깅을 동시 수행</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">77111</span><span class="p">)</span>
+
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">article</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
+<span class="n">sample_sentence</span> <span class="o">=</span> <span class="n">sentences</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentences</span><span class="p">))]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sample_sentence</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12012,7 +12026,7 @@ $( document ).ready(function(){
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;), (&#39;authorities&#39;, &#39;NNS&#39;), (&#39;fined&#39;, &#39;VBD&#39;), (&#39;Google&#39;, &#39;NNP&#39;), (&#39;a&#39;, &#39;DT&#39;), (&#39;record&#39;, &#39;NN&#39;), (&#39;$&#39;, &#39;$&#39;), (&#39;5.1&#39;, &#39;CD&#39;), (&#39;billion&#39;, &#39;CD&#39;), (&#39;on&#39;, &#39;IN&#39;), (&#39;Wednesday&#39;, &#39;NNP&#39;), (&#39;for&#39;, &#39;IN&#39;), (&#39;abusing&#39;, &#39;VBG&#39;), (&#39;its&#39;, &#39;PRP$&#39;), (&#39;power&#39;, &#39;NN&#39;), (&#39;in&#39;, &#39;IN&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;mobile&#39;, &#39;JJ&#39;), (&#39;phone&#39;, &#39;NN&#39;), (&#39;market&#39;, &#39;NN&#39;), (&#39;and&#39;, &#39;CC&#39;), (&#39;ordered&#39;, &#39;VBD&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;company&#39;, &#39;NN&#39;), (&#39;to&#39;, &#39;TO&#39;), (&#39;alter&#39;, &#39;VB&#39;), (&#39;its&#39;, &#39;PRP$&#39;), (&#39;practices&#39;, &#39;NNS&#39;)]
+<pre>” Mr. Strzok, who rose over 20 years at the F.B.I. to become one of its most experienced counterintelligence agents, was a key figure in the early months of the inquiry.
 </pre>
 </div>
 </div>
@@ -12025,8 +12039,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>IOB 태그는 파일은 파일의 말뭉치 덩어리(chunk) 구조를 표현하는 표준으로 자리잡고 있다. 이를 활용하여 표현하면 문장을 표현하면 다음과 같다.</p>
-
+<h2 id="NER-&#49884;&#44033;&#54868;">NER &#49884;&#44033;&#54868;<a class="anchor-link" href="#NER-&#49884;&#44033;&#54868;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12035,11 +12048,7 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;NP: {&lt;DT&gt;?&lt;JJ&gt;*&lt;NN&gt;}&#39;</span>
-
-<span class="n">cp</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">RegexpParser</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-<span class="n">cs</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sample_sentence</span><span class="p">)),</span> <span class="n">jupyter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12055,59 +12064,43 @@ $( document ).ready(function(){
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(S
-  European/JJ
-  authorities/NNS
-  fined/VBD
-  Google/NNP
-  (NP a/DT record/NN)
-  $/$
-  5.1/CD
-  billion/CD
-  on/IN
-  Wednesday/NNP
-  for/IN
-  abusing/VBG
-  its/PRP$
-  (NP power/NN)
-  in/IN
-  (NP the/DT mobile/JJ phone/NN)
-  (NP market/NN)
-  and/CC
-  ordered/VBD
-  (NP the/DT company/NN)
-  to/TO
-  alter/VB
-  its/PRP$
-  practices/NNS)
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<div class="entities" style="line-height: 2.5; direction: ltr">” Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, who rose over 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    20 years
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ at the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ to become one of its most experienced counterintelligence agents, was a key figure in 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    the early months
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ of the inquiry.</div>
 </div>
+
 </div>
 
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><code>nltk.chunk.conlltags2tree()</code> 함수는 태그 시퀀스를 말뭉치 나무구조로 변환시킨다.</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk.chunk</span> <span class="k">import</span> <span class="n">conlltags2tree</span><span class="p">,</span> <span class="n">tree2conlltags</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
-
-<span class="n">iob_tagged</span> <span class="o">=</span> <span class="n">tree2conlltags</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-<span class="n">pprint</span><span class="p">(</span><span class="n">iob_tagged</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sample_sentence</span><span class="p">)),</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;dep&#39;</span><span class="p">,</span> <span class="n">jupyter</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">})</span>
 </pre></div>
 
 </div>
@@ -12123,37 +12116,406 @@ $( document ).ready(function(){
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;, &#39;O&#39;),
- (&#39;authorities&#39;, &#39;NNS&#39;, &#39;O&#39;),
- (&#39;fined&#39;, &#39;VBD&#39;, &#39;O&#39;),
- (&#39;Google&#39;, &#39;NNP&#39;, &#39;O&#39;),
- (&#39;a&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;record&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;$&#39;, &#39;$&#39;, &#39;O&#39;),
- (&#39;5.1&#39;, &#39;CD&#39;, &#39;O&#39;),
- (&#39;billion&#39;, &#39;CD&#39;, &#39;O&#39;),
- (&#39;on&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;Wednesday&#39;, &#39;NNP&#39;, &#39;O&#39;),
- (&#39;for&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;abusing&#39;, &#39;VBG&#39;, &#39;O&#39;),
- (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;),
- (&#39;power&#39;, &#39;NN&#39;, &#39;B-NP&#39;),
- (&#39;in&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;mobile&#39;, &#39;JJ&#39;, &#39;I-NP&#39;),
- (&#39;phone&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;market&#39;, &#39;NN&#39;, &#39;B-NP&#39;),
- (&#39;and&#39;, &#39;CC&#39;, &#39;O&#39;),
- (&#39;ordered&#39;, &#39;VBD&#39;, &#39;O&#39;),
- (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;company&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;to&#39;, &#39;TO&#39;, &#39;O&#39;),
- (&#39;alter&#39;, &#39;VB&#39;, &#39;O&#39;),
- (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;),
- (&#39;practices&#39;, &#39;NNS&#39;, &#39;O&#39;)]
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:lang="en" id="991e25ead938409c866893a533b1fcfb-0" class="displacy" width="1290" height="297.0" direction="ltr" style="max-width: none; height: 297.0px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="50">”</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="50">PUNCT</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="90">Mr.</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="90">PROPN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="130">Strzok,</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="130">PROPN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="170">who</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="170">PRON</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="210">rose</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="210">VERB</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="250">over</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="250">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="290">20</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="290">NUM</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="330">years</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="330">NOUN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="370">at</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="370">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="410">the</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="410">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="450">F.B.I.</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="450">PROPN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="490">to</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="490">PART</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="530">become</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="530">VERB</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="570">one</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="570">NUM</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="610">of</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="610">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="650">its</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="650">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="690">most</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="690">ADV</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="730">experienced</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="730">ADJ</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="770">counterintelligence</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="770">NOUN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="810">agents,</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="810">NOUN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="850">was</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="850">VERB</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="890">a</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="890">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="930">key</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="930">ADJ</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="970">figure</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="970">NOUN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1010">in</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1010">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1050">the</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1050">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1090">early</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1090">ADJ</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1130">months</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1130">NOUN</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1170">of</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1170">ADP</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1210">the</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1210">DET</tspan>
+</text>
+
+<text class="displacy-token" fill="currentColor" text-anchor="middle" y="207.0">
+    <tspan class="displacy-word" fill="currentColor" x="1250">inquiry.</tspan>
+    <tspan class="displacy-tag" dy="2em" fill="currentColor" x="1250">NOUN</tspan>
+</text>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-0" stroke-width="2px" d="M70,162.0 C70,2.0 850.0,2.0 850.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-0" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">punct</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M70,164.0 L62,152.0 78,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-1" stroke-width="2px" d="M110,162.0 C110,142.0 95.0,142.0 95.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-1" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">compound</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M110,164.0 L102,152.0 118,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-2" stroke-width="2px" d="M150,162.0 C150,22.0 845.0,22.0 845.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-2" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M150,164.0 L142,152.0 158,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-3" stroke-width="2px" d="M190,162.0 C190,142.0 175.0,142.0 175.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-3" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M190,164.0 L182,152.0 198,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-4" stroke-width="2px" d="M150,162.0 C150,122.0 180.0,122.0 180.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-4" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">relcl</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M180.0,164.0 L188.0,152.0 172.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-5" stroke-width="2px" d="M230,162.0 C230,142.0 215.0,142.0 215.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-5" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M215.0,164.0 L223.0,152.0 207.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-6" stroke-width="2px" d="M310,162.0 C310,142.0 295.0,142.0 295.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-6" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">nummod</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M310,164.0 L302,152.0 318,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-7" stroke-width="2px" d="M270,162.0 C270,122.0 300.0,122.0 300.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-7" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M300.0,164.0 L308.0,152.0 292.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-8" stroke-width="2px" d="M230,162.0 C230,82.0 350.0,82.0 350.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-8" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M350.0,164.0 L358.0,152.0 342.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-9" stroke-width="2px" d="M430,162.0 C430,142.0 415.0,142.0 415.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-9" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M430,164.0 L422,152.0 438,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-10" stroke-width="2px" d="M390,162.0 C390,122.0 420.0,122.0 420.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-10" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M420.0,164.0 L428.0,152.0 412.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-11" stroke-width="2px" d="M510,162.0 C510,142.0 495.0,142.0 495.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-11" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">aux</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M510,164.0 L502,152.0 518,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-12" stroke-width="2px" d="M230,162.0 C230,42.0 520.0,42.0 520.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-12" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">advcl</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M520.0,164.0 L528.0,152.0 512.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-13" stroke-width="2px" d="M550,162.0 C550,142.0 535.0,142.0 535.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-13" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">attr</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M535.0,164.0 L543.0,152.0 527.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-14" stroke-width="2px" d="M590,162.0 C590,142.0 575.0,142.0 575.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-14" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M575.0,164.0 L583.0,152.0 567.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-15" stroke-width="2px" d="M670,162.0 C670,82.0 790.0,82.0 790.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-15" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">poss</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M670,164.0 L662,152.0 678,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-16" stroke-width="2px" d="M710,162.0 C710,142.0 695.0,142.0 695.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-16" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">advmod</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M710,164.0 L702,152.0 718,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-17" stroke-width="2px" d="M750,162.0 C750,122.0 780.0,122.0 780.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-17" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M750,164.0 L742,152.0 758,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-18" stroke-width="2px" d="M790,162.0 C790,142.0 775.0,142.0 775.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-18" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">compound</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M790,164.0 L782,152.0 798,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-19" stroke-width="2px" d="M630,162.0 C630,62.0 795.0,62.0 795.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-19" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M795.0,164.0 L803.0,152.0 787.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-20" stroke-width="2px" d="M910,162.0 C910,122.0 940.0,122.0 940.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-20" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M910,164.0 L902,152.0 918,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-21" stroke-width="2px" d="M950,162.0 C950,142.0 935.0,142.0 935.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-21" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M950,164.0 L942,152.0 958,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-22" stroke-width="2px" d="M870,162.0 C870,102.0 945.0,102.0 945.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-22" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">attr</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M945.0,164.0 L953.0,152.0 937.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-23" stroke-width="2px" d="M870,162.0 C870,82.0 990.0,82.0 990.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-23" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M990.0,164.0 L998.0,152.0 982.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-24" stroke-width="2px" d="M1070,162.0 C1070,122.0 1100.0,122.0 1100.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-24" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M1070,164.0 L1062,152.0 1078,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-25" stroke-width="2px" d="M1110,162.0 C1110,142.0 1095.0,142.0 1095.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-25" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M1110,164.0 L1102,152.0 1118,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-26" stroke-width="2px" d="M1030,162.0 C1030,102.0 1105.0,102.0 1105.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-26" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M1105.0,164.0 L1113.0,152.0 1097.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-27" stroke-width="2px" d="M1150,162.0 C1150,142.0 1135.0,142.0 1135.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-27" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">prep</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M1135.0,164.0 L1143.0,152.0 1127.0,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-28" stroke-width="2px" d="M1230,162.0 C1230,142.0 1215.0,142.0 1215.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-28" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M1230,164.0 L1222,152.0 1238,152.0" fill="currentColor"/>
+</g>
+
+<g class="displacy-arrow">
+    <path class="displacy-arc" id="arrow-991e25ead938409c866893a533b1fcfb-0-29" stroke-width="2px" d="M1190,162.0 C1190,122.0 1220.0,122.0 1220.0,162.0" fill="none" stroke="currentColor"/>
+    <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
+        <textPath xlink:href="#arrow-991e25ead938409c866893a533b1fcfb-0-29" class="displacy-label" startOffset="50%" side="left" fill="currentColor" text-anchor="middle">pobj</textPath>
+    </text>
+    <path class="displacy-arrowhead" d="M1220.0,164.0 L1228.0,152.0 1212.0,152.0" fill="currentColor"/>
+</g>
+</svg>
 </div>
+
 </div>
 
 </div>
@@ -12164,11 +12526,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="IOB-&#54805;&#53468;&#47196;-&#44060;&#52404;&#47749;-&#52628;&#52636;">IOB &#54805;&#53468;&#47196; &#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#IOB-&#54805;&#53468;&#47196;-&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h2><p>입력받은 문장을 NLTK 라이브러리를 활용하여 개체명을 추출할 경우 <code>Tree</code> 객체로 구성되어 있어 이를 IOB 형태로 변환시키려면 <code>tree2conlltags()</code> 함수를 사용해서 변환을 시킨다.</p>
-<ul>
-<li><a href="https://nlpforhackers.io/named-entity-extraction/">Complete guide to build your own Named Entity Recognizer with Python</a></li>
-</ul>
-
+<h2 id="&#51204;&#52404;-&#45684;&#49828;&#44592;&#49324;-&#49884;&#44033;&#54868;">&#51204;&#52404; &#45684;&#49828;&#44592;&#49324; &#49884;&#44033;&#54868;<a class="anchor-link" href="#&#51204;&#52404;-&#45684;&#49828;&#44592;&#49324;-&#49884;&#44033;&#54868;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12177,8 +12535,7 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sentence_iob_tagged</span> <span class="o">=</span> <span class="n">tree2conlltags</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_iob_tagged</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">displacy</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sentences</span><span class="p">)),</span> <span class="n">jupyter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;ent&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12194,244 +12551,896 @@ $( document ).ready(function(){
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;, &#39;O&#39;), (&#39;authorities&#39;, &#39;NNS&#39;, &#39;O&#39;), (&#39;fined&#39;, &#39;VBD&#39;, &#39;O&#39;), (&#39;Google&#39;, &#39;NNP&#39;, &#39;O&#39;), (&#39;a&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;record&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;$&#39;, &#39;$&#39;, &#39;O&#39;), (&#39;5.1&#39;, &#39;CD&#39;, &#39;O&#39;), (&#39;billion&#39;, &#39;CD&#39;, &#39;O&#39;), (&#39;on&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;Wednesday&#39;, &#39;NNP&#39;, &#39;O&#39;), (&#39;for&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;abusing&#39;, &#39;VBG&#39;, &#39;O&#39;), (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;), (&#39;power&#39;, &#39;NN&#39;, &#39;B-NP&#39;), (&#39;in&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;mobile&#39;, &#39;JJ&#39;, &#39;I-NP&#39;), (&#39;phone&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;market&#39;, &#39;NN&#39;, &#39;B-NP&#39;), (&#39;and&#39;, &#39;CC&#39;, &#39;O&#39;), (&#39;ordered&#39;, &#39;VBD&#39;, &#39;O&#39;), (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;company&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;to&#39;, &#39;TO&#39;, &#39;O&#39;), (&#39;alter&#39;, &#39;VB&#39;, &#39;O&#39;), (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;), (&#39;practices&#39;, &#39;NNS&#39;, &#39;O&#39;)]
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<div class="entities" style="line-height: 2.5; direction: ltr">[     F.B.I. Agent 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Peter Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, Who 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Criticized Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Texts
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+, Is Fired - The New York Times                                                                       SectionsSEARCHSkip to contentSkip to site, indexPoliticsSubscribeLog 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    InLog InToday’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ PaperPolitics|F.B.I. Agent 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Peter Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, Who 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Criticized Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Texts
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+, Is FiredAdvertisementSupported byF.B.I., Agent 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Peter Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, Who 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Criticized Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Texts
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+, Is FiredImagePeter Strzok, a top F.B.I. counterintelligence agent who was taken off the special counsel investigation after his disparaging texts about President 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ were uncovered, was fired., CreditCreditT.J. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Kirkpatrick
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ for The New York TimesBy 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Adam Goldman
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ and 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Michael S. SchmidtAug
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+., 
+<mark class="entity" style="background: #e4e7d2; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    13
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">CARDINAL</span>
+</mark>
+, 2018WASHINGTON — Peter Strzok, the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ senior counterintelligence agent who disparaged President 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ in inflammatory text messages and helped oversee the 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Hillary Clinton
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ email and 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ investigations, has been fired for violating bureau policies, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s lawyer said 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Monday
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+., Mr., 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ and his allies seized on the texts, — exchanged during the 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    2016
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ campaign with a former 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ lawyer, 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Lisa Page
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ — in assailing the 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ investigation as an illegitimate “witch hunt., ” Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, who rose over 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    20 years
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ at the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ to become one of its most experienced counterintelligence agents, was a key figure in 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    the early months
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ of the inquiry., Along with writing the texts, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ was accused of sending a highly sensitive search warrant to his personal email account., The 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ had been under immense political pressure by Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ to dismiss Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, who was removed 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    last summer
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ from the staff of the special counsel, 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Robert S. Mueller III
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+., The president has repeatedly denounced Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ in posts on 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Twitter
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+, and on 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Monday
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ expressed satisfaction that he had been sacked., Mr., 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ victory traces back to 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    June
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, when Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s conduct was laid out in a wide-ranging inspector general’s report on how the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ handled the investigation of 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Hillary Clinton’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ emails in the run-up to the 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    2016
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ election., The report was critical of Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s conduct in sending the texts, and the bureau
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    ’s Office of Professional Responsibility
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ said that Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ should be suspended for 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    60 days
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ and demoted., Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ had testified before the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    House
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ in 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    July
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ about how he had not allowed his political views to interfere with the investigations he was overseeing., But Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s lawyer said the deputy director of the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+, 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    David Bowdich
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, had overruled 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    the Office of Professional Responsibility
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ and fired Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+., A spokeswoman for the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ did not respond to a message seeking comment about why Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ was dismissed rather than demoted., Firing Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, however, removes a favorite target of Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ from the ranks of the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ and gives Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Bowdich
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ and the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ director, 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Christopher A. Wray
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, a chance to move beyond the president, ’s ire., 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Aitan Goelman
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s lawyer, denounced his client’s dismissal., “, The decision to fire Special Agent Strzok is not only a departure from typical bureau practice, but also contradicts Director 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Wray’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ testimony to 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Congress
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ and his assurances that the F.B.I. intended to follow its regular process in this and all personnel matters,” Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Goelman
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ said.“This decision should be deeply troubling to all 
+<mark class="entity" style="background: #c887fb; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Americans
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">NORP</span>
+</mark>
+,” Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Goelman
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ added., “, A lengthy investigation and multiple rounds of congressional testimony failed to produce a shred of evidence that Special Agent Strzok’s personal views ever affected his work.”Mr., 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ text exchanges with Ms. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Page
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ demonstrated animosity toward Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+., In one, Ms. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Page
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ asks: 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ is “not ever going to become president, right?, Right?!, ”, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ responds: “, No., No he won’t., We’ll stop it., ”, The inspector general, who uncovered the messages, found no evidence that the pair imposed their political views on their investigative decisions but cited that exchange as “not only indicative of a biased state of mind but, even more seriously, implies a willingness to take official action to impact the presidential candidate’s electoral prospects.”The report by the inspector general, 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Michael E. Horowitz
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, that preceded Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s firing not only criticized his conduct in sending the texts but also his use of personal email accounts to handle sensitive information., In addition, the inspector general criticized Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s decision not to move swiftly to examine new emails related to the 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Clinton
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ investigation 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    just weeks
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ before the 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    2016
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ election., Mr., 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Horowitz
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ said in his report that he was “deeply troubled” by the text messages., 
+<mark class="entity" style="background: #e4e7d2; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Hundreds
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">CARDINAL</span>
+</mark>
+ exchanged over 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    months
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ were found in which the pair disparaged Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ and, to a lesser extent, Mrs. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Clinton
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, exchanged work gossip and bantered., On 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Twitter
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ said he was “deeply saddened by this decision,” adding, “, It has been an honor to serve my country and work with the fine men and women of the FBI.”Mr., Strzok became emblematic of Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ unfounded assertions that a so-called deep state of bureaucrats opposed to him was undermining his presidency., Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ contended that Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ targeted the president and accused Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ of being “treasonous” and a “disgrace., ” Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ told lawmakers that he never leaked information about the 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ inquiry, which could have upended the election and hurt Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s chances of becoming president., After Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Horowitz
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ uncovered the texts, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Mueller
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, who had by then taken over the investigation, removed Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ from his team., He was reassigned to the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ human resources division., Ms. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Page
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, who had left Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Mueller
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s team before the discovery of the text messages, quit the F.B.I. in 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    May.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, The inspector general’s report also took issue with the reaction by Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ and other 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ officials to the discovery of possible new evidence in the 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Clinton
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ investigation, known internally as 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Midyear Exam
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, in 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    late September 2016
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ on a laptop that belonged to the disgraced politician 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Anthony D. Weiner
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, the husband of a top 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Clinton
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ aide., At the time, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ was in the early stages of investigating whether any 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Trump
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ associates had conspired with 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+’s interference in the presidential election, and 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    nearly a month
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ passed before agents and analysts began to act on the emails found on Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Weiner
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s laptop., Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Horowitz
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ could not rule out that Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ had slow-walked the examination of the new emails to help Mrs. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Clinton
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, ’s presidential bid.“Under, these circumstances, we did not have confidence that 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ decision to prioritize the 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ investigation over following up on the 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Midyear-
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+related investigative lead discovered on the 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Weiner
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ laptop was free from bias,” he wrote., The delays were merely the “result of bureaucratic snafus,” Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+’s lawyer wrote 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    last month
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+ in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    USA
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Today
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+., But the justifications for the delay were “unpersuasive” and had “far-reaching consequences,” the inspector general said., 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    James B. Comey
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, the former 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ director, has told investigators that if he had known about the emails earlier, it might have influenced his decision to alert 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Congress
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ to their existence days before the election., In addition, the inspector general said that Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ had forwarded a proposed search warrant to his personal email account., The inspector general said the email, which included a draft of the search warrant affidavit, contained information that appeared to be under seal., In a heated congressional hearing 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    last month
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ expressed “significant regret” for the texts and rebutted the president
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    ’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ attacks on the 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ inquiry., “, This investigation is not politically motivated; it is not a witch hunt; it is not a hoax,” he said., Mr., 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Strzok’s
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ dismissal was not unexpected., He is the 
+<mark class="entity" style="background: #e4e7d2; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    second
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORDINAL</span>
+</mark>
+ senior 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ agent to be fired as a result of the inspector general’s investigation., In 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    March
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Andrew G. McCabe
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+, the former deputy director, was fired after the inspector general repeatedly faulted him for misleading investigators., The firing was politically motivated, Mr. 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    McCabe
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ has said, as an effort to discredit him as a witness in the special counsel investigation., Both men were fired before they were eligible for their pension and health benefits., Mr., Strzok, 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    48
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, a graduate of 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Georgetown University
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+, served as an officer in the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Army
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ before he joined the F.B.I., He held several key positions in the 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    F.B.I.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+, eventually becoming a top deputy in the counterintelligence division., He handled many important espionage cases including 
+<mark class="entity" style="background: #e4e7d2; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    one
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">CARDINAL</span>
+</mark>
+ involving a former 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    C.I.A.
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ officer suspected of working for 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    China
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ and a group of 
+<mark class="entity" style="background: #c887fb; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russian
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">NORP</span>
+</mark>
+ spies who had been working undercover in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    the United States
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+., Follow 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Adam Goldman
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ and 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Michael S. Schmidt
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+ on Twitter: @adamgoldmanNYT and 
+<mark class="entity" style="background: #aa9cfc; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    @nytmike
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PERSON</span>
+</mark>
+., A version of this article appears in print on , on 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Page A1
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ of the 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    New York
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ edition with the headline:, F.B.I. Banishes An Agent Who Reviled Trump., Order Reprints |, Today’s Paper | SubscribeRelated CoverageF.B.I. Agent Defends Actions in 
+<mark class="entity" style="background: #feca74; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Russia
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">GPE</span>
+</mark>
+ Inquiry in 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Contentious House
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">FAC</span>
+</mark>
+, 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    TestimonyJuly
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ 12, 2018ImageReport 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Criticizes Comey
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ but Finds No Bias in F.B.I. Decision on 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    ClintonJune
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ 
+<mark class="entity" style="background: #bfeeb7; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    14
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PRODUCT</span>
+</mark>
+, 2018ImageAndrew McCabe, a Target of Trump’s F.B.I. Scorn,, Is Fired Over Candor QuestionsMarch 16, 
+<mark class="entity" style="background: #bfeeb7; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    2018ImageAdvertisementSite IndexGo
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">PRODUCT</span>
+</mark>
+ to, Home Page »newshome, pageworldU.S.politicsElection, 
+<mark class="entity" style="background: #e4e7d2; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    2020New
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">CARDINAL</span>
+</mark>
+, Yorkbusinesstechscienceclimatesportsobituariesthe 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    upshottoday
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+'s papercorrectionsopiniontoday's opinionop-ed columnistseditorialsop-ed 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Contributorsletterssunday
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ reviewvideo: opinionartstoday's artsart 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    &amp; designbooksdancemoviesmusicPop Culturetelevisiontheaterwatchingvideo
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+:, artslivingautomobilesCookingcrosswordeducationfoodhealthjobsmagazineparentingreal estatestylet magazinetravellovelistings &amp; moreReader CenterWirecutterLive EventsThe Learning Networktools &amp; servicesN.Y.C., events guidemultimediaphotographyvideoNewslettersNYT, storetimes, journeysmanage my accountnewshome pageworldU.S.politicsElection, 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    2020New
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+, Yorkbusinesstechscienceclimatesportsobituariesthe 
+<mark class="entity" style="background: #bfe1d9; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    upshottoday
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">DATE</span>
+</mark>
+'s papercorrectionsopiniontoday's opinionop-ed columnistseditorialsop-ed 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Contributorsletterssunday
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ reviewvideo: opinionartstoday's artsart 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    &amp; designbooksdancemoviesmusicPop Culturetelevisiontheaterwatchingvideo
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+:, artslivingautomobilesCookingcrosswordeducationfoodhealthjobsmagazineparentingreal estatestylet magazinetravellovemoreReader CenterWirecutterLive EventsThe Learning Networktools &amp; servicesN.Y.C. events guidemultimediaphotographyvideoNewslettersNYT, storetimes journeysmanage my accountSubscribehome deliverydigital subscriptionsCrosswordCookingemail newsletterscorporate subscriptionseducation ratemobile applicationsreplica, editionSite 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    Information Navigation
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+© 2019 , 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    The New York Times
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ CompanyContact UsWork with usAdvertiseYour Ad ChoicesPrivacyTerms of 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    ServiceTerms
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+ of SaleSite MapHelpHelpSubscriptions                                              , &lt;iframe, src=&quot;https://www.googletagmanager.com/, 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    ns.html?id=
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+, 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    GTM-P528B3&amp;gtm_auth=
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+, 
+<mark class="entity" style="background: #7aecec; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone">
+    tfAzqo1rYDLgYhmTnSjPqw&amp;gtm_preview=
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; text-transform: uppercase; vertical-align: middle; margin-left: 0.5rem">ORG</span>
+</mark>
+, env-130&amp;gtm_cookies_win=, x&quot; height=&quot;0&quot; width=&quot;0&quot; style=&quot;display:, none;visibility:, hidden&quot;&gt;&lt;/iframe&gt;              ]</div>
 </div>
-</div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>그리고 IOB 객체는 리스트 튜플(원소가 튜플로 구성된 리스트) 구조라 list comprehension을 사용해서 해당 개체명을 추출해 낼 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">[</span><span class="n">e1</span> <span class="k">for</span> <span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sentence_iob_tagged</span> <span class="k">if</span> <span class="n">e2</span> <span class="ow">in</span> <span class="s1">&#39;B-GPE&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="ne_chunk-&#44060;&#52404;&#47749;-&#51064;&#49885;"><code>ne_chunk</code> &#44060;&#52404;&#47749; &#51064;&#49885;<a class="anchor-link" href="#ne_chunk-&#44060;&#52404;&#47749;-&#51064;&#49885;">&#182;</a></h2><p><code>nltk</code> 라이브러리 <code>ne_chunk()</code> 함수를 사용해서 개체명을 인식시킬 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># nltk.download(&#39;maxent_ne_chunker&#39;)</span>
-<span class="c1"># nltk.download(&#39;words&#39;)</span>
-<span class="kn">from</span> <span class="nn">nltk.chunk</span> <span class="k">import</span> <span class="n">conlltags2tree</span><span class="p">,</span> <span class="n">tree2conlltags</span><span class="p">,</span> <span class="n">ne_chunk</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
-
-<span class="n">sentence_ne_tree</span> <span class="o">=</span> <span class="n">ne_chunk</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_ne_tree</span><span class="p">)</span> <span class="c1"># 개체명 인식</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(S
-  (GPE European/JJ)
-  authorities/NNS
-  fined/VBD
-  (PERSON Google/NNP)
-  a/DT
-  record/NN
-  $/$
-  5.1/CD
-  billion/CD
-  on/IN
-  Wednesday/NNP
-  for/IN
-  abusing/VBG
-  its/PRP$
-  power/NN
-  in/IN
-  the/DT
-  mobile/JJ
-  phone/NN
-  market/NN
-  and/CC
-  ordered/VBD
-  the/DT
-  company/NN
-  to/TO
-  alter/VB
-  its/PRP$
-  practices/NNS)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Tree-&#44061;&#52404;&#50640;&#49436;-&#44060;&#52404;&#47749;-&#52628;&#52636;"><code>Tree</code> &#44061;&#52404;&#50640;&#49436; &#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#Tree-&#44061;&#52404;&#50640;&#49436;-&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h2><p>문장에서 개체명 인식을 통해서 인식된 개체명만 추출하는 코드는 다음과 같다.
-즉, <code>nltk.ne_chunk()</code> 메쏘드는 <code>nltk.tree.Tree</code> 객체를 반환하기 때문에 <code>Tree</code>객체를 훑어서 인식된 개체명을 추출한다.</p>
-<p>-<a href="https://stackoverflow.com/questions/48660547/how-can-i-extract-gpelocation-using-nltk-ne-chunk">stackoverflow, "How can I extract GPE(location) using NLTK ne_chunk?"</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">word_tokenize</span><span class="p">,</span> <span class="n">pos_tag</span><span class="p">,</span> <span class="n">ne_chunk</span>
-<span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">Tree</span>
-
-<span class="k">def</span> <span class="nf">get_continuous_chunks</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-    <span class="n">chunked</span> <span class="o">=</span> <span class="n">ne_chunk</span><span class="p">(</span><span class="n">pos_tag</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
-    <span class="n">prev</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">continuous_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">subtree</span> <span class="ow">in</span> <span class="n">chunked</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span> <span class="o">==</span> <span class="n">Tree</span> <span class="ow">and</span> <span class="n">subtree</span><span class="o">.</span><span class="n">label</span><span class="p">()</span> <span class="o">==</span> <span class="n">label</span><span class="p">:</span>
-            <span class="n">current_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">token</span> <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">subtree</span><span class="o">.</span><span class="n">leaves</span><span class="p">()]))</span>
-        <span class="k">elif</span> <span class="n">current_chunk</span><span class="p">:</span>
-            <span class="n">named_entity</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_chunk</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">named_entity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">continuous_chunk</span><span class="p">:</span>
-                <span class="n">continuous_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">named_entity</span><span class="p">)</span>
-                <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">continue</span>
-
-    <span class="k">return</span> <span class="n">continuous_chunk</span>
-
-<span class="n">get_continuous_chunks</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="s1">&#39;GPE&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;European&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="spaCy-NER">spaCy NER<a class="anchor-link" href="#spaCy-NER">&#182;</a></h1><p><code>spacy</code>를 활용해서도 개체명 인식을 할 수 있다. Google이 NLTK라이브러리 <code>ne_chunk()</code>와 달리 제대로 인식된 것을 확인할 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
-<span class="kn">from</span> <span class="nn">spacy</span> <span class="k">import</span> <span class="n">displacy</span>
-<span class="kn">import</span> <span class="nn">en_core_web_sm</span>
-
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">en_core_web_sm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s1">&#39;European authorities fined Google a record $5.1 billion on Wednesday for abusing its power </span><span class="se">\</span>
-<span class="s1">in the mobile phone market and ordered the company to alter its practices&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{entity.text:12}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> </span><span class="si">{entity.label_}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="c1"># print([(X.text, X.label_) for X in doc.ents])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>European     	 NORP
-Google       	 ORG
-$5.1 billion 	 MONEY
-Wednesday    	 DATE
-</pre>
-</div>
 </div>
 
 </div>

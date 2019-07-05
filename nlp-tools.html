@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>nlp-ner-python</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>nlp-tools</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11797,646 +11797,111 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="&#51221;&#44508;&#54364;&#54788;&#49885;">&#51221;&#44508;&#54364;&#54788;&#49885;<a class="anchor-link" href="#&#51221;&#44508;&#54364;&#54788;&#49885;">&#182;</a></h1><p>개체명 인식(named entity recognition)을 위해서 가장 먼저 활용할 수 있고 단순한 방법이 <strong>정규표현식(regular expression)</strong> 을 사용하는 것이다.
-예를 들어 대문자로 시작되는 단어를 개체명(entity)으로 인식하는 사례를 가장 처음 떠올릴 수가 있다.
-정규표현식으로 대문자 첫자로 시작되는 단어를 개체명으로 잡아낼 수 있도록 작성하게 되면 문장에서 이러한 패턴을 따르는 것을 뽑아낼 순서대로 뽑아낼 수가 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
-
-<span class="n">entity_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[A-Z]</span><span class="si">{1}</span><span class="s2">[a-zA-Z]*&quot;</span><span class="p">)</span>
-
-<span class="n">another_sentence</span> <span class="o">=</span> <span class="s2">&quot;John is from Atlanta&quot;</span>
-<span class="n">entity_pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">another_sentence</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[1]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;John&#39;, &#39;Atlanta&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#44060;&#52404;&#47749;-&#51064;&#49885;&#51032;-&#51221;&#44508;&#54364;&#54788;&#49885;">&#44060;&#52404;&#47749; &#51064;&#49885;&#51032; &#51221;&#44508;&#54364;&#54788;&#49885;<a class="anchor-link" href="#&#44060;&#52404;&#47749;-&#51064;&#49885;&#51032;-&#51221;&#44508;&#54364;&#54788;&#49885;">&#182;</a></h2><p>상기와 같이 개체명인식이 나름 성공적인 사례도 있지만, 다음과 같이 챗봇을 개발할 때 하나의 사례로 인사를 하는 것을 살펴보자. 즉, 챗봇이 "인사"라는 의도를 잡아내는데 <strong>정규표현식</strong> 을 적용한 사례로 ... 결론은 "인사" 의도(intent)를 잡아낼 수는 있으나 망가지기 쉬워 일일이 코딩이 필요한 사례로 정규표현식의 가능성과 한계를 명확히 보여주고 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">identify_greeting</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 인사 패턴과 매칭되면 인식된 인사를 반환.</span>
-<span class="sd">        예를 들어, 안녕 등&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;안녕&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;안녕&#39;</span><span class="p">,</span> <span class="s1">&#39;안녕하세요 &#39;</span><span class="p">,</span> <span class="s1">&#39;안녕ㅎ&#39;</span><span class="p">,</span> <span class="s1">&#39;안녕!&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">string</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello &#39;</span><span class="p">,</span> <span class="s1">&#39;Hello,&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello!&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;방&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;방가&#39;</span><span class="p">,</span> <span class="s1">&#39;방가방가 &#39;</span><span class="p">,</span> <span class="s1">&#39;방가워요&#39;</span><span class="p">,</span> <span class="s1">&#39;방갑습니다&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span>
-    <span class="k">return</span> <span class="kc">None</span>
-
-<span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;안녕하세요.&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[2]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;안녕&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;방가워요&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[3]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;방가워요&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;만나서 반갑습니다.&#39;</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>None
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><code>identify_greeting()</code> 함수는 문자열에 안녕 혹은 방가</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="NLTK-&#44060;&#52404;&#47749;-&#51064;&#49885;">NLTK &#44060;&#52404;&#47749; &#51064;&#49885;<a class="anchor-link" href="#NLTK-&#44060;&#52404;&#47749;-&#51064;&#49885;">&#182;</a></h1><p>NLTK 라이브러리를 사용한 개체명 인식(Named Entity Recognition, NER) 방법을 살펴보자</p>
+<h1 id="&#54028;&#51060;&#50028;-&#51088;&#50672;&#50612;-&#52376;&#47532;-&#46972;&#51060;&#48652;&#47084;&#47532;">&#54028;&#51060;&#50028; &#51088;&#50672;&#50612; &#52376;&#47532; &#46972;&#51060;&#48652;&#47084;&#47532;<a class="anchor-link" href="#&#54028;&#51060;&#50028;-&#51088;&#50672;&#50612;-&#52376;&#47532;-&#46972;&#51060;&#48652;&#47084;&#47532;">&#182;</a></h1><p>영어 자연어처리를 위해서 다양한 파이썬 라이브러리가 존재한다. 대표적으로 많이 사용되는 자연어 처리 파이썬 라이브러리는 다음과 같다.</p>
 <ul>
-<li><a href="https://wikidocs.net/30682">NLTK를 이용한 개체명 인식(Named Entity Recognition using NTLK)</a></li>
-<li><a href="https://towardsdatascience.com/named-entity-recognition-with-nltk-and-spacy-8c4a7d88e7da">Susan Li (Aug 17, 2018), "Named Entity Recognition with NLTK and SpaCy - NER is used in many fields in Natural Language Processing (NLP)"</a></li>
+<li>Spacy: <a href="https://spacy.io/">https://spacy.io/</a>, MIT License</li>
+<li>NLTK: <a href="https://www.nltk.org/">https://www.nltk.org/</a>, Apache 2.0</li>
+<li>CoreNLP: <a href="https://stanfordnlp.github.io/CoreNLP/index.html">https://stanfordnlp.github.io/CoreNLP/index.html</a>, GPL v3</li>
 </ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
-<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="k">import</span> <span class="n">word_tokenize</span>
-<span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="k">import</span> <span class="n">pos_tag</span>
-
-<span class="n">sentence</span> <span class="o">=</span> <span class="s2">&quot;European authorities fined Google a record $5.1 billion on Wednesday for abusing its power </span><span class="se">\</span>
-<span class="s2">            in the mobile phone market and ordered the company to alter its practices&quot;</span>
-<span class="n">sentence_pos</span> <span class="o">=</span> <span class="n">pos_tag</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span> <span class="c1"># 토큰화와 품사 태깅을 동시 수행</span>
-</pre></div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Spacy,-NLTK,-CoreNLP-&#44592;&#45733;-&#48708;&#44368;">Spacy, NLTK, CoreNLP &#44592;&#45733; &#48708;&#44368;<a class="anchor-link" href="#Spacy,-NLTK,-CoreNLP-&#44592;&#45733;-&#48708;&#44368;">&#182;</a></h1><p>영문 자연어 처리에서 많이 사용되는 Spacy, NLTK, Core NLP의 경우 라이선스에서 차이도 나지만 기능에서도 차이가 있다.</p>
+<p><a href="https://www.analyticsvidhya.com/blog/2017/04/natural-language-processing-made-easy-using-spacy-%E2%80%8Bin-python/">Analytics Vidhya, "Natural Language Processing Made Easy – using SpaCy (in Python)"</a></p>
 
 </div>
 </div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;), (&#39;authorities&#39;, &#39;NNS&#39;), (&#39;fined&#39;, &#39;VBD&#39;), (&#39;Google&#39;, &#39;NNP&#39;), (&#39;a&#39;, &#39;DT&#39;), (&#39;record&#39;, &#39;NN&#39;), (&#39;$&#39;, &#39;$&#39;), (&#39;5.1&#39;, &#39;CD&#39;), (&#39;billion&#39;, &#39;CD&#39;), (&#39;on&#39;, &#39;IN&#39;), (&#39;Wednesday&#39;, &#39;NNP&#39;), (&#39;for&#39;, &#39;IN&#39;), (&#39;abusing&#39;, &#39;VBG&#39;), (&#39;its&#39;, &#39;PRP$&#39;), (&#39;power&#39;, &#39;NN&#39;), (&#39;in&#39;, &#39;IN&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;mobile&#39;, &#39;JJ&#39;), (&#39;phone&#39;, &#39;NN&#39;), (&#39;market&#39;, &#39;NN&#39;), (&#39;and&#39;, &#39;CC&#39;), (&#39;ordered&#39;, &#39;VBD&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;company&#39;, &#39;NN&#39;), (&#39;to&#39;, &#39;TO&#39;), (&#39;alter&#39;, &#39;VB&#39;), (&#39;its&#39;, &#39;PRP$&#39;), (&#39;practices&#39;, &#39;NNS&#39;)]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>IOB 태그는 파일은 파일의 말뭉치 덩어리(chunk) 구조를 표현하는 표준으로 자리잡고 있다. 이를 활용하여 표현하면 문장을 표현하면 다음과 같다.</p>
+<table>
+<thead><tr>
+<th>Feature</th>
+<th style="text-align:center">Spacy</th>
+<th style="text-align:center">NLTK</th>
+<th style="text-align:center">Core NLP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Easy installation</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Python API</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">N</td>
+</tr>
+<tr>
+<td>Multi Language support</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Tokenization</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td>Part-of-speech tagging</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Sentence segmentation</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Dependency parsing</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Entity Recognition</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Integrated word vectors</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">N</td>
+</tr>
+<tr>
+<td>Sentiment analysis</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+</tr>
+<tr>
+<td>Coreference resolution</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">Y</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;NP: {&lt;DT&gt;?&lt;JJ&gt;*&lt;NN&gt;}&#39;</span>
-
-<span class="n">cp</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">RegexpParser</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-<span class="n">cs</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(S
-  European/JJ
-  authorities/NNS
-  fined/VBD
-  Google/NNP
-  (NP a/DT record/NN)
-  $/$
-  5.1/CD
-  billion/CD
-  on/IN
-  Wednesday/NNP
-  for/IN
-  abusing/VBG
-  its/PRP$
-  (NP power/NN)
-  in/IN
-  (NP the/DT mobile/JJ phone/NN)
-  (NP market/NN)
-  and/CC
-  ordered/VBD
-  (NP the/DT company/NN)
-  to/TO
-  alter/VB
-  its/PRP$
-  practices/NNS)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><code>nltk.chunk.conlltags2tree()</code> 함수는 태그 시퀀스를 말뭉치 나무구조로 변환시킨다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk.chunk</span> <span class="k">import</span> <span class="n">conlltags2tree</span><span class="p">,</span> <span class="n">tree2conlltags</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
-
-<span class="n">iob_tagged</span> <span class="o">=</span> <span class="n">tree2conlltags</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-<span class="n">pprint</span><span class="p">(</span><span class="n">iob_tagged</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;, &#39;O&#39;),
- (&#39;authorities&#39;, &#39;NNS&#39;, &#39;O&#39;),
- (&#39;fined&#39;, &#39;VBD&#39;, &#39;O&#39;),
- (&#39;Google&#39;, &#39;NNP&#39;, &#39;O&#39;),
- (&#39;a&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;record&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;$&#39;, &#39;$&#39;, &#39;O&#39;),
- (&#39;5.1&#39;, &#39;CD&#39;, &#39;O&#39;),
- (&#39;billion&#39;, &#39;CD&#39;, &#39;O&#39;),
- (&#39;on&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;Wednesday&#39;, &#39;NNP&#39;, &#39;O&#39;),
- (&#39;for&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;abusing&#39;, &#39;VBG&#39;, &#39;O&#39;),
- (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;),
- (&#39;power&#39;, &#39;NN&#39;, &#39;B-NP&#39;),
- (&#39;in&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;mobile&#39;, &#39;JJ&#39;, &#39;I-NP&#39;),
- (&#39;phone&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;market&#39;, &#39;NN&#39;, &#39;B-NP&#39;),
- (&#39;and&#39;, &#39;CC&#39;, &#39;O&#39;),
- (&#39;ordered&#39;, &#39;VBD&#39;, &#39;O&#39;),
- (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;company&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;to&#39;, &#39;TO&#39;, &#39;O&#39;),
- (&#39;alter&#39;, &#39;VB&#39;, &#39;O&#39;),
- (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;),
- (&#39;practices&#39;, &#39;NNS&#39;, &#39;O&#39;)]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="IOB-&#54805;&#53468;&#47196;-&#44060;&#52404;&#47749;-&#52628;&#52636;">IOB &#54805;&#53468;&#47196; &#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#IOB-&#54805;&#53468;&#47196;-&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h2><p>입력받은 문장을 NLTK 라이브러리를 활용하여 개체명을 추출할 경우 <code>Tree</code> 객체로 구성되어 있어 이를 IOB 형태로 변환시키려면 <code>tree2conlltags()</code> 함수를 사용해서 변환을 시킨다.</p>
-<ul>
-<li><a href="https://nlpforhackers.io/named-entity-extraction/">Complete guide to build your own Named Entity Recognizer with Python</a></li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sentence_iob_tagged</span> <span class="o">=</span> <span class="n">tree2conlltags</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_iob_tagged</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;, &#39;O&#39;), (&#39;authorities&#39;, &#39;NNS&#39;, &#39;O&#39;), (&#39;fined&#39;, &#39;VBD&#39;, &#39;O&#39;), (&#39;Google&#39;, &#39;NNP&#39;, &#39;O&#39;), (&#39;a&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;record&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;$&#39;, &#39;$&#39;, &#39;O&#39;), (&#39;5.1&#39;, &#39;CD&#39;, &#39;O&#39;), (&#39;billion&#39;, &#39;CD&#39;, &#39;O&#39;), (&#39;on&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;Wednesday&#39;, &#39;NNP&#39;, &#39;O&#39;), (&#39;for&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;abusing&#39;, &#39;VBG&#39;, &#39;O&#39;), (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;), (&#39;power&#39;, &#39;NN&#39;, &#39;B-NP&#39;), (&#39;in&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;mobile&#39;, &#39;JJ&#39;, &#39;I-NP&#39;), (&#39;phone&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;market&#39;, &#39;NN&#39;, &#39;B-NP&#39;), (&#39;and&#39;, &#39;CC&#39;, &#39;O&#39;), (&#39;ordered&#39;, &#39;VBD&#39;, &#39;O&#39;), (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;company&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;to&#39;, &#39;TO&#39;, &#39;O&#39;), (&#39;alter&#39;, &#39;VB&#39;, &#39;O&#39;), (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;), (&#39;practices&#39;, &#39;NNS&#39;, &#39;O&#39;)]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>그리고 IOB 객체는 리스트 튜플(원소가 튜플로 구성된 리스트) 구조라 list comprehension을 사용해서 해당 개체명을 추출해 낼 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">[</span><span class="n">e1</span> <span class="k">for</span> <span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sentence_iob_tagged</span> <span class="k">if</span> <span class="n">e2</span> <span class="ow">in</span> <span class="s1">&#39;B-GPE&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="ne_chunk-&#44060;&#52404;&#47749;-&#51064;&#49885;"><code>ne_chunk</code> &#44060;&#52404;&#47749; &#51064;&#49885;<a class="anchor-link" href="#ne_chunk-&#44060;&#52404;&#47749;-&#51064;&#49885;">&#182;</a></h2><p><code>nltk</code> 라이브러리 <code>ne_chunk()</code> 함수를 사용해서 개체명을 인식시킬 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># nltk.download(&#39;maxent_ne_chunker&#39;)</span>
-<span class="c1"># nltk.download(&#39;words&#39;)</span>
-<span class="kn">from</span> <span class="nn">nltk.chunk</span> <span class="k">import</span> <span class="n">conlltags2tree</span><span class="p">,</span> <span class="n">tree2conlltags</span><span class="p">,</span> <span class="n">ne_chunk</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
-
-<span class="n">sentence_ne_tree</span> <span class="o">=</span> <span class="n">ne_chunk</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_ne_tree</span><span class="p">)</span> <span class="c1"># 개체명 인식</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(S
-  (GPE European/JJ)
-  authorities/NNS
-  fined/VBD
-  (PERSON Google/NNP)
-  a/DT
-  record/NN
-  $/$
-  5.1/CD
-  billion/CD
-  on/IN
-  Wednesday/NNP
-  for/IN
-  abusing/VBG
-  its/PRP$
-  power/NN
-  in/IN
-  the/DT
-  mobile/JJ
-  phone/NN
-  market/NN
-  and/CC
-  ordered/VBD
-  the/DT
-  company/NN
-  to/TO
-  alter/VB
-  its/PRP$
-  practices/NNS)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Tree-&#44061;&#52404;&#50640;&#49436;-&#44060;&#52404;&#47749;-&#52628;&#52636;"><code>Tree</code> &#44061;&#52404;&#50640;&#49436; &#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#Tree-&#44061;&#52404;&#50640;&#49436;-&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h2><p>문장에서 개체명 인식을 통해서 인식된 개체명만 추출하는 코드는 다음과 같다.
-즉, <code>nltk.ne_chunk()</code> 메쏘드는 <code>nltk.tree.Tree</code> 객체를 반환하기 때문에 <code>Tree</code>객체를 훑어서 인식된 개체명을 추출한다.</p>
-<p>-<a href="https://stackoverflow.com/questions/48660547/how-can-i-extract-gpelocation-using-nltk-ne-chunk">stackoverflow, "How can I extract GPE(location) using NLTK ne_chunk?"</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">word_tokenize</span><span class="p">,</span> <span class="n">pos_tag</span><span class="p">,</span> <span class="n">ne_chunk</span>
-<span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">Tree</span>
-
-<span class="k">def</span> <span class="nf">get_continuous_chunks</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-    <span class="n">chunked</span> <span class="o">=</span> <span class="n">ne_chunk</span><span class="p">(</span><span class="n">pos_tag</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
-    <span class="n">prev</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">continuous_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">subtree</span> <span class="ow">in</span> <span class="n">chunked</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span> <span class="o">==</span> <span class="n">Tree</span> <span class="ow">and</span> <span class="n">subtree</span><span class="o">.</span><span class="n">label</span><span class="p">()</span> <span class="o">==</span> <span class="n">label</span><span class="p">:</span>
-            <span class="n">current_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">token</span> <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">subtree</span><span class="o">.</span><span class="n">leaves</span><span class="p">()]))</span>
-        <span class="k">elif</span> <span class="n">current_chunk</span><span class="p">:</span>
-            <span class="n">named_entity</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_chunk</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">named_entity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">continuous_chunk</span><span class="p">:</span>
-                <span class="n">continuous_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">named_entity</span><span class="p">)</span>
-                <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">continue</span>
-
-    <span class="k">return</span> <span class="n">continuous_chunk</span>
-
-<span class="n">get_continuous_chunks</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="s1">&#39;GPE&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;European&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="spaCy-NER">spaCy NER<a class="anchor-link" href="#spaCy-NER">&#182;</a></h1><p><code>spacy</code>를 활용해서도 개체명 인식을 할 수 있다. Google이 NLTK라이브러리 <code>ne_chunk()</code>와 달리 제대로 인식된 것을 확인할 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
-<span class="kn">from</span> <span class="nn">spacy</span> <span class="k">import</span> <span class="n">displacy</span>
-<span class="kn">import</span> <span class="nn">en_core_web_sm</span>
-
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">en_core_web_sm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s1">&#39;European authorities fined Google a record $5.1 billion on Wednesday for abusing its power </span><span class="se">\</span>
-<span class="s1">in the mobile phone market and ordered the company to alter its practices&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{entity.text:12}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> </span><span class="si">{entity.label_}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="c1"># print([(X.text, X.label_) for X in doc.ents])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>European     	 NORP
-Google       	 ORG
-$5.1 billion 	 MONEY
-Wednesday    	 DATE
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
     </div>
   </div>

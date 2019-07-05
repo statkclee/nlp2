@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>nlp-ner-python</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>nlp-ingest-naver-blog</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11797,10 +11797,8 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="&#51221;&#44508;&#54364;&#54788;&#49885;">&#51221;&#44508;&#54364;&#54788;&#49885;<a class="anchor-link" href="#&#51221;&#44508;&#54364;&#54788;&#49885;">&#182;</a></h1><p>개체명 인식(named entity recognition)을 위해서 가장 먼저 활용할 수 있고 단순한 방법이 <strong>정규표현식(regular expression)</strong> 을 사용하는 것이다.
-예를 들어 대문자로 시작되는 단어를 개체명(entity)으로 인식하는 사례를 가장 처음 떠올릴 수가 있다.
-정규표현식으로 대문자 첫자로 시작되는 단어를 개체명으로 잡아낼 수 있도록 작성하게 되면 문장에서 이러한 패턴을 따르는 것을 뽑아낼 순서대로 뽑아낼 수가 있다.</p>
-
+<h1 id="&#45348;&#51060;&#48260;-&#48660;&#47196;&#44536;">&#45348;&#51060;&#48260; &#48660;&#47196;&#44536;<a class="anchor-link" href="#&#45348;&#51060;&#48260;-&#48660;&#47196;&#44536;">&#182;</a></h1><p>@나성호님 Tidyverse Korea 자연어 처리 발표자료에서 가져옴</p>
+<h2 id="&#53356;&#47204;&#47553;&#51012;-&#50948;&#54644;-&#54596;&#50836;&#54620;-&#46972;&#51060;&#48652;&#47084;&#47532;&#47484;-&#44032;&#51256;&#50740;">&#53356;&#47204;&#47553;&#51012; &#50948;&#54644; &#54596;&#50836;&#54620; &#46972;&#51060;&#48652;&#47084;&#47532;&#47484; &#44032;&#51256;&#50740;<a class="anchor-link" href="#&#53356;&#47204;&#47553;&#51012;-&#50948;&#54644;-&#54596;&#50836;&#54620;-&#46972;&#51060;&#48652;&#47084;&#47532;&#47484;-&#44032;&#51256;&#50740;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -11809,12 +11807,23 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 필요한 라이브러리를 불러옵니다. </span>
+<span class="kn">import</span> <span class="nn">requests</span> <span class="c1"># HTTP 접속</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>  <span class="c1"># 웹페이지 파싱</span>
+<span class="kn">import</span> <span class="nn">re</span>  <span class="c1"># 정규표현식</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> <span class="c1"># 데이터프레임</span>
 
-<span class="n">entity_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[A-Z]</span><span class="si">{1}</span><span class="s2">[a-zA-Z]*&quot;</span><span class="p">)</span>
+<span class="c1"># 관심 있는 블로그의 URL을 복사하여 붙입니다. </span>
+<span class="n">URL</span> <span class="o">=</span> <span class="s1">&#39;https://sommming.blog.me/221571623395&#39;</span>
+<span class="c1"># HTTP 요청을 실행합니다. </span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">URL</span><span class="p">)</span>
 
-<span class="n">another_sentence</span> <span class="o">=</span> <span class="s2">&quot;John is from Atlanta&quot;</span>
-<span class="n">entity_pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">another_sentence</span><span class="p">)</span>
+<span class="c1"># HTTP 반응 결과를 확인합니다. </span>
+<span class="c1"># HTTP 반응에서 HTML만 따로 출력합니다. </span>
+<span class="c1"># 찾는 내용이 없고 &lt;frame&gt;으로 링크가 걸려 있습니다. </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;상태코드: </span><span class="si">{res.status_code}</span><span class="se">\n</span><span class="s1"> </span><span class="se">\</span>
+<span class="s1">        헤더: </span><span class="si">{res.headers}</span><span class="se">\n</span><span class="s1"> </span><span class="se">\</span>
+<span class="s1">        몸통: {res.content.decode(&quot;utf-8&quot;).strip()}&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11827,15 +11836,34 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[1]:</div>
+<div class="prompt"></div>
 
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>상태코드: 200
+         헤더: {&#39;Date&#39;: &#39;Mon, 01 Jul 2019 06:37:45 GMT&#39;, &#39;Content-Type&#39;: &#39;text/html; charset=utf-8&#39;, &#39;Transfer-Encoding&#39;: &#39;chunked&#39;, &#39;Connection&#39;: &#39;close&#39;, &#39;Vary&#39;: &#39;Accept-Encoding&#39;, &#39;Cache-Control&#39;: &#39;no-store, no-cache&#39;, &#39;Expires&#39;: &#39;Thu, 01 Jan 1970 00:00:00 GMT&#39;, &#39;Set-Cookie&#39;: &#39;JSESSIONID=F70EA7E740FCFE85F9007F269C2FE6CB.jvm1; Path=/; HttpOnly&#39;, &#39;P3P&#39;: &#39;CP=&#34;ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC&#34;&#39;, &#39;Server&#39;: &#39;nxfps&#39;, &#39;Referrer-policy&#39;: &#39;unsafe-url&#39;, &#39;Content-Encoding&#39;: &#39;gzip&#39;}
+         몸통: &lt;!DOCTYPE html PUBLIC &#34;-//W3C//DTD XHTML 1.0 Transitional//EN&#34; &#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&#34;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Pragma&#34; content=&#34;no-cache&#34;/&gt;
+&lt;meta http-equiv=&#34;Expires&#34; content=&#34;-1&#34;/&gt;
+&lt;meta name=&#34;robots&#34; content=&#34;noindex,follow&#34;/&gt;
+&lt;meta name=&#34;referrer&#34; content=&#34;always&#34;/&gt;
+&lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=utf-8&#34;/&gt;
+&lt;meta http-equiv=&#34;X-UA-Compatible&#34; content=&#34;IE=edge,chrome=1&#34; /&gt;
+&lt;link rel=&#34;alternate&#34; type=&#34;application/rss+xml&#34; title=&#34;기억의 기록&#34; href=&#34;http://sommming.blog.me/rss&#34; /&gt;
+&lt;link rel=&#34;wlwmanifest&#34; type=&#34;application/wlwmanifest+xml&#34; href=&#34;http://sommming.blog.me/NBlogWlwLayout.nhn?blogId=sommming&#34; /&gt;
+&lt;link rel=&#34;shortcut icon&#34; href=&#34;//blog.naver.com/favicon.ico&#34; /&gt;
+&lt;title&gt;기억의 기록 : 네이버 블로그&lt;/title&gt;
 
+&lt;/head&gt;
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;John&#39;, &#39;Atlanta&#39;]</pre>
+&lt;frameset rows=&#34;*,0&#34; frameborder=&#34;0&#34; framespacing=&#34;0&#34;&gt;
+  &lt;frame id=&#34;screenFrame&#34; name=&#34;screenFrame&#34; src=&#39;https://blog.naver.com/sommming/221571623395?proxyReferer=&#39; scrolling=&#34;auto&#34; /&gt;
+&lt;/frameset&gt;
+&lt;/html&gt;
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -11846,8 +11874,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#44060;&#52404;&#47749;-&#51064;&#49885;&#51032;-&#51221;&#44508;&#54364;&#54788;&#49885;">&#44060;&#52404;&#47749; &#51064;&#49885;&#51032; &#51221;&#44508;&#54364;&#54788;&#49885;<a class="anchor-link" href="#&#44060;&#52404;&#47749;-&#51064;&#49885;&#51032;-&#51221;&#44508;&#54364;&#54788;&#49885;">&#182;</a></h2><p>상기와 같이 개체명인식이 나름 성공적인 사례도 있지만, 다음과 같이 챗봇을 개발할 때 하나의 사례로 인사를 하는 것을 살펴보자. 즉, 챗봇이 "인사"라는 의도를 잡아내는데 <strong>정규표현식</strong> 을 적용한 사례로 ... 결론은 "인사" 의도(intent)를 잡아낼 수는 있으나 망가지기 쉬워 일일이 코딩이 필요한 사례로 정규표현식의 가능성과 한계를 명확히 보여주고 있다.</p>
-
+<h2 id="&#52572;&#51333;-&#53356;&#47204;&#47553;-&#51452;&#49548;&#47484;-&#52286;&#50500;&#45253;&#45768;&#45796;.">&#52572;&#51333; &#53356;&#47204;&#47553; &#51452;&#49548;&#47484; &#52286;&#50500;&#45253;&#45768;&#45796;.<a class="anchor-link" href="#&#52572;&#51333;-&#53356;&#47204;&#47553;-&#51452;&#49548;&#47484;-&#52286;&#50500;&#45253;&#45768;&#45796;.">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -11856,20 +11883,11 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">identify_greeting</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 인사 패턴과 매칭되면 인식된 인사를 반환.</span>
-<span class="sd">        예를 들어, 안녕 등&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;안녕&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;안녕&#39;</span><span class="p">,</span> <span class="s1">&#39;안녕하세요 &#39;</span><span class="p">,</span> <span class="s1">&#39;안녕ㅎ&#39;</span><span class="p">,</span> <span class="s1">&#39;안녕!&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">string</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello &#39;</span><span class="p">,</span> <span class="s1">&#39;Hello,&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello!&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;방&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">string</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;방가&#39;</span><span class="p">,</span> <span class="s1">&#39;방가방가 &#39;</span><span class="p">,</span> <span class="s1">&#39;방가워요&#39;</span><span class="p">,</span> <span class="s1">&#39;방갑습니다&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="n">string</span>
-    <span class="k">return</span> <span class="kc">None</span>
-
-<span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;안녕하세요.&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># BeautifulSoup을 이용하여 HTML을 parsing합니다. </span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+<span class="n">target_URL</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)</span>
+<span class="n">target_URL</span> <span class="o">=</span> <span class="n">target_URL</span> <span class="o">+</span> <span class="s1">&#39;https://section.blog.naver.com/BlogHome.nhn&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">target_URL</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11882,27 +11900,40 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;안녕&#39;</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>https://blog.naver.com/sommming/221571623395?proxyReferer=https://section.blog.naver.com/BlogHome.nhn
+</pre>
 </div>
-
 </div>
 
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="BeautifulSoup&#51012;-&#51060;&#50857;&#54616;&#50668;-HTML&#51012;-parsing&#54633;&#45768;&#45796;.">BeautifulSoup&#51012; &#51060;&#50857;&#54616;&#50668; HTML&#51012; parsing&#54633;&#45768;&#45796;.<a class="anchor-link" href="#BeautifulSoup&#51012;-&#51060;&#50857;&#54616;&#50668;-HTML&#51012;-parsing&#54633;&#45768;&#45796;.">&#182;</a></h2>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;방가워요&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># HTTP 요청을 실행합니다. </span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_URL</span><span class="p">)</span>
+
+<span class="c1"># HTTP 반응 결과를 확인합니다. </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> URL: </span><span class="si">{target_URL}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> </span><span class="se">\</span>
+<span class="s1">        상태코드: </span><span class="si">{res.status_code}</span><span class="se">\n</span><span class="s1"> </span><span class="se">\</span>
+<span class="s1">        헤더: </span><span class="si">{res.headers}</span><span class="se">\n</span><span class="s1"> </span><span class="se">\</span>
+<span class="s1">        몸통: {res.content.decode(&quot;utf-8&quot;).strip()}&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11915,15 +11946,74 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>	 URL: https://blog.naver.com/sommming/221571623395?proxyReferer=https://section.blog.naver.com/BlogHome.nhn 
+         상태코드: 200
+         헤더: {&#39;Date&#39;: &#39;Mon, 01 Jul 2019 06:37:45 GMT&#39;, &#39;Content-Type&#39;: &#39;text/html;charset=UTF-8&#39;, &#39;Transfer-Encoding&#39;: &#39;chunked&#39;, &#39;Connection&#39;: &#39;close&#39;, &#39;Cache-Control&#39;: &#39;no-cache&#39;, &#39;Expires&#39;: &#39;Thu, 01 Jan 1970 00:00:00 GMT&#39;, &#39;Set-Cookie&#39;: &#39;JSESSIONID=ECC3C2F249D572DAAB38998662BD8193.jvm1; Path=/; HttpOnly&#39;, &#39;P3P&#39;: &#39;CP=&#34;ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC&#34;&#39;, &#39;Access-Control-Allow-Credentials&#39;: &#39;true&#39;, &#39;Access-Control-Allow-Headers&#39;: &#39;accept, content-type&#39;, &#39;Access-Control-Allow-Methods&#39;: &#39;GET, POST&#39;, &#39;Vary&#39;: &#39;Accept-Encoding&#39;, &#39;Content-Encoding&#39;: &#39;gzip&#39;, &#39;Server&#39;: &#39;nxfps&#39;, &#39;Referrer-policy&#39;: &#39;unsafe-url&#39;}
+         몸통: &lt;!DOCTYPE html PUBLIC &#34;-//W3C//DTD XHTML 1.0 Transitional//EN&#34; &#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&#34;&gt;
+&lt;html lang=&#34;ko&#34;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&#34;Pragma&#34; content=&#34;no-cache&#34;/&gt;
+&lt;meta http-equiv=&#34;Expires&#34; content=&#34;-1&#34;/&gt;
+&lt;meta name=&#34;robots&#34; content=&#34;noindex,follow&#34;/&gt;
+&lt;meta name=&#34;referrer&#34; content=&#34;always&#34;/&gt;
+&lt;meta http-equiv=&#34;content-type&#34; content=&#34;text/html;charset=UTF-8&#34;/&gt;
+&lt;meta http-equiv=&#34;X-UA-Compatible&#34; content=&#34;IE=edge,chrome=1&#34; /&gt;
+&lt;link rel=&#34;shortcut icon&#34; type=&#34;image/x-icon&#34; href=&#34;/favicon.ico?2&#34; /&gt;
+&lt;link rel=&#34;alternate&#34; type=&#34;application/rss+xml&#34; href=&#34;https://rss.blog.naver.com/sommming.xml&#34; title=&#34;RSS feed for sommming Blog&#34;/&gt;
+&lt;link rel=&#34;wlwmanifest&#34; type=&#34;application/wlwmanifest+xml&#34; href=&#34;https://blog.naver.com/NBlogWlwLayout.nhn?blogId=sommming&#34; /&gt;
 
 
 
 
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;방가워요&#39;</pre>
+&lt;title&gt;기억의 기록 : 네이버 블로그&lt;/title&gt;
+&lt;/head&gt;
+&lt;script type=&#34;text/javascript&#34; src=&#34;https://ssl.pstatic.net/t.static.blog/mylog/versioning/Frameset-657805386_https.js&#34; charset=&#34;UTF-8&#34;&gt;&lt;/script&gt;
+
+&lt;script type=&#34;text/javascript&#34; charset=&#34;UTF-8&#34;&gt;
+var photoContent=&#34;&#34;;
+var postContent=&#34;&#34;;
+
+var videoId 	  = &#34;&#34;;
+var thumbnail 	  = &#34;&#34;;
+var inKey 		  = &#34;&#34;;
+var movieFileSize = &#34;&#34;;
+var playTime 	  = &#34;&#34;;
+var screenSize 	  = &#34;&#34;;
+
+var blogId = &#39;sommming&#39;;
+var blogURL = &#39;https://blog.naver.com&#39;;
+var eventCnt = &#39;&#39;;
+
+var g_ShareObject = {};
+g_ShareObject.referer = &#34;https%3A%2F%2Fsection.blog.naver.com%2FBlogHome.nhn&#34;;
+
+
+jsMVC.setController(&#34;framesetTitleController&#34;, FramesetTitleController);
+jsMVC.setController(&#34;framesetUrlController&#34;, FramesetUrlController);
+jsMVC.setController(&#34;framesetMusicController&#34;, FramesetMusicController);
+var oFramesetTitleController = jsMVC.getController(&#34;framesetTitleController&#34;);
+var oFramesetUrlController = jsMVC.getController(&#34;framesetUrlController&#34;);
+var oFramesetMusicController = jsMVC.getController(&#34;framesetMusicController&#34;);
+var sTitle = document.title;
+
+&lt;/script&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+    html{width:100%;height:100%;}
+    body{width:100%;height:100%;margin:0;padding:0;font-size:0;}
+    #mainFrame{width:100%;height:99.8%;margin:0;padding:0;border:0;}
+    #hiddenFrame{width:0;height:0;margin:0;padding:0;border:0;}
+&lt;/style&gt;
+&lt;body&gt;
+    &lt;iframe id=&#34;mainFrame&#34; name=&#34;mainFrame&#34; allowfullscreen=&#34;true&#34; src=&#34;/PostView.nhn?blogId=sommming&amp;logNo=221571623395&amp;redirect=Dlog&amp;widgetTypeCall=true&amp;from=section&amp;topReferer=https%3A%2F%2Fsection.blog.naver.com%2FBlogHome.nhn&amp;directAccess=false&#34; scrolling=&#34;auto&#34;  onload=&#34;oFramesetTitleController.start(self.frames[&#39;mainFrame&#39;], self, sTitle);oFramesetTitleController.onLoadFrame();oFramesetUrlController.start(self.frames[&#39;mainFrame&#39;]);oFramesetUrlController.onLoadFrame()&#34; allowfullscreen&gt;&lt;/iframe&gt;
+    &lt;iframe id=&#34;hiddenFrame&#34; name=&#34;hiddenFrame&#34; src=&#34;/NBlogHidden.nhn?blogId=sommming&amp;musicYN=false&#34; scrolling=&#34;no&#34; noresize=&#34;noresize&#34;&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -11935,7 +12025,9 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">identify_greeting</span><span class="p">(</span><span class="s1">&#39;만나서 반갑습니다.&#39;</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># BeautifulSoup을 이용하여 HTML을 parsing합니다. </span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+<span class="n">URL</span> <span class="o">+</span> <span class="n">html</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;iframe&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11948,13 +12040,15 @@ $( document ).ready(function(){
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[4]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>None
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;https://sommming.blog.me/221571623395/PostView.nhn?blogId=sommming&amp;logNo=221571623395&amp;redirect=Dlog&amp;widgetTypeCall=true&amp;from=section&amp;topReferer=https%3A%2F%2Fsection.blog.naver.com%2FBlogHome.nhn&amp;directAccess=false&#39;</pre>
 </div>
+
 </div>
 
 </div>
@@ -11965,7 +12059,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>identify_greeting()</code> 함수는 문자열에 안녕 혹은 방가</p>
+<h1>블로그글 &rarr; 데이터프레임</h1>
 
 </div>
 </div>
@@ -11974,12 +12068,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="NLTK-&#44060;&#52404;&#47749;-&#51064;&#49885;">NLTK &#44060;&#52404;&#47749; &#51064;&#49885;<a class="anchor-link" href="#NLTK-&#44060;&#52404;&#47749;-&#51064;&#49885;">&#182;</a></h1><p>NLTK 라이브러리를 사용한 개체명 인식(Named Entity Recognition, NER) 방법을 살펴보자</p>
-<ul>
-<li><a href="https://wikidocs.net/30682">NLTK를 이용한 개체명 인식(Named Entity Recognition using NTLK)</a></li>
-<li><a href="https://towardsdatascience.com/named-entity-recognition-with-nltk-and-spacy-8c4a7d88e7da">Susan Li (Aug 17, 2018), "Named Entity Recognition with NLTK and SpaCy - NER is used in many fields in Natural Language Processing (NLP)"</a></li>
-</ul>
-
+<h2 id="&#48660;&#47196;&#44536;-&#51228;&#47785;">&#48660;&#47196;&#44536; &#51228;&#47785;<a class="anchor-link" href="#&#48660;&#47196;&#44536;-&#51228;&#47785;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -11988,35 +12077,19 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
-<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="k">import</span> <span class="n">word_tokenize</span>
-<span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="k">import</span> <span class="n">pos_tag</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">script</span> false 
 
-<span class="n">sentence</span> <span class="o">=</span> <span class="s2">&quot;European authorities fined Google a record $5.1 billion on Wednesday for abusing its power </span><span class="se">\</span>
-<span class="s2">            in the mobile phone market and ordered the company to alter its practices&quot;</span>
-<span class="n">sentence_pos</span> <span class="o">=</span> <span class="n">pos_tag</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span> <span class="c1"># 토큰화와 품사 태깅을 동시 수행</span>
+# HTTP 요청을 실행합니다. 
+res = requests.get(target_URL)
+
+# BeautifulSoup을 이용하여 HTML을 parsing합니다. 
+html = BeautifulSoup(res.content, &#39;html.parser&#39;)
+
+# 크롬 개발자도구의 Elements에서 블로그 제목에 해당하는 태그를 찾습니다. 
+html.find(&#39;span&#39;, {&#39;class&#39;:&#39;se-fs-fs38&#39;}).get_text()
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;), (&#39;authorities&#39;, &#39;NNS&#39;), (&#39;fined&#39;, &#39;VBD&#39;), (&#39;Google&#39;, &#39;NNP&#39;), (&#39;a&#39;, &#39;DT&#39;), (&#39;record&#39;, &#39;NN&#39;), (&#39;$&#39;, &#39;$&#39;), (&#39;5.1&#39;, &#39;CD&#39;), (&#39;billion&#39;, &#39;CD&#39;), (&#39;on&#39;, &#39;IN&#39;), (&#39;Wednesday&#39;, &#39;NNP&#39;), (&#39;for&#39;, &#39;IN&#39;), (&#39;abusing&#39;, &#39;VBG&#39;), (&#39;its&#39;, &#39;PRP$&#39;), (&#39;power&#39;, &#39;NN&#39;), (&#39;in&#39;, &#39;IN&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;mobile&#39;, &#39;JJ&#39;), (&#39;phone&#39;, &#39;NN&#39;), (&#39;market&#39;, &#39;NN&#39;), (&#39;and&#39;, &#39;CC&#39;), (&#39;ordered&#39;, &#39;VBD&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;company&#39;, &#39;NN&#39;), (&#39;to&#39;, &#39;TO&#39;), (&#39;alter&#39;, &#39;VB&#39;), (&#39;its&#39;, &#39;PRP$&#39;), (&#39;practices&#39;, &#39;NNS&#39;)]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12025,8 +12098,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>IOB 태그는 파일은 파일의 말뭉치 덩어리(chunk) 구조를 표현하는 표준으로 자리잡고 있다. 이를 활용하여 표현하면 문장을 표현하면 다음과 같다.</p>
-
+<h2 id="&#48660;&#47196;&#44144;-&#45769;&#45348;&#51076;">&#48660;&#47196;&#44144; &#45769;&#45348;&#51076;<a class="anchor-link" href="#&#48660;&#47196;&#44144;-&#45769;&#45348;&#51076;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12035,56 +12107,12 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;NP: {&lt;DT&gt;?&lt;JJ&gt;*&lt;NN&gt;}&#39;</span>
-
-<span class="n">cp</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">RegexpParser</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-<span class="n">cs</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">script</span> false 
+# 찾은 태그 안에 있는 텍스트만 출력합니다. 
+html.find(&#39;span&#39;, {&#39;class&#39;:&#39;nick&#39;}).a.get_text()
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(S
-  European/JJ
-  authorities/NNS
-  fined/VBD
-  Google/NNP
-  (NP a/DT record/NN)
-  $/$
-  5.1/CD
-  billion/CD
-  on/IN
-  Wednesday/NNP
-  for/IN
-  abusing/VBG
-  its/PRP$
-  (NP power/NN)
-  in/IN
-  (NP the/DT mobile/JJ phone/NN)
-  (NP market/NN)
-  and/CC
-  ordered/VBD
-  (NP the/DT company/NN)
-  to/TO
-  alter/VB
-  its/PRP$
-  practices/NNS)
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12093,8 +12121,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>nltk.chunk.conlltags2tree()</code> 함수는 태그 시퀀스를 말뭉치 나무구조로 변환시킨다.</p>
-
+<h2 id="&#51089;&#49457;&#51068;&#51088;">&#51089;&#49457;&#51068;&#51088;<a class="anchor-link" href="#&#51089;&#49457;&#51068;&#51088;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12103,59 +12130,12 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk.chunk</span> <span class="k">import</span> <span class="n">conlltags2tree</span><span class="p">,</span> <span class="n">tree2conlltags</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
-
-<span class="n">iob_tagged</span> <span class="o">=</span> <span class="n">tree2conlltags</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-<span class="n">pprint</span><span class="p">(</span><span class="n">iob_tagged</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">script</span> false 
+# 찾은 태그 안에 있는 텍스트만 출력합니다. 
+html.find(&#39;span&#39;, {&#39;class&#39;:&#39;se_publishDate&#39;}).get_text()
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;, &#39;O&#39;),
- (&#39;authorities&#39;, &#39;NNS&#39;, &#39;O&#39;),
- (&#39;fined&#39;, &#39;VBD&#39;, &#39;O&#39;),
- (&#39;Google&#39;, &#39;NNP&#39;, &#39;O&#39;),
- (&#39;a&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;record&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;$&#39;, &#39;$&#39;, &#39;O&#39;),
- (&#39;5.1&#39;, &#39;CD&#39;, &#39;O&#39;),
- (&#39;billion&#39;, &#39;CD&#39;, &#39;O&#39;),
- (&#39;on&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;Wednesday&#39;, &#39;NNP&#39;, &#39;O&#39;),
- (&#39;for&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;abusing&#39;, &#39;VBG&#39;, &#39;O&#39;),
- (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;),
- (&#39;power&#39;, &#39;NN&#39;, &#39;B-NP&#39;),
- (&#39;in&#39;, &#39;IN&#39;, &#39;O&#39;),
- (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;mobile&#39;, &#39;JJ&#39;, &#39;I-NP&#39;),
- (&#39;phone&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;market&#39;, &#39;NN&#39;, &#39;B-NP&#39;),
- (&#39;and&#39;, &#39;CC&#39;, &#39;O&#39;),
- (&#39;ordered&#39;, &#39;VBD&#39;, &#39;O&#39;),
- (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;),
- (&#39;company&#39;, &#39;NN&#39;, &#39;I-NP&#39;),
- (&#39;to&#39;, &#39;TO&#39;, &#39;O&#39;),
- (&#39;alter&#39;, &#39;VB&#39;, &#39;O&#39;),
- (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;),
- (&#39;practices&#39;, &#39;NNS&#39;, &#39;O&#39;)]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12164,11 +12144,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="IOB-&#54805;&#53468;&#47196;-&#44060;&#52404;&#47749;-&#52628;&#52636;">IOB &#54805;&#53468;&#47196; &#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#IOB-&#54805;&#53468;&#47196;-&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h2><p>입력받은 문장을 NLTK 라이브러리를 활용하여 개체명을 추출할 경우 <code>Tree</code> 객체로 구성되어 있어 이를 IOB 형태로 변환시키려면 <code>tree2conlltags()</code> 함수를 사용해서 변환을 시킨다.</p>
-<ul>
-<li><a href="https://nlpforhackers.io/named-entity-extraction/">Complete guide to build your own Named Entity Recognizer with Python</a></li>
-</ul>
-
+<h2 id="&#48660;&#47196;&#44536;-&#48376;&#47928;">&#48660;&#47196;&#44536; &#48376;&#47928;<a class="anchor-link" href="#&#48660;&#47196;&#44536;-&#48376;&#47928;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12177,29 +12153,12 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sentence_iob_tagged</span> <span class="o">=</span> <span class="n">tree2conlltags</span><span class="p">(</span><span class="n">cs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_iob_tagged</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">script</span> false 
+text = html.find(&#39;div&#39;, {&#39;class&#39;:&#39;se-main-container&#39;}).get_text()
+re.compile(&#39;[^가-힣0-9ㄱ-ㅎㅏ-ㅣ^]+&#39;).sub(&#39; &#39;, text).strip()
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[(&#39;European&#39;, &#39;JJ&#39;, &#39;O&#39;), (&#39;authorities&#39;, &#39;NNS&#39;, &#39;O&#39;), (&#39;fined&#39;, &#39;VBD&#39;, &#39;O&#39;), (&#39;Google&#39;, &#39;NNP&#39;, &#39;O&#39;), (&#39;a&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;record&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;$&#39;, &#39;$&#39;, &#39;O&#39;), (&#39;5.1&#39;, &#39;CD&#39;, &#39;O&#39;), (&#39;billion&#39;, &#39;CD&#39;, &#39;O&#39;), (&#39;on&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;Wednesday&#39;, &#39;NNP&#39;, &#39;O&#39;), (&#39;for&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;abusing&#39;, &#39;VBG&#39;, &#39;O&#39;), (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;), (&#39;power&#39;, &#39;NN&#39;, &#39;B-NP&#39;), (&#39;in&#39;, &#39;IN&#39;, &#39;O&#39;), (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;mobile&#39;, &#39;JJ&#39;, &#39;I-NP&#39;), (&#39;phone&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;market&#39;, &#39;NN&#39;, &#39;B-NP&#39;), (&#39;and&#39;, &#39;CC&#39;, &#39;O&#39;), (&#39;ordered&#39;, &#39;VBD&#39;, &#39;O&#39;), (&#39;the&#39;, &#39;DT&#39;, &#39;B-NP&#39;), (&#39;company&#39;, &#39;NN&#39;, &#39;I-NP&#39;), (&#39;to&#39;, &#39;TO&#39;, &#39;O&#39;), (&#39;alter&#39;, &#39;VB&#39;, &#39;O&#39;), (&#39;its&#39;, &#39;PRP$&#39;, &#39;O&#39;), (&#39;practices&#39;, &#39;NNS&#39;, &#39;O&#39;)]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12208,8 +12167,7 @@ $( document ).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>그리고 IOB 객체는 리스트 튜플(원소가 튜플로 구성된 리스트) 구조라 list comprehension을 사용해서 해당 개체명을 추출해 낼 수 있다.</p>
-
+<h2 id="&#45936;&#51060;&#53552;&#54532;&#47112;&#51076;-&#51200;&#51109;">&#45936;&#51060;&#53552;&#54532;&#47112;&#51076; &#51200;&#51109;<a class="anchor-link" href="#&#45936;&#51060;&#53552;&#54532;&#47112;&#51076;-&#51200;&#51109;">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12218,222 +12176,21 @@ $( document ).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">[</span><span class="n">e1</span> <span class="k">for</span> <span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sentence_iob_tagged</span> <span class="k">if</span> <span class="n">e2</span> <span class="ow">in</span> <span class="s1">&#39;B-GPE&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">script</span> false 
+# 복잡한 구조를 갖는 body를 데이터프레임으로 일괄 변환합니다. 
+# 필요한 컬럼만 남깁니다. 
+blog = pd.DataFrame(columns = [&#39;head&#39;, &#39;user&#39;, &#39;date&#39;, &#39;text&#39;])
+
+blog = blog.append({&#39;head&#39;:html.find(&#39;span&#39;, {&#39;class&#39;:&#39;se-fs-fs38&#39;}).get_text(), 
+                    &#39;user&#39;:html.find(&#39;span&#39;, {&#39;class&#39;:&#39;nick&#39;}).a.get_text(),
+                    &#39;date&#39;:html.find(&#39;span&#39;, {&#39;class&#39;:&#39;se_publishDate&#39;}).get_text(),
+                    &#39;text&#39;:re.compile(&#39;\W+&#39;).sub(&#39; &#39;, text).strip()},
+                   ignore_index = True)
+
+blog
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="ne_chunk-&#44060;&#52404;&#47749;-&#51064;&#49885;"><code>ne_chunk</code> &#44060;&#52404;&#47749; &#51064;&#49885;<a class="anchor-link" href="#ne_chunk-&#44060;&#52404;&#47749;-&#51064;&#49885;">&#182;</a></h2><p><code>nltk</code> 라이브러리 <code>ne_chunk()</code> 함수를 사용해서 개체명을 인식시킬 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># nltk.download(&#39;maxent_ne_chunker&#39;)</span>
-<span class="c1"># nltk.download(&#39;words&#39;)</span>
-<span class="kn">from</span> <span class="nn">nltk.chunk</span> <span class="k">import</span> <span class="n">conlltags2tree</span><span class="p">,</span> <span class="n">tree2conlltags</span><span class="p">,</span> <span class="n">ne_chunk</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
-
-<span class="n">sentence_ne_tree</span> <span class="o">=</span> <span class="n">ne_chunk</span><span class="p">(</span><span class="n">sentence_pos</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sentence_ne_tree</span><span class="p">)</span> <span class="c1"># 개체명 인식</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(S
-  (GPE European/JJ)
-  authorities/NNS
-  fined/VBD
-  (PERSON Google/NNP)
-  a/DT
-  record/NN
-  $/$
-  5.1/CD
-  billion/CD
-  on/IN
-  Wednesday/NNP
-  for/IN
-  abusing/VBG
-  its/PRP$
-  power/NN
-  in/IN
-  the/DT
-  mobile/JJ
-  phone/NN
-  market/NN
-  and/CC
-  ordered/VBD
-  the/DT
-  company/NN
-  to/TO
-  alter/VB
-  its/PRP$
-  practices/NNS)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Tree-&#44061;&#52404;&#50640;&#49436;-&#44060;&#52404;&#47749;-&#52628;&#52636;"><code>Tree</code> &#44061;&#52404;&#50640;&#49436; &#44060;&#52404;&#47749; &#52628;&#52636;<a class="anchor-link" href="#Tree-&#44061;&#52404;&#50640;&#49436;-&#44060;&#52404;&#47749;-&#52628;&#52636;">&#182;</a></h2><p>문장에서 개체명 인식을 통해서 인식된 개체명만 추출하는 코드는 다음과 같다.
-즉, <code>nltk.ne_chunk()</code> 메쏘드는 <code>nltk.tree.Tree</code> 객체를 반환하기 때문에 <code>Tree</code>객체를 훑어서 인식된 개체명을 추출한다.</p>
-<p>-<a href="https://stackoverflow.com/questions/48660547/how-can-i-extract-gpelocation-using-nltk-ne-chunk">stackoverflow, "How can I extract GPE(location) using NLTK ne_chunk?"</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">word_tokenize</span><span class="p">,</span> <span class="n">pos_tag</span><span class="p">,</span> <span class="n">ne_chunk</span>
-<span class="kn">from</span> <span class="nn">nltk</span> <span class="k">import</span> <span class="n">Tree</span>
-
-<span class="k">def</span> <span class="nf">get_continuous_chunks</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-    <span class="n">chunked</span> <span class="o">=</span> <span class="n">ne_chunk</span><span class="p">(</span><span class="n">pos_tag</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
-    <span class="n">prev</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">continuous_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">subtree</span> <span class="ow">in</span> <span class="n">chunked</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span> <span class="o">==</span> <span class="n">Tree</span> <span class="ow">and</span> <span class="n">subtree</span><span class="o">.</span><span class="n">label</span><span class="p">()</span> <span class="o">==</span> <span class="n">label</span><span class="p">:</span>
-            <span class="n">current_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">token</span> <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">subtree</span><span class="o">.</span><span class="n">leaves</span><span class="p">()]))</span>
-        <span class="k">elif</span> <span class="n">current_chunk</span><span class="p">:</span>
-            <span class="n">named_entity</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_chunk</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">named_entity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">continuous_chunk</span><span class="p">:</span>
-                <span class="n">continuous_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">named_entity</span><span class="p">)</span>
-                <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">continue</span>
-
-    <span class="k">return</span> <span class="n">continuous_chunk</span>
-
-<span class="n">get_continuous_chunks</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="s1">&#39;GPE&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;European&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="spaCy-NER">spaCy NER<a class="anchor-link" href="#spaCy-NER">&#182;</a></h1><p><code>spacy</code>를 활용해서도 개체명 인식을 할 수 있다. Google이 NLTK라이브러리 <code>ne_chunk()</code>와 달리 제대로 인식된 것을 확인할 수 있다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">spacy</span>
-<span class="kn">from</span> <span class="nn">spacy</span> <span class="k">import</span> <span class="n">displacy</span>
-<span class="kn">import</span> <span class="nn">en_core_web_sm</span>
-
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">en_core_web_sm</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s1">&#39;European authorities fined Google a record $5.1 billion on Wednesday for abusing its power </span><span class="se">\</span>
-<span class="s1">in the mobile phone market and ordered the company to alter its practices&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{entity.text:12}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> </span><span class="si">{entity.label_}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="c1"># print([(X.text, X.label_) for X in doc.ents])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>European     	 NORP
-Google       	 ORG
-$5.1 billion 	 MONEY
-Wednesday    	 DATE
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
