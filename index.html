@@ -49,7 +49,7 @@
 <li><a href="regex-import-text.html">다양한 텍스트 데이터 가져오기</a>
 <ul>
 <li><a href="nlp-ingest-text.html">전자우편 텍스트 → CSV</a></li>
-<li><a href="nlp-ingest-naver-blog.html">네이버 블로그 (feat. 나성호)</a></li>
+<li><a href="nlp-ingest-naver-blog.html">네이버 블로그 (feat. 나성호)</a> - 실행 오류!!!</li>
 </ul></li>
 <li><a href="regex-index.html">정규표현식</a>
 <ul>
@@ -82,10 +82,13 @@
 <ul>
 <li><a href="nlp-ml-deployment.html">기계학습 모형 배포: <code>flask</code> + <code>pickle</code></a></li>
 <li><a href="nlp-python-pipeline.html">파이썬 파이프라인(pipeline)</a></li>
-<li><a href="nlp-twitter-ml.html">트위터 감성 예측</a>
+<li><a href="nlp-sentiment.html">감성 분석: 빅픽처 + 규칙/어휘사전</a>
+<ul>
+<li><a href="nlp-twitter-ml.html">트위터 감성 예측: Feature Engineering</a>
 <ul>
 <li><a href="nlp-twitter-ml-pos.html"><code>spaCy</code> 품사 태깅</a></li>
-<li><a href="nlp-twitter-ml-bow.html">BoW 예측모형</a></li>
+</ul></li>
+<li><a href="nlp-twitter-ml-bow.html">BoW/TF-IDF기반 예측모형: M/L</a></li>
 </ul></li>
 <li><a href="nlp-word2vec-python.html">워드2벡(word2vec)</a></li>
 <li><strong>자연어 처리 스터디 <span class="citation">@삼정</span> KPMG</strong>
@@ -102,7 +105,8 @@
 <li><a href="nlp-text-redaction.html">텍스트 삭제(text redaction)</a></li>
 </ul></li>
 </ul>
-<p><code>jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-.ipynb</code></p>
+<p><code>jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-</code> <br></p>
+<p><code>jupyter notebook --notebook-dir='d:\docs\sw4ds'</code></p>
         </div>
       </div>
       </article>

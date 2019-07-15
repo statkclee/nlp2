@@ -33,10 +33,10 @@ title: 자연어 처리 (NLP)
 - 모형
     - [기계학습 모형 배포: `flask` + `pickle`](nlp-ml-deployment.html) 
     - [파이썬 파이프라인(pipeline)](nlp-python-pipeline.html) 
-    - [감성 분석](nlp-sentiment.html)
-        - [트위터 감성 예측](nlp-twitter-ml.html)
+    - [감성 분석: 빅픽처 + 규칙/어휘사전](nlp-sentiment.html)
+        - [트위터 감성 예측: Feature Engineering](nlp-twitter-ml.html)
             - [`spaCy` 품사 태깅](nlp-twitter-ml-pos.html)
-            - [BoW 예측모형](nlp-twitter-ml-bow.html)
+        - [BoW/TF-IDF기반 예측모형: M/L](nlp-twitter-ml-bow.html)
     - [워드2벡(word2vec)](nlp-word2vec-python.html)
     - **자연어 처리 스터디 @삼정 KPMG**
         - [문서분류 - 헬로월드](nlp-classification.html)
