@@ -8,7 +8,9 @@ title: 자연어 처리 (NLP)
     - [R/파이썬 분석환경 준비](nlp-toolchain.html)
     - [텐서플로우(tensorflow) 설치](nlp-tensorflow-install.html)
 - [NLP 도구](nlp-tools.html)
-- [오디오 &rarr; 텍스트](nlp-audio-transcribe.html)
+- 텍스트 원재료
+    - [오디오 &rarr; 텍스트](nlp-audio-transcribe.html)
+    - [MP3 음악 &rarr; 텍스트](nlp-mp3-transcribe.html)
 - [다양한 텍스트 데이터 가져오기](regex-import-text.html)
     - [전자우편 텍스트 &rarr; CSV](nlp-ingest-text.html)
     - [네이버 블로그 (feat. 나성호)](nlp-ingest-naver-blog.html) - 실행 오류!!!

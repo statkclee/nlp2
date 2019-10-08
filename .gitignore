@@ -52,3 +52,8 @@ flaskapp/bin/
 code/__pycache__/
 
 data/clean_newsgroups.csv
+
+
+# MP3
+
+data/audio/*.mp3
