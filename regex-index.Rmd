@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "데이터 사이언스 - 자연어 처리"
-subtitle: "정규표현식(Regular Expression)"
+subtitle: "정규표현식(Regular Expression) - `R`"
 author:
     name: xwMOOC
 date: "`r Sys.Date()`"
@@ -73,9 +73,14 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 |:------------------------------------------------------------------:|:------------------------------------------------------------------:|
 | <iframe width="250" src="https://www.youtube.com/embed/FgxQyukp39A" frameborder="0" allowfullscreen></iframe> | <iframe width="250" src="https://www.youtube.com/embed/RGN5tS-2Zmo" frameborder="0" allowfullscreen></iframe> |
 
-# 자주 사용되는 정규식 [^regex-reference] {#frequent-usage}
+# 자주 사용되는 정규식 [^regex-reference] [^regexexplain] [^rsquared-academy] {#frequent-usage}
 
 [^regex-reference]: [자주 쓰이는 정규식(Regular Expression)](http://gocoding.tistory.com/93)
+
+[^regexexplain]: [R 정규표현식과 문자데이터 - `regexplain`](https://statkclee.github.io/ds-authoring/regex-r-char.html)
+[^rsquared-academy]: [Rsquared Academy (2019-05-27), "Demystifying Regular Expressions in R"](https://blog.rsquaredacademy.com/regular-expression-in-r/)
+
+자주 사용되는 한국어 정규표현식을 차근차근 정리해보자.
 
 ```{r frequent-reg, eval=FALSE}
 * 전자우편 주소: /^[a-z0-9_+.-]+@([a-z0-9-]+\.)+[a-z0-9]{2,4}$/  
@@ -89,10 +94,305 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 * 적어도 소문자 하나, 대문자 하나, 숫자 하나가 포함되어 있는 문자열(8글자 이상 15글자 이하) - 올바른 암호 형식을 확인할 때 사용될 수 있음: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}/  
 ```
 
+# `R` 정규표현식 {#regex-frequently-used}
+
+## 텍스트 헬로월드 {#regex-get-data}
+
+가장 먼저 `R` 정규표현식으로 작업할 텍스트 데이터를 R 작업 환경으로 가져온다.
+
+[Lucy Park (박은정),  2015-08-29, "한국어와 NLTK, Gensim의 만남 (부제: 영화 리뷰를 컴퓨터가 이해할 수 있는 형식으로 표현해서 센티멘트 분석하기)", PyCon Korea 2015](https://www.lucypark.kr/docs/2015-pyconkr/#1) 네이버 영화 리뷰 데이터를 자져와서 작업을 시작해 본다.
+
+데이터프레임에서 텍스트, 즉 영화리뷰 20개만 뽑아 텍스트 벡터로 변환시킨 후 `stringr` 팩키지의 정규표현식 `pattern=`을 적용시켜서 "영화"만 선택한다.
+
+```{r get-data}
+## 팩키지와 재현가능하도록... 난수 seed 고정
+library(tidyverse)
+set.seed(777)
+
+## 데이터 가져와서 20개 리뷰만 추출
+review <- read_delim('https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt', delim="\t") %>% 
+  sample_n(20)
+
+## 데이터프레임으로 ... 텍스트 벡터로 변환
+review %>% 
+  pull(document) %>% 
+  str_view(pattern="영화")
+```
 
 
-# R 참고문헌 {#regex-reference}
+## 특정 단어 추출 {#regex-search-review}
 
-- [R 정규표현식과 문자데이터 - `regexplain`](https://statkclee.github.io/ds-authoring/regex-r-char.html)
-- [Rsquared Academy (2019-05-27), "Demystifying Regular Expressions in R"](https://blog.rsquaredacademy.com/regular-expression-in-r/)
+검색어("영화")만 포함된 영화리뷰를 뽑아보자. 이를 위해서 `str_detect()` 함수 내부에 정규표현식을 전달시켜 `TRUE`/`FALSE` 마스크(mask)를 생성시킨다. 그리고 나서, 텍스트 벡터에 마스크 벡터를 넣어 `TRUE`만 즉, "영화" 단어가 포함된 애들만 추출한다.
+
+```{r search-keyword-mean}
+(word_mask <- str_detect(review$document, "영화"))
+
+review$document[word_mask]
+```
+
+이제 이를 확장시켜 전체 영화 리뷰 중 "영화" 단어가 포함된 리뷰는 몇개나 될까?
+전체 데이터를 가져와서 앞서 적용시킨 알고리즘으로 마스크를 생성하는데, 재미있는 사실은 R에서 `TRUE`는 1, `FALSE`는 0으로 내부적으로 자연수로 저장되는 성질을 이용하여 간단히 `mean()` 함수를 적용시키면 평균을 구할 수 있다. `filter()` 함수로 결측값이 있는지 확인해보자. 이런 연유로 `mean(..., na.rm=TRUE)`가 사용된 것이다.
+
+```{r search-keyword}
+## 전체 영화 리뷰 데이터
+full_review <- read_delim('https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt', delim="\t")
+
+word_mask <- str_detect(full_review$document, "영화")
+
+round(mean(word_mask, na.rm = TRUE) * 100, 1)
+
+## NA 확인
+full_review %>% 
+  filter(is.na(document))
+```
+
+
+## 정규표현식 기초 {#regex-basic}
+
+정규표현식(regular expression)을 사용하려면 키보드에 있는 특수문자를 이용한다는 사실 하나와 이를 사용해서 텍스트의 패턴을 만들어서 원하는 작업을 수행할 수 있다는 점이다. 가장 기본이 되는 정규표현식 기초에 대한 내용을 살펴보자.
+
+| 특수 문자  |                          의미                                   |
+|:----------:|:----------------------------------------------------------------|
+|     `^`    | 라인 혹은 문자열의 시작을 의미함 |
+|     `$`    | 라인 혹은 문자열의 끝을 의미함 |
+|     `.`    | 문자, 숫자, 공백문자를 가리지 않고 어떤 것이라도 매칭함을 의미함 |
+|     `\\`   | 특수문자(`^`, `$`, `.`, ...) 을 매칭하고자 할 때 정규표현식 탈출(escape)하는 의미 |
+
+예를 들어, `영화.스토리` 텍스트가 있는 첫번째 단어를 뽑고자 할 경우 `^`으로 위치를 지정하고 `.`으로 앞서 의미하는 문자, 숫자, 공백문자 아무것이나 하나를 뽑아낸다. 즉, `^.` 을 조합하게 되면 첫번째 오는 아무 문자나 추출시킨다. `.$`는 아무 문자나 하나 마지막에 온다는 의미가 된다. 주의할 점은 정규표현식에 사용되는 특수문자는 `\\.`와 같이 역슬래쉬를 두번 사용해야 한다. 이점이 일반 정규표현식과 차이가 나는 점이다.
+
+| 정규표현식 R 코드 | 실행 결과 |
+|:--------------------------------:|:----------------------------------------------------------------|
+|     `str_match("영화.스토리", "^.")`  | `r str_match("영화.스토리", "^.")` |
+|     `str_match("영화.스토리", ".$")`  | `r str_match("영화.스토리", ".$")` |
+|     `str_match("영화.스토리", ".")`   | `r str_match("영화.스토리", ".")` |
+|     `str_match("영화.스토리", "\\.")`  | `r str_match("영화.스토리", "\\.")` |
+|     `str_match("영화스토리", "\\.")`   | `r str_match("영화스토리", "\\.")` |
+
+## 텍스트 유형별 작업 {#regex-basic-class}
+
+다음으로 텍스트는 문자 클래스를 갖는데 다음과 같이 구분하면 좋을 듯 싶다. 한글, 영문, 일본어, 숫자, 특수문자 등 다양한 문자 클래스가 존재하지만, 이를 추출하기 위한 정규표현식 패턴도 함께 존재한다.
+
+- 한글: [`ㄱ-ㅎ가-힣`]
+    - 한글 자음: `ㄱ-ㅎ`
+    - 한글 모음: `ㅏ-ㅣ`
+    - 한글: `가-힗`
+- 일본어: [`あ-んァ-ソ`]
+    - 히라가나: `あ-ん`
+    - 카타카나: `ァ-ソ` 
+- 영문자: `a-z`, `A-Z`, `[:word:]`, `[:alpha:]`
+    - 영어모음: `[aeiou]`
+    - 영어자음: `[b-df-hj-np-tv-z]`
+- 숫자: `0-9`, `[:digit:]`
+- 특수 문자: `!@#$%^&*(),.?":{}|<>`
+- 한자: `\\p{script=Han}` [^chinese-regex]
+
+[^chinese-regex]: [stackoverflow, "Use regular expression to match ANY Chinese character in utf-8 encoding"](https://stackoverflow.com/questions/9576384/use-regular-expression-to-match-any-chinese-character-in-utf-8-encoding)
+
+가장 관심가는 
+
+```{r chinese-character-regex}
+str_match_all('원문: 其戰勝不復, 而應形于無窮 \n 
+              읽는 법: 기전승불복 이응형어무궁 \n
+              뜻: 그렇게 달성되는 전승에는 동일한 양상이 반복되지 않으며, 형세에 따라 융통성 있게 적용되는 방법이 무궁무진한 것이다.', pattern = "\\p{script=Han}+")
+```
+
+| 문자 클래스 |            실제 예제     |                R 코드               |             실행 결과               |
+|:-----------:|:-------------------------|-------------------------------------|-------------------------------------|
+| `\\d`, `[:digit:]` | `0, 1, 2,...`     | `str_match_all("저는 37살 입니다.", "\\d")` | `r str_match_all("저는 37살 입니다.", "\\d") %>% unlist` |
+| `\\w`, `[:word:]`  | `V, i, c, t, o, r` | `str_match_all("Victor", "\\w")` | `r str_match_all("Victor", "\\w") %>% unlist` |
+| `[ㄱ-ㅎ가-힣]`  | `저" "는" "살" "입" "니" "다"` | `str_match_all("저는 37살 입니다.", "[ㄱ-ㅎ가-힣]")` | `r str_match_all("저는 37살 입니다.", "[ㄱ-ㅎ가-힣]") %>% unlist` |
+| `\\s`  | `" " " "` | `str_match_all("저는 !@#$%^&* 입니다.", "\\s")` | `r str_match_all("저는 !@#$%^&* 입니다.", "\\s") %>% unlist` |
+
+## 반복 {#regex-basic-repetition}
+
+`.`은 임의 문자 하나를 의미했다. `\\d` 이것도 마찬가지로 숫자 하나를 의미한다. 전화번호는 일반적으로 `000-0000-0000`와 같은 형태를 띄게 된다.
+즉 숫자를 3번, `-` 4번, `-` 4번과 같은 순서로 쭉 매칭이 되어야 한다. 
+정규표현식을 `\\d{3}-\\d{4}-\\d{4}`와 같이 패턴을 적게 되면 `"010-7622-2319"` 번호를 추출할 수 있게 된다.
+
+```{r telephone-repetition-regex}
+phone_number <- c("0221120001", "02-2112-2327", "0107775342", "010-7622-2319", "010-4352-2319")
+
+str_match_all(phone_number, pattern = "\\d{3}-\\d{4}-\\d{4}") %>% unlist
+```
+
+이번에 약간 틀어서 핸드폰 뿐만 아니라 유선 전화번호도 추출하고자 하면 어떨까? `\\d{2,3}`와 같이 정의하면 숫자 두자리부터 3자리만 패턴을 매칭시킨다.
+
+```{r telephone-all-pattern}
+str_match_all(phone_number, pattern = "\\d{2,3}-\\d{4}-\\d{4}") %>% unlist
+```
+
+|     구문   |                          의미                                   |
+|:----------:|:----------------------------------------------------------------|
+| `\\w{3}`   | 정확히 연속한 문자 3개 매칭 |
+| `\\w{1,3}` | 최소 문자 1개부터 최대 문자 3개 매칭 |
+| `\\w{3, }` | 최소 문자 3개 이상 최대값 없이 최대한 매칭 |
+| `\\w+`     | `+`는 1개 이상 문자를 매칭 |
+| `\\w*`     | `*`는 0개 이상 문자를 매칭 |
+
+## 여집합(inversion)  {#regex-basic-repetition}
+
+$\{1, 2, 3, 4, 5, 6\}$을 전체집합이라 하면, $\{2, 3, 4, 5\}$의 여집합은 $\{1, 6\}$이 되는 것처럼 
+매칭된 패턴을 도치하여 여집합을 구하고자 하는 경우 사용한다.
+
+예를 들어, `\\D`는 숫자에 대한 여집합을 구하고자 할 때 사용하는 패턴이다. 숫자를 뺀 나머지 모든 문자를 추출해보자.
+
+```{r inversion-regex}
+mixed_string <- "한글과 English가 fancy하게 숫자도 777개나 뒤섞여 無窮 있어요"
+
+str_match_all(mixed_string, "\\D") %>% unlist %>% str_c(collapse = "")
+```
+
+숫자만 추출하고자 할 때는 `[^]`와 같이 `[]` 내부에 `^`을 넣게 되면 `a-zA-Z가-힣`을 만족시키지 않는 패턴을 반환시킨다.
+즉, 한자와 숫자만 추출시킨다.
+
+```{r inversion-character-regex}
+str_match_all(mixed_string, " [^a-zA-Z가-힣]+") %>% unlist %>% str_c(collapse = "")
+```
+
+`[^a-zA-Z]+`와 같이 패턴을 정의하게 되면 영문 대소문자를 제외한 나머지 문자를 모두 추출할 수 있다.
+
+```{r inversion-english-regex}
+str_match_all(mixed_string, "[^a-zA-Z]+") %>% unlist %>% str_c(collapse = "")
+```
+
+## 사용자 정의 패턴  {#regex-custom-pattern}
+
+`[]` 꺽쇄괄호 내부에 정규표현식을 적게 되면 사용자 정의 정규표현식을 사용할 수 있다. 
+즉, `\\d`, `\\w`, `\\D` 등은 마치 내장함수처럼 기본으로 지원되는 정규표현식이고, `[]`을 사용하게 되면 임의 사용자 정의 정규표현식을 작성할 수 있다. 숫자 혹은 공백문자(`\\s`)를 찾는 사용자 정의 정규표현식을 다음과 같이 작성할 수 있다.
+
+```{r inversion-custom-pattern}
+str_match_all(mixed_string, "[\\s\\d]") %>% unlist
+```
+
+## 파이프와 물음표(`?`) {#regex-pipe-question-mark}
+
+파이프(`|`)와 물음표(`?`)를 사용하게 되면 좀더 다양한 패턴을 매칭시킬 수가 있다.
+파이프(`|`)는 혹은(`or`)에 해당되어 A 혹은 B 혹은 C 와 같은 부울식을 구현할 수 있다.
+예를 들어, 영화배우 이름이 포함된 리뷰를 찾고자 할 때, 영화 배우면을 파이프(`|`)로 쭉 연결시키게 되면 영화배우가 포함된 리뷰를 걸러낼 수 있다.
+
+```{r pipe-and-quesiton-mark} 
+movie_star <- str_detect(review$document, "덴젤|왕가위|장국영")
+
+review$document[movie_star]
+```
+
+경기, 경기도는 같은 시도지만, 이를 파이프(`|`) 연산자를 사용해서 작업할 경우 코드가 길어진다. 선택(`?`)을 넣게 되면 간결한 코드를 남길 수가 있다.
+
+```{r pipe-and-quesiton-mark2} 
+provinces <- c("경기도", "경기", "강원", "강원도")
+
+str_match_all(provinces, "[가-힣]{2}도|[가-힣]{2}") %>% unlist
+
+str_match_all(provinces, "[가-힣]{2}도?") %>% unlist
+```
+
+## 욕심쟁이와 게으른 연산자 {#regex-lazy-greedy}
+
+다음과 같이 "한국" 단어가 여러버 나올 경우 ".*"와 같은 정규표현식은 욕심쟁이라 최대한 많이 "한국"을 매칭하게 된다. 반면에 ".*?" 와 같이 "?"을 추가하게 되면 게으른 연산이 실행되어 매칭되는 첫번째에서 멈추게 된다.
+
+```{r lazy-greedy}
+news <- c("한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.")
+
+str_view(news, ".*한국")
+
+str_view(news, ".*?한국")
+```
+
+# `glue` 팩키지 {#glue-pkg}
+
+`glue`를 정규표현식, 데이터프레임과 엮어서 사용하게 될 경우 복잡한 많은 작업을 수월하게 진행시킬 수 있다.  전자우편 주소 벡터가 있을 때, `glue()` 함수를 사용하게 되면 코드를 간결하게 하여 데이터베이스에 저장된 전자우편 주소로부터 예를 들어 메일을 보내는데 도움을 받을 수 있다.
+
+```{r call-glue}
+library(glue)
+
+email <- c("kwangchun@gmail.com", "lee@live.com", "kwang@naver.com")
+
+glue("TO: {email}")
+```
+
+## 몇가지 사례 {#glue-example}
+
+앞선 사례는 글로벌 환경에서 선언된 변수를 `glue()` 함수에서 가져와서 문자열을 새로 생성했다. `glue()` 내부에서 변수를 선언하는 것도 가능하다.
+
+```{r call-glue-example}
+glue("현재 온도: {temp}",
+      temp=38.5)
+```
+
+"{}" 내부에 표현식을 넣어서 연산작업을 수행하는 것도 가능하다.
+
+```{r call-glue-example-up}
+for(i in 1:9) {
+    cat(glue(" 2 * {i} = {2*i}"), "\n")
+}
+```
+
+`glue()` 함수와 데이터프레임을 조합하게 되면 정형데이터로부터 텍스트 문장을 생성할 수 있다.
+
+```{r dataframe-with-glue-base}
+baseball <- tribble(~"team", ~"win", ~"lose",
+                     "해태", 57, 56,
+                     "롯데", 55, 53,
+                     "넥슨", 71, 67)
+
+baseball %>% 
+  mutate(text = glue("올시즌 {team}는 {win}승 {lose}패를 기록했다"))
+```
+
+`glue_collapse()` 함수는 벡터를 스칼라로 변환시키는 역할을 하는 유용한 함수다. 예를 들어 영화배우가 텍스트 벡터로 된 경우 이를 `glue_collapse()` 함수로 사용할 경우 출연배우명을 쭉 붙여 텍스트 스칼라로 만들 수 있다.
+
+```{r dataframe-with-glue}
+movie <- "유열의 음악앨범"
+actors <- c("송강호", "김고은", "정해인")
+
+glue(
+  "{movie} 출연배우: ", 
+  glue_collapse(actors, 
+              sep=", ",
+              last=",  그리고 ")
+)
+```
+
+`baseball` 데이터프레임의 변수를 하나 뽑아서 `glue_collapse()` 함수에 넣을 경우 텍스트 스카라로 만들 수 있다.
+
+```{r dataframe-with-glue-collapse}
+glue_collapse(baseball$team, sep=" ")
+```
+
+## 정규표현식 + `glue_collapse()` {#regex-glue-collapse}
+
+국가명을 country 벡터에 저장한 후, 앞서 학습한 `glue_collapse()` 함수와 결합하여 `country_regex` 정규표현식 벡터로 만든 후 뉴스에 언급된 국가만 추추하는 것이 가능하다. 
+
+```{r regex-glue-collapse}
+country <- c("한국", "중국", "일본")
+
+news <- c("한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.")
+
+(country_regex <- glue_collapse(country, sep="|"))
+
+str_view_all(news, country_regex)
+```
+
+# 텍스트 &rarr; 데이터프레임 {#regex-text-df}
+
+텍스트가 깔끔하게 준비된 경우,
+정규표현식을 `glue_collapse()` 함수로 작성할 경우 가독성 높은 코드를 얻을 수 있어, 나중에 코드를 다시 볼 때 보기 좋게 된다.
+
+```{r text-to-dataframe}
+baseball_text <- c("올시즌 해태는 57승 56패를 기록했다
+                    올시즌 롯데는 55승 53패를 기록했다
+                    올시즌 넥슨는 71승 67패를 기록했다")
+
+(baseball_regex <- glue_collapse(c(
+                "team" = "[가-힣]+",
+                "\\s+",
+                "win" = "\\d+", "승",
+                "\\s+",
+                "lose" = "\\d+", "패")))
+
+str_match_all(baseball_text, baseball_regex) %>% unlist
+```
+
+# 그룹(group) {#regex-capture-group}
+
 

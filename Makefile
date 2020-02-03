@@ -47,7 +47,6 @@ preview : $(DST_ALL)
 # Pattern to build a generic page.
 %.html : %.md _layouts/page.html $(FILTERS)
 	${PANDOC} -s -t html \
-	    ${PANDOC_FLAGS} \
 	    --mathjax \
 	    --template=_layouts/page \
 	    --filter=tools/filters/blockquote2div.py \
@@ -56,7 +55,8 @@ preview : $(DST_ALL)
 	    -o $@ $<
 
 # Pattern to convert R Markdown to Markdown.
-%.md: %.Rmd $(R_CHUNK_OPTS)
+%.md: %.Rmd $(R_CHUNK_OPTS) tools/check_knitr_version.R
+	Rscript -e "source('tools/check_knitr_version.R')"
 	Rscript -e "knitr::knit('$$(basename $<)', output = '$$(basename $@)')"
 
 ## commands : Display available commands.
