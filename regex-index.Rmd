@@ -21,8 +21,8 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
                       comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
 
-library(reticulate)
-use_condaenv("anaconda3")
+# library(reticulate)
+# use_condaenv("anaconda3")
 # reticulate::repl_python()
 ```
 
@@ -107,6 +107,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 ```{r get-data}
 ## 팩키지와 재현가능하도록... 난수 seed 고정
 library(tidyverse)
+library(glue)
 set.seed(777)
 
 ## 데이터 가져와서 20개 리뷰만 추출
@@ -183,7 +184,7 @@ full_review %>%
     - 영어모음: `[aeiou]`
     - 영어자음: `[b-df-hj-np-tv-z]`
 - 숫자: `0-9`, `[:digit:]`
-- 특수 문자: `!@#$%^&*(),.?":{}|<>`
+- 특수 문자: `!@#$%^&*(),.?":{}|<>`, `[:punct:]`
 - 한자: `\\p{script=Han}` [^chinese-regex]
 
 [^chinese-regex]: [stackoverflow, "Use regular expression to match ANY Chinese character in utf-8 encoding"](https://stackoverflow.com/questions/9576384/use-regular-expression-to-match-any-chinese-character-in-utf-8-encoding)
@@ -202,6 +203,7 @@ str_match_all('원문: 其戰勝不復, 而應形于無窮 \n
 | `\\w`, `[:word:]`  | `V, i, c, t, o, r` | `str_match_all("Victor", "\\w")` | `r str_match_all("Victor", "\\w") %>% unlist` |
 | `[ㄱ-ㅎ가-힣]`  | `저" "는" "살" "입" "니" "다"` | `str_match_all("저는 37살 입니다.", "[ㄱ-ㅎ가-힣]")` | `r str_match_all("저는 37살 입니다.", "[ㄱ-ㅎ가-힣]") %>% unlist` |
 | `\\s`  | `" " " "` | `str_match_all("저는 !@#$%^&* 입니다.", "\\s")` | `r str_match_all("저는 !@#$%^&* 입니다.", "\\s") %>% unlist` |
+| `[:punct:]`  | `"!"  "@"  "#"  "%"  "&"  "*"  "("  ")"  ","  "."  "?"  "\"" ":" "{"  "}"`  | `str_match_all('!@#$%^&*(),.?":{}|', "[:punct:]")` | `r str_match_all('!@#$%^&*(),.?":{}|', "[:punct:]") %>% unlist` |
 
 ## 반복 {#regex-basic-repetition}
 
@@ -393,6 +395,54 @@ baseball_text <- c("올시즌 해태는 57승 56패를 기록했다
 str_match_all(baseball_text, baseball_regex) %>% unlist
 ```
 
-# 그룹(group) {#regex-capture-group}
+## 그룹(group) {#regex-capture-group}
 
+앞서 프로야구 경기팀의 승패를 기록한 텍스트에 오류가 있어,
+승과 패가 뒤바뀐 일이 발생했다. 이를 바로잡고자 **그룹(group)**을 동원해서 문제를 풀어보자.
+정규표현식에 `()`를 사용하면 그룹을 패턴에 부여할 수 있게 된다.
+
+```{r capturing-groups}
+(regex_group <- glue_collapse(c(
+                "team" = "([가-힣]+)",
+                "\\s+",
+                "win" = "(\\d+)", "승",
+                "\\s+",
+                "lose" = "(\\d+)", "패")))
+
+str_match_all(baseball_text, regex_group)
+```
+
+`\\1`, `\\2`, `\\3`을 지칭해서 위치를 바꿀 수 있다.
+
+```{r capturing-groups-replace}
+(regex_group <- glue_collapse(c(
+                "team" = "([가-힣]+)",
+                "\\s+",
+                "win" = "(\\d+)", "승",
+                "\\s+",
+                "lose" = "(\\d+)", "패")))
+
+baseball_text
+str_replace_all(baseball_text, regex_group, "\\1 \\3승 \\2패")
+```
+
+## `DF` + `regex`: `extract`  {#meet-regex-df}
+
+데이터프레임과 정규표현식이 만나는 교차점에 `extract()` 동사가 있다.
+먼저 특정 단어를 하나 뽑아 `mutate()` 동사로 새로운 변수를 생성하는 사례를 살펴보자.
+
+```{r meet-regex-dataframe}
+review %>% 
+  mutate(is_movie = str_match(document, "영화")) 
+```
+
+그런데, 이번에는 "평점", "영화" 두 단어를 동시에 찾아 새로운 변수로 넣는 경우를 상정해보자. 이를 위해서 필요한 동사가 `extract()`가 되고 앞서 학습한 정규표현식 그룹의 개념이 포함된다. 다음과 같이 `review` 데이터프레임에서 `document` 컬럼을 뽑아 그룹으로 정규표현식을 구성하고 이를 `into =`의 새로운 칼럼으로 넣는다.
+
+```{r meet-regex-dataframe-group}
+review %>% 
+  extract(col = "document",
+          into = c("is_score", "is_movie"),
+          regex = "(평점).*?(영화)",
+          remove=TRUE) 
+```
 
