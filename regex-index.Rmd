@@ -231,6 +231,8 @@ str_match_all(phone_number, pattern = "\\d{2,3}-\\d{4}-\\d{4}") %>% unlist
 | `\\w+`     | `+`는 1개 이상 문자를 매칭 |
 | `\\w*`     | `*`는 0개 이상 문자를 매칭 |
 
+# 고급 정규표현식  {#regex-advanced-repetition}
+
 ## 여집합(inversion)  {#regex-basic-repetition}
 
 $\{1, 2, 3, 4, 5, 6\}$을 전체집합이라 하면, $\{2, 3, 4, 5\}$의 여집합은 $\{1, 6\}$이 되는 것처럼 
@@ -266,11 +268,42 @@ str_match_all(mixed_string, "[^a-zA-Z]+") %>% unlist %>% str_c(collapse = "")
 str_match_all(mixed_string, "[\\s\\d]") %>% unlist
 ```
 
+## 단어경계 {#regex-boundry}
+
+특정 단어 예를 들어, "왕가위"를 매칭하고자 할 때, 양 옆에 뭔가 단어가 붙은 경우 이를 무시하고 특정 단어만 단어경계를 가진 문자열만 추출하고자 할 때 유용하다. 이를 위해서 `\\b`를 추출하고자 하는 문자열 앞뒤로 붙인다.
+
+```{r regex-boundary-dataset}
+boundary_text <- c("왕가위, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리... 왕가위짱, 왕가위, 정통왕가위짱, 왕가 왕가윙 왕가위ㄴ 마지막 왕가위 ")
+```
+
+<div class = "row">
+  <div class = "col-md-6">
+**단어 경계 없음**
+
+```{r regex-boundary}
+str_view_all(boundary_text, "왕가위")
+```
+
+  </div>
+  <div class = "col-md-6">
+**단어 경계 `\\b` 적용**
+
+```{r regex-boundary-applied}
+str_view_all(boundary_text, "\\b왕가위[:punct:]?\\b")
+```
+
+  </div>
+</div>
+
+
+
+
 ## 파이프와 물음표(`?`) {#regex-pipe-question-mark}
 
 파이프(`|`)와 물음표(`?`)를 사용하게 되면 좀더 다양한 패턴을 매칭시킬 수가 있다.
 파이프(`|`)는 혹은(`or`)에 해당되어 A 혹은 B 혹은 C 와 같은 부울식을 구현할 수 있다.
 예를 들어, 영화배우 이름이 포함된 리뷰를 찾고자 할 때, 영화 배우면을 파이프(`|`)로 쭉 연결시키게 되면 영화배우가 포함된 리뷰를 걸러낼 수 있다.
+
 
 ```{r pipe-and-quesiton-mark} 
 movie_star <- str_detect(review$document, "덴젤|왕가위|장국영")
@@ -278,15 +311,32 @@ movie_star <- str_detect(review$document, "덴젤|왕가위|장국영")
 review$document[movie_star]
 ```
 
+
 경기, 경기도는 같은 시도지만, 이를 파이프(`|`) 연산자를 사용해서 작업할 경우 코드가 길어진다. 선택(`?`)을 넣게 되면 간결한 코드를 남길 수가 있다.
 
 ```{r pipe-and-quesiton-mark2} 
 provinces <- c("경기도", "경기", "강원", "강원도")
+```
 
+<div class = "row">
+  <div class = "col-md-6">
+**파이프(`|`)**
+
+```{r multiple-pipe}
 str_match_all(provinces, "[가-힣]{2}도|[가-힣]{2}") %>% unlist
+```
 
+  </div>
+  <div class = "col-md-6">
+**`?`로 선택옵션을 줌**
+
+```{r multiple-pipe-options}
 str_match_all(provinces, "[가-힣]{2}도?") %>% unlist
 ```
+
+  </div>
+</div>
+
 
 ## 욕심쟁이와 게으른 연산자 {#regex-lazy-greedy}
 
@@ -444,5 +494,28 @@ review %>%
           into = c("is_score", "is_movie"),
           regex = "(평점).*?(영화)",
           remove=TRUE) 
+```
+
+
+## 사례 [^dataset-korquad] {#meet-regex-example}
+
+[^dataset-korquad]: [`KorQuAD 1.0`](https://korquad.github.io/category/1.0_KOR.html)
+
+```{r read-json}
+actors <- c("덴젤", "장국영", "왕가위")
+
+actor_pattern <- glue_collapse(actors, sep = "|")
+
+surronding_text <- "([\\w[:punct:]]+\\s){0,5}"
+
+actor_surrounding_text <- glue(
+  "{surronding_text}?({actor_pattern})\\s?{surronding_text}"
+)
+
+str_extract_all(
+  review$document,
+  pattern = actor_surrounding_text
+) %>% unlist
+
 ```
 

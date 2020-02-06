@@ -10,10 +10,23 @@
 
 
 
-<meta name="date" content="2020-02-03" />
+<meta name="date" content="2020-02-06" />
 
 <title>데이터 사이언스 - 자연어 처리</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 <script>/*! jQuery v1.11.3 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
 !function(a,b){"object"==typeof module&&"object"==typeof module.exports?module.exports=a.document?b(a,!0):function(a){if(!a.document)throw new Error("jQuery requires a window with a document");return b(a)}:b(a)}("undefined"!=typeof window?window:this,function(a,b){var c=[],d=c.slice,e=c.concat,f=c.push,g=c.indexOf,h={},i=h.toString,j=h.hasOwnProperty,k={},l="1.11.3",m=function(a,b){return new m.fn.init(a,b)},n=/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,o=/^-ms-/,p=/-([\da-z])/gi,q=function(a,b){return b.toUpperCase()};m.fn=m.prototype={jquery:l,constructor:m,selector:"",length:0,toArray:function(){return d.call(this)},get:function(a){return null!=a?0>a?this[a+this.length]:this[a]:d.call(this)},pushStack:function(a){var b=m.merge(this.constructor(),a);return b.prevObject=this,b.context=this.context,b},each:function(a,b){return m.each(this,a,b)},map:function(a){return this.pushStack(m.map(this,function(b,c){return a.call(b,c,b)}))},slice:function(){return this.pushStack(d.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(a){var b=this.length,c=+a+(0>a?b:0);return this.pushStack(c>=0&&b>c?[this[c]]:[])},end:function(){return this.prevObject||this.constructor(null)},push:f,sort:c.sort,splice:c.splice},m.extend=m.fn.extend=function(){var a,b,c,d,e,f,g=arguments[0]||{},h=1,i=arguments.length,j=!1;for("boolean"==typeof g&&(j=g,g=arguments[h]||{},h++),"object"==typeof g||m.isFunction(g)||(g={}),h===i&&(g=this,h--);i>h;h++)if(null!=(e=arguments[h]))for(d in e)a=g[d],c=e[d],g!==c&&(j&&c&&(m.isPlainObject(c)||(b=m.isArray(c)))?(b?(b=!1,f=a&&m.isArray(a)?a:[]):f=a&&m.isPlainObject(a)?a:{},g[d]=m.extend(j,f,c)):void 0!==c&&(g[d]=c));return g},m.extend({expando:"jQuery"+(l+Math.random()).replace(/\D/g,""),isReady:!0,error:function(a){throw new Error(a)},noop:function(){},isFunction:function(a){return"function"===m.type(a)},isArray:Array.isArray||function(a){return"array"===m.type(a)},isWindow:function(a){return null!=a&&a==a.window},isNumeric:function(a){return!m.isArray(a)&&a-parseFloat(a)+1>=0},isEmptyObject:function(a){var b;for(b in a)return!1;return!0},isPlainObject:function(a){var b;if(!a||"object"!==m.type(a)||a.nodeType||m.isWindow(a))return!1;try{if(a.constructor&&!j.call(a,"constructor")&&!j.call(a.constructor.prototype,"isPrototypeOf"))return!1}catch(c){return!1}if(k.ownLast)for(b in a)return j.call(a,b);for(b in a);return void 0===b||j.call(a,b)},type:function(a){return null==a?a+"":"object"==typeof a||"function"==typeof a?h[i.call(a)]||"object":typeof a},globalEval:function(b){b&&m.trim(b)&&(a.execScript||function(b){a.eval.call(a,b)})(b)},camelCase:function(a){return a.replace(o,"ms-").replace(p,q)},nodeName:function(a,b){return a.nodeName&&a.nodeName.toLowerCase()===b.toLowerCase()},each:function(a,b,c){var d,e=0,f=a.length,g=r(a);if(c){if(g){for(;f>e;e++)if(d=b.apply(a[e],c),d===!1)break}else for(e in a)if(d=b.apply(a[e],c),d===!1)break}else if(g){for(;f>e;e++)if(d=b.call(a[e],e,a[e]),d===!1)break}else for(e in a)if(d=b.call(a[e],e,a[e]),d===!1)break;return a},trim:function(a){return null==a?"":(a+"").replace(n,"")},makeArray:function(a,b){var c=b||[];return null!=a&&(r(Object(a))?m.merge(c,"string"==typeof a?[a]:a):f.call(c,a)),c},inArray:function(a,b,c){var d;if(b){if(g)return g.call(b,a,c);for(d=b.length,c=c?0>c?Math.max(0,d+c):c:0;d>c;c++)if(c in b&&b[c]===a)return c}return-1},merge:function(a,b){var c=+b.length,d=0,e=a.length;while(c>d)a[e++]=b[d++];if(c!==c)while(void 0!==b[d])a[e++]=b[d++];return a.length=e,a},grep:function(a,b,c){for(var d,e=[],f=0,g=a.length,h=!c;g>f;f++)d=!b(a[f],f),d!==h&&e.push(a[f]);return e},map:function(a,b,c){var d,f=0,g=a.length,h=r(a),i=[];if(h)for(;g>f;f++)d=b(a[f],f,c),null!=d&&i.push(d);else for(f in a)d=b(a[f],f,c),null!=d&&i.push(d);return e.apply([],i)},guid:1,proxy:function(a,b){var c,e,f;return"string"==typeof b&&(f=a[b],b=a,a=f),m.isFunction(a)?(c=d.call(arguments,2),e=function(){return a.apply(b||this,c.concat(d.call(arguments)))},e.guid=a.guid=a.guid||m.guid++,e):void 0},now:function(){return+new Date},support:k}),m.each("Boolean Number String Function Array Date RegExp Object Error".split(" "),function(a,b){h["[object "+b+"]"]=b.toLowerCase()});function r(a){var b="length"in a&&a.length,c=m.type(a);return"function"===c||m.isWindow(a)?!1:1===a.nodeType&&b?!0:"array"===c||0===b||"number"==typeof b&&b>0&&b-1 in a}var s=function(a){var b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u="sizzle"+1*new Date,v=a.document,w=0,x=0,y=ha(),z=ha(),A=ha(),B=function(a,b){return a===b&&(l=!0),0},C=1<<31,D={}.hasOwnProperty,E=[],F=E.pop,G=E.push,H=E.push,I=E.slice,J=function(a,b){for(var c=0,d=a.length;d>c;c++)if(a[c]===b)return c;return-1},K="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",L="[\\x20\\t\\r\\n\\f]",M="(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",N=M.replace("w","w#"),O="\\["+L+"*("+M+")(?:"+L+"*([*^$|!~]?=)"+L+"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|("+N+"))|)"+L+"*\\]",P=":("+M+")(?:\\((('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|((?:\\\\.|[^\\\\()[\\]]|"+O+")*)|.*)\\)|)",Q=new RegExp(L+"+","g"),R=new RegExp("^"+L+"+|((?:^|[^\\\\])(?:\\\\.)*)"+L+"+$","g"),S=new RegExp("^"+L+"*,"+L+"*"),T=new RegExp("^"+L+"*([>+~]|"+L+")"+L+"*"),U=new RegExp("="+L+"*([^\\]'\"]*?)"+L+"*\\]","g"),V=new RegExp(P),W=new RegExp("^"+N+"$"),X={ID:new RegExp("^#("+M+")"),CLASS:new RegExp("^\\.("+M+")"),TAG:new RegExp("^("+M.replace("w","w*")+")"),ATTR:new RegExp("^"+O),PSEUDO:new RegExp("^"+P),CHILD:new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\("+L+"*(even|odd|(([+-]|)(\\d*)n|)"+L+"*(?:([+-]|)"+L+"*(\\d+)|))"+L+"*\\)|)","i"),bool:new RegExp("^(?:"+K+")$","i"),needsContext:new RegExp("^"+L+"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\("+L+"*((?:-\\d)?\\d*)"+L+"*\\)|)(?=[^-]|$)","i")},Y=/^(?:input|select|textarea|button)$/i,Z=/^h\d$/i,$=/^[^{]+\{\s*\[native \w/,_=/^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,aa=/[+~]/,ba=/'|\\/g,ca=new RegExp("\\\\([\\da-f]{1,6}"+L+"?|("+L+")|.)","ig"),da=function(a,b,c){var d="0x"+b-65536;return d!==d||c?b:0>d?String.fromCharCode(d+65536):String.fromCharCode(d>>10|55296,1023&d|56320)},ea=function(){m()};try{H.apply(E=I.call(v.childNodes),v.childNodes),E[v.childNodes.length].nodeType}catch(fa){H={apply:E.length?function(a,b){G.apply(a,I.call(b))}:function(a,b){var c=a.length,d=0;while(a[c++]=b[d++]);a.length=c-1}}}function ga(a,b,d,e){var f,h,j,k,l,o,r,s,w,x;if((b?b.ownerDocument||b:v)!==n&&m(b),b=b||n,d=d||[],k=b.nodeType,"string"!=typeof a||!a||1!==k&&9!==k&&11!==k)return d;if(!e&&p){if(11!==k&&(f=_.exec(a)))if(j=f[1]){if(9===k){if(h=b.getElementById(j),!h||!h.parentNode)return d;if(h.id===j)return d.push(h),d}else if(b.ownerDocument&&(h=b.ownerDocument.getElementById(j))&&t(b,h)&&h.id===j)return d.push(h),d}else{if(f[2])return H.apply(d,b.getElementsByTagName(a)),d;if((j=f[3])&&c.getElementsByClassName)return H.apply(d,b.getElementsByClassName(j)),d}if(c.qsa&&(!q||!q.test(a))){if(s=r=u,w=b,x=1!==k&&a,1===k&&"object"!==b.nodeName.toLowerCase()){o=g(a),(r=b.getAttribute("id"))?s=r.replace(ba,"\\$&"):b.setAttribute("id",s),s="[id='"+s+"'] ",l=o.length;while(l--)o[l]=s+ra(o[l]);w=aa.test(a)&&pa(b.parentNode)||b,x=o.join(",")}if(x)try{return H.apply(d,w.querySelectorAll(x)),d}catch(y){}finally{r||b.removeAttribute("id")}}}return i(a.replace(R,"$1"),b,d,e)}function ha(){var a=[];function b(c,e){return a.push(c+" ")>d.cacheLength&&delete b[a.shift()],b[c+" "]=e}return b}function ia(a){return a[u]=!0,a}function ja(a){var b=n.createElement("div");try{return!!a(b)}catch(c){return!1}finally{b.parentNode&&b.parentNode.removeChild(b),b=null}}function ka(a,b){var c=a.split("|"),e=a.length;while(e--)d.attrHandle[c[e]]=b}function la(a,b){var c=b&&a,d=c&&1===a.nodeType&&1===b.nodeType&&(~b.sourceIndex||C)-(~a.sourceIndex||C);if(d)return d;if(c)while(c=c.nextSibling)if(c===b)return-1;return a?1:-1}function ma(a){return function(b){var c=b.nodeName.toLowerCase();return"input"===c&&b.type===a}}function na(a){return function(b){var c=b.nodeName.toLowerCase();return("input"===c||"button"===c)&&b.type===a}}function oa(a){return ia(function(b){return b=+b,ia(function(c,d){var e,f=a([],c.length,b),g=f.length;while(g--)c[e=f[g]]&&(c[e]=!(d[e]=c[e]))})})}function pa(a){return a&&"undefined"!=typeof a.getElementsByTagName&&a}c=ga.support={},f=ga.isXML=function(a){var b=a&&(a.ownerDocument||a).documentElement;return b?"HTML"!==b.nodeName:!1},m=ga.setDocument=function(a){var b,e,g=a?a.ownerDocument||a:v;return g!==n&&9===g.nodeType&&g.documentElement?(n=g,o=g.documentElement,e=g.defaultView,e&&e!==e.top&&(e.addEventListener?e.addEventListener("unload",ea,!1):e.attachEvent&&e.attachEvent("onunload",ea)),p=!f(g),c.attributes=ja(function(a){return a.className="i",!a.getAttribute("className")}),c.getElementsByTagName=ja(function(a){return a.appendChild(g.createComment("")),!a.getElementsByTagName("*").length}),c.getElementsByClassName=$.test(g.getElementsByClassName),c.getById=ja(function(a){return o.appendChild(a).id=u,!g.getElementsByName||!g.getElementsByName(u).length}),c.getById?(d.find.ID=function(a,b){if("undefined"!=typeof b.getElementById&&p){var c=b.getElementById(a);return c&&c.parentNode?[c]:[]}},d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){return a.getAttribute("id")===b}}):(delete d.find.ID,d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){var c="undefined"!=typeof a.getAttributeNode&&a.getAttributeNode("id");return c&&c.value===b}}),d.find.TAG=c.getElementsByTagName?function(a,b){return"undefined"!=typeof b.getElementsByTagName?b.getElementsByTagName(a):c.qsa?b.querySelectorAll(a):void 0}:function(a,b){var c,d=[],e=0,f=b.getElementsByTagName(a);if("*"===a){while(c=f[e++])1===c.nodeType&&d.push(c);return d}return f},d.find.CLASS=c.getElementsByClassName&&function(a,b){return p?b.getElementsByClassName(a):void 0},r=[],q=[],(c.qsa=$.test(g.querySelectorAll))&&(ja(function(a){o.appendChild(a).innerHTML="<a id='"+u+"'></a><select id='"+u+"-\f]' msallowcapture=''><option selected=''></option></select>",a.querySelectorAll("[msallowcapture^='']").length&&q.push("[*^$]="+L+"*(?:''|\"\")"),a.querySelectorAll("[selected]").length||q.push("\\["+L+"*(?:value|"+K+")"),a.querySelectorAll("[id~="+u+"-]").length||q.push("~="),a.querySelectorAll(":checked").length||q.push(":checked"),a.querySelectorAll("a#"+u+"+*").length||q.push(".#.+[+~]")}),ja(function(a){var b=g.createElement("input");b.setAttribute("type","hidden"),a.appendChild(b).setAttribute("name","D"),a.querySelectorAll("[name=d]").length&&q.push("name"+L+"*[*^$|!~]?="),a.querySelectorAll(":enabled").length||q.push(":enabled",":disabled"),a.querySelectorAll("*,:x"),q.push(",.*:")})),(c.matchesSelector=$.test(s=o.matches||o.webkitMatchesSelector||o.mozMatchesSelector||o.oMatchesSelector||o.msMatchesSelector))&&ja(function(a){c.disconnectedMatch=s.call(a,"div"),s.call(a,"[s!='']:x"),r.push("!=",P)}),q=q.length&&new RegExp(q.join("|")),r=r.length&&new RegExp(r.join("|")),b=$.test(o.compareDocumentPosition),t=b||$.test(o.contains)?function(a,b){var c=9===a.nodeType?a.documentElement:a,d=b&&b.parentNode;return a===d||!(!d||1!==d.nodeType||!(c.contains?c.contains(d):a.compareDocumentPosition&&16&a.compareDocumentPosition(d)))}:function(a,b){if(b)while(b=b.parentNode)if(b===a)return!0;return!1},B=b?function(a,b){if(a===b)return l=!0,0;var d=!a.compareDocumentPosition-!b.compareDocumentPosition;return d?d:(d=(a.ownerDocument||a)===(b.ownerDocument||b)?a.compareDocumentPosition(b):1,1&d||!c.sortDetached&&b.compareDocumentPosition(a)===d?a===g||a.ownerDocument===v&&t(v,a)?-1:b===g||b.ownerDocument===v&&t(v,b)?1:k?J(k,a)-J(k,b):0:4&d?-1:1)}:function(a,b){if(a===b)return l=!0,0;var c,d=0,e=a.parentNode,f=b.parentNode,h=[a],i=[b];if(!e||!f)return a===g?-1:b===g?1:e?-1:f?1:k?J(k,a)-J(k,b):0;if(e===f)return la(a,b);c=a;while(c=c.parentNode)h.unshift(c);c=b;while(c=c.parentNode)i.unshift(c);while(h[d]===i[d])d++;return d?la(h[d],i[d]):h[d]===v?-1:i[d]===v?1:0},g):n},ga.matches=function(a,b){return ga(a,null,null,b)},ga.matchesSelector=function(a,b){if((a.ownerDocument||a)!==n&&m(a),b=b.replace(U,"='$1']"),!(!c.matchesSelector||!p||r&&r.test(b)||q&&q.test(b)))try{var d=s.call(a,b);if(d||c.disconnectedMatch||a.document&&11!==a.document.nodeType)return d}catch(e){}return ga(b,n,null,[a]).length>0},ga.contains=function(a,b){return(a.ownerDocument||a)!==n&&m(a),t(a,b)},ga.attr=function(a,b){(a.ownerDocument||a)!==n&&m(a);var e=d.attrHandle[b.toLowerCase()],f=e&&D.call(d.attrHandle,b.toLowerCase())?e(a,b,!p):void 0;return void 0!==f?f:c.attributes||!p?a.getAttribute(b):(f=a.getAttributeNode(b))&&f.specified?f.value:null},ga.error=function(a){throw new Error("Syntax error, unrecognized expression: "+a)},ga.uniqueSort=function(a){var b,d=[],e=0,f=0;if(l=!c.detectDuplicates,k=!c.sortStable&&a.slice(0),a.sort(B),l){while(b=a[f++])b===a[f]&&(e=d.push(f));while(e--)a.splice(d[e],1)}return k=null,a},e=ga.getText=function(a){var b,c="",d=0,f=a.nodeType;if(f){if(1===f||9===f||11===f){if("string"==typeof a.textContent)return a.textContent;for(a=a.firstChild;a;a=a.nextSibling)c+=e(a)}else if(3===f||4===f)return a.nodeValue}else while(b=a[d++])c+=e(b);return c},d=ga.selectors={cacheLength:50,createPseudo:ia,match:X,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(a){return a[1]=a[1].replace(ca,da),a[3]=(a[3]||a[4]||a[5]||"").replace(ca,da),"~="===a[2]&&(a[3]=" "+a[3]+" "),a.slice(0,4)},CHILD:function(a){return a[1]=a[1].toLowerCase(),"nth"===a[1].slice(0,3)?(a[3]||ga.error(a[0]),a[4]=+(a[4]?a[5]+(a[6]||1):2*("even"===a[3]||"odd"===a[3])),a[5]=+(a[7]+a[8]||"odd"===a[3])):a[3]&&ga.error(a[0]),a},PSEUDO:function(a){var b,c=!a[6]&&a[2];return X.CHILD.test(a[0])?null:(a[3]?a[2]=a[4]||a[5]||"":c&&V.test(c)&&(b=g(c,!0))&&(b=c.indexOf(")",c.length-b)-c.length)&&(a[0]=a[0].slice(0,b),a[2]=c.slice(0,b)),a.slice(0,3))}},filter:{TAG:function(a){var b=a.replace(ca,da).toLowerCase();return"*"===a?function(){return!0}:function(a){return a.nodeName&&a.nodeName.toLowerCase()===b}},CLASS:function(a){var b=y[a+" "];return b||(b=new RegExp("(^|"+L+")"+a+"("+L+"|$)"))&&y(a,function(a){return b.test("string"==typeof a.className&&a.className||"undefined"!=typeof a.getAttribute&&a.getAttribute("class")||"")})},ATTR:function(a,b,c){return function(d){var e=ga.attr(d,a);return null==e?"!="===b:b?(e+="","="===b?e===c:"!="===b?e!==c:"^="===b?c&&0===e.indexOf(c):"*="===b?c&&e.indexOf(c)>-1:"$="===b?c&&e.slice(-c.length)===c:"~="===b?(" "+e.replace(Q," ")+" ").indexOf(c)>-1:"|="===b?e===c||e.slice(0,c.length+1)===c+"-":!1):!0}},CHILD:function(a,b,c,d,e){var f="nth"!==a.slice(0,3),g="last"!==a.slice(-4),h="of-type"===b;return 1===d&&0===e?function(a){return!!a.parentNode}:function(b,c,i){var j,k,l,m,n,o,p=f!==g?"nextSibling":"previousSibling",q=b.parentNode,r=h&&b.nodeName.toLowerCase(),s=!i&&!h;if(q){if(f){while(p){l=b;while(l=l[p])if(h?l.nodeName.toLowerCase()===r:1===l.nodeType)return!1;o=p="only"===a&&!o&&"nextSibling"}return!0}if(o=[g?q.firstChild:q.lastChild],g&&s){k=q[u]||(q[u]={}),j=k[a]||[],n=j[0]===w&&j[1],m=j[0]===w&&j[2],l=n&&q.childNodes[n];while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if(1===l.nodeType&&++m&&l===b){k[a]=[w,n,m];break}}else if(s&&(j=(b[u]||(b[u]={}))[a])&&j[0]===w)m=j[1];else while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if((h?l.nodeName.toLowerCase()===r:1===l.nodeType)&&++m&&(s&&((l[u]||(l[u]={}))[a]=[w,m]),l===b))break;return m-=e,m===d||m%d===0&&m/d>=0}}},PSEUDO:function(a,b){var c,e=d.pseudos[a]||d.setFilters[a.toLowerCase()]||ga.error("unsupported pseudo: "+a);return e[u]?e(b):e.length>1?(c=[a,a,"",b],d.setFilters.hasOwnProperty(a.toLowerCase())?ia(function(a,c){var d,f=e(a,b),g=f.length;while(g--)d=J(a,f[g]),a[d]=!(c[d]=f[g])}):function(a){return e(a,0,c)}):e}},pseudos:{not:ia(function(a){var b=[],c=[],d=h(a.replace(R,"$1"));return d[u]?ia(function(a,b,c,e){var f,g=d(a,null,e,[]),h=a.length;while(h--)(f=g[h])&&(a[h]=!(b[h]=f))}):function(a,e,f){return b[0]=a,d(b,null,f,c),b[0]=null,!c.pop()}}),has:ia(function(a){return function(b){return ga(a,b).length>0}}),contains:ia(function(a){return a=a.replace(ca,da),function(b){return(b.textContent||b.innerText||e(b)).indexOf(a)>-1}}),lang:ia(function(a){return W.test(a||"")||ga.error("unsupported lang: "+a),a=a.replace(ca,da).toLowerCase(),function(b){var c;do if(c=p?b.lang:b.getAttribute("xml:lang")||b.getAttribute("lang"))return c=c.toLowerCase(),c===a||0===c.indexOf(a+"-");while((b=b.parentNode)&&1===b.nodeType);return!1}}),target:function(b){var c=a.location&&a.location.hash;return c&&c.slice(1)===b.id},root:function(a){return a===o},focus:function(a){return a===n.activeElement&&(!n.hasFocus||n.hasFocus())&&!!(a.type||a.href||~a.tabIndex)},enabled:function(a){return a.disabled===!1},disabled:function(a){return a.disabled===!0},checked:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&!!a.checked||"option"===b&&!!a.selected},selected:function(a){return a.parentNode&&a.parentNode.selectedIndex,a.selected===!0},empty:function(a){for(a=a.firstChild;a;a=a.nextSibling)if(a.nodeType<6)return!1;return!0},parent:function(a){return!d.pseudos.empty(a)},header:function(a){return Z.test(a.nodeName)},input:function(a){return Y.test(a.nodeName)},button:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&"button"===a.type||"button"===b},text:function(a){var b;return"input"===a.nodeName.toLowerCase()&&"text"===a.type&&(null==(b=a.getAttribute("type"))||"text"===b.toLowerCase())},first:oa(function(){return[0]}),last:oa(function(a,b){return[b-1]}),eq:oa(function(a,b,c){return[0>c?c+b:c]}),even:oa(function(a,b){for(var c=0;b>c;c+=2)a.push(c);return a}),odd:oa(function(a,b){for(var c=1;b>c;c+=2)a.push(c);return a}),lt:oa(function(a,b,c){for(var d=0>c?c+b:c;--d>=0;)a.push(d);return a}),gt:oa(function(a,b,c){for(var d=0>c?c+b:c;++d<b;)a.push(d);return a})}},d.pseudos.nth=d.pseudos.eq;for(b in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})d.pseudos[b]=ma(b);for(b in{submit:!0,reset:!0})d.pseudos[b]=na(b);function qa(){}qa.prototype=d.filters=d.pseudos,d.setFilters=new qa,g=ga.tokenize=function(a,b){var c,e,f,g,h,i,j,k=z[a+" "];if(k)return b?0:k.slice(0);h=a,i=[],j=d.preFilter;while(h){(!c||(e=S.exec(h)))&&(e&&(h=h.slice(e[0].length)||h),i.push(f=[])),c=!1,(e=T.exec(h))&&(c=e.shift(),f.push({value:c,type:e[0].replace(R," ")}),h=h.slice(c.length));for(g in d.filter)!(e=X[g].exec(h))||j[g]&&!(e=j[g](e))||(c=e.shift(),f.push({value:c,type:g,matches:e}),h=h.slice(c.length));if(!c)break}return b?h.length:h?ga.error(a):z(a,i).slice(0)};function ra(a){for(var b=0,c=a.length,d="";c>b;b++)d+=a[b].value;return d}function sa(a,b,c){var d=b.dir,e=c&&"parentNode"===d,f=x++;return b.first?function(b,c,f){while(b=b[d])if(1===b.nodeType||e)return a(b,c,f)}:function(b,c,g){var h,i,j=[w,f];if(g){while(b=b[d])if((1===b.nodeType||e)&&a(b,c,g))return!0}else while(b=b[d])if(1===b.nodeType||e){if(i=b[u]||(b[u]={}),(h=i[d])&&h[0]===w&&h[1]===f)return j[2]=h[2];if(i[d]=j,j[2]=a(b,c,g))return!0}}}function ta(a){return a.length>1?function(b,c,d){var e=a.length;while(e--)if(!a[e](b,c,d))return!1;return!0}:a[0]}function ua(a,b,c){for(var d=0,e=b.length;e>d;d++)ga(a,b[d],c);return c}function va(a,b,c,d,e){for(var f,g=[],h=0,i=a.length,j=null!=b;i>h;h++)(f=a[h])&&(!c||c(f,d,e))&&(g.push(f),j&&b.push(h));return g}function wa(a,b,c,d,e,f){return d&&!d[u]&&(d=wa(d)),e&&!e[u]&&(e=wa(e,f)),ia(function(f,g,h,i){var j,k,l,m=[],n=[],o=g.length,p=f||ua(b||"*",h.nodeType?[h]:h,[]),q=!a||!f&&b?p:va(p,m,a,h,i),r=c?e||(f?a:o||d)?[]:g:q;if(c&&c(q,r,h,i),d){j=va(r,n),d(j,[],h,i),k=j.length;while(k--)(l=j[k])&&(r[n[k]]=!(q[n[k]]=l))}if(f){if(e||a){if(e){j=[],k=r.length;while(k--)(l=r[k])&&j.push(q[k]=l);e(null,r=[],j,i)}k=r.length;while(k--)(l=r[k])&&(j=e?J(f,l):m[k])>-1&&(f[j]=!(g[j]=l))}}else r=va(r===g?r.splice(o,r.length):r),e?e(null,g,r,i):H.apply(g,r)})}function xa(a){for(var b,c,e,f=a.length,g=d.relative[a[0].type],h=g||d.relative[" "],i=g?1:0,k=sa(function(a){return a===b},h,!0),l=sa(function(a){return J(b,a)>-1},h,!0),m=[function(a,c,d){var e=!g&&(d||c!==j)||((b=c).nodeType?k(a,c,d):l(a,c,d));return b=null,e}];f>i;i++)if(c=d.relative[a[i].type])m=[sa(ta(m),c)];else{if(c=d.filter[a[i].type].apply(null,a[i].matches),c[u]){for(e=++i;f>e;e++)if(d.relative[a[e].type])break;return wa(i>1&&ta(m),i>1&&ra(a.slice(0,i-1).concat({value:" "===a[i-2].type?"*":""})).replace(R,"$1"),c,e>i&&xa(a.slice(i,e)),f>e&&xa(a=a.slice(e)),f>e&&ra(a))}m.push(c)}return ta(m)}function ya(a,b){var c=b.length>0,e=a.length>0,f=function(f,g,h,i,k){var l,m,o,p=0,q="0",r=f&&[],s=[],t=j,u=f||e&&d.find.TAG("*",k),v=w+=null==t?1:Math.random()||.1,x=u.length;for(k&&(j=g!==n&&g);q!==x&&null!=(l=u[q]);q++){if(e&&l){m=0;while(o=a[m++])if(o(l,g,h)){i.push(l);break}k&&(w=v)}c&&((l=!o&&l)&&p--,f&&r.push(l))}if(p+=q,c&&q!==p){m=0;while(o=b[m++])o(r,s,g,h);if(f){if(p>0)while(q--)r[q]||s[q]||(s[q]=F.call(i));s=va(s)}H.apply(i,s),k&&!f&&s.length>0&&p+b.length>1&&ga.uniqueSort(i)}return k&&(w=v,j=t),r};return c?ia(f):f}return h=ga.compile=function(a,b){var c,d=[],e=[],f=A[a+" "];if(!f){b||(b=g(a)),c=b.length;while(c--)f=xa(b[c]),f[u]?d.push(f):e.push(f);f=A(a,ya(e,d)),f.selector=a}return f},i=ga.select=function(a,b,e,f){var i,j,k,l,m,n="function"==typeof a&&a,o=!f&&g(a=n.selector||a);if(e=e||[],1===o.length){if(j=o[0]=o[0].slice(0),j.length>2&&"ID"===(k=j[0]).type&&c.getById&&9===b.nodeType&&p&&d.relative[j[1].type]){if(b=(d.find.ID(k.matches[0].replace(ca,da),b)||[])[0],!b)return e;n&&(b=b.parentNode),a=a.slice(j.shift().value.length)}i=X.needsContext.test(a)?0:j.length;while(i--){if(k=j[i],d.relative[l=k.type])break;if((m=d.find[l])&&(f=m(k.matches[0].replace(ca,da),aa.test(j[0].type)&&pa(b.parentNode)||b))){if(j.splice(i,1),a=f.length&&ra(j),!a)return H.apply(e,f),e;break}}}return(n||h(a,o))(f,b,!p,e,aa.test(a)&&pa(b.parentNode)||b),e},c.sortStable=u.split("").sort(B).join("")===u,c.detectDuplicates=!!l,m(),c.sortDetached=ja(function(a){return 1&a.compareDocumentPosition(n.createElement("div"))}),ja(function(a){return a.innerHTML="<a href='#'></a>","#"===a.firstChild.getAttribute("href")})||ka("type|href|height|width",function(a,b,c){return c?void 0:a.getAttribute(b,"type"===b.toLowerCase()?1:2)}),c.attributes&&ja(function(a){return a.innerHTML="<input/>",a.firstChild.setAttribute("value",""),""===a.firstChild.getAttribute("value")})||ka("value",function(a,b,c){return c||"input"!==a.nodeName.toLowerCase()?void 0:a.defaultValue}),ja(function(a){return null==a.getAttribute("disabled")})||ka(K,function(a,b,c){var d;return c?void 0:a[b]===!0?b.toLowerCase():(d=a.getAttributeNode(b))&&d.specified?d.value:null}),ga}(a);m.find=s,m.expr=s.selectors,m.expr[":"]=m.expr.pseudos,m.unique=s.uniqueSort,m.text=s.getText,m.isXMLDoc=s.isXML,m.contains=s.contains;var t=m.expr.match.needsContext,u=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,v=/^.[^:#\[\.,]*$/;function w(a,b,c){if(m.isFunction(b))return m.grep(a,function(a,d){return!!b.call(a,d,a)!==c});if(b.nodeType)return m.grep(a,function(a){return a===b!==c});if("string"==typeof b){if(v.test(b))return m.filter(b,a,c);b=m.filter(b,a)}return m.grep(a,function(a){return m.inArray(a,b)>=0!==c})}m.filter=function(a,b,c){var d=b[0];return c&&(a=":not("+a+")"),1===b.length&&1===d.nodeType?m.find.matchesSelector(d,a)?[d]:[]:m.find.matches(a,m.grep(b,function(a){return 1===a.nodeType}))},m.fn.extend({find:function(a){var b,c=[],d=this,e=d.length;if("string"!=typeof a)return this.pushStack(m(a).filter(function(){for(b=0;e>b;b++)if(m.contains(d[b],this))return!0}));for(b=0;e>b;b++)m.find(a,d[b],c);return c=this.pushStack(e>1?m.unique(c):c),c.selector=this.selector?this.selector+" "+a:a,c},filter:function(a){return this.pushStack(w(this,a||[],!1))},not:function(a){return this.pushStack(w(this,a||[],!0))},is:function(a){return!!w(this,"string"==typeof a&&t.test(a)?m(a):a||[],!1).length}});var x,y=a.document,z=/^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,A=m.fn.init=function(a,b){var c,d;if(!a)return this;if("string"==typeof a){if(c="<"===a.charAt(0)&&">"===a.charAt(a.length-1)&&a.length>=3?[null,a,null]:z.exec(a),!c||!c[1]&&b)return!b||b.jquery?(b||x).find(a):this.constructor(b).find(a);if(c[1]){if(b=b instanceof m?b[0]:b,m.merge(this,m.parseHTML(c[1],b&&b.nodeType?b.ownerDocument||b:y,!0)),u.test(c[1])&&m.isPlainObject(b))for(c in b)m.isFunction(this[c])?this[c](b[c]):this.attr(c,b[c]);return this}if(d=y.getElementById(c[2]),d&&d.parentNode){if(d.id!==c[2])return x.find(a);this.length=1,this[0]=d}return this.context=y,this.selector=a,this}return a.nodeType?(this.context=this[0]=a,this.length=1,this):m.isFunction(a)?"undefined"!=typeof x.ready?x.ready(a):a(m):(void 0!==a.selector&&(this.selector=a.selector,this.context=a.context),m.makeArray(a,this))};A.prototype=m.fn,x=m(y);var B=/^(?:parents|prev(?:Until|All))/,C={children:!0,contents:!0,next:!0,prev:!0};m.extend({dir:function(a,b,c){var d=[],e=a[b];while(e&&9!==e.nodeType&&(void 0===c||1!==e.nodeType||!m(e).is(c)))1===e.nodeType&&d.push(e),e=e[b];return d},sibling:function(a,b){for(var c=[];a;a=a.nextSibling)1===a.nodeType&&a!==b&&c.push(a);return c}}),m.fn.extend({has:function(a){var b,c=m(a,this),d=c.length;return this.filter(function(){for(b=0;d>b;b++)if(m.contains(this,c[b]))return!0})},closest:function(a,b){for(var c,d=0,e=this.length,f=[],g=t.test(a)||"string"!=typeof a?m(a,b||this.context):0;e>d;d++)for(c=this[d];c&&c!==b;c=c.parentNode)if(c.nodeType<11&&(g?g.index(c)>-1:1===c.nodeType&&m.find.matchesSelector(c,a))){f.push(c);break}return this.pushStack(f.length>1?m.unique(f):f)},index:function(a){return a?"string"==typeof a?m.inArray(this[0],m(a)):m.inArray(a.jquery?a[0]:a,this):this[0]&&this[0].parentNode?this.first().prevAll().length:-1},add:function(a,b){return this.pushStack(m.unique(m.merge(this.get(),m(a,b))))},addBack:function(a){return this.add(null==a?this.prevObject:this.prevObject.filter(a))}});function D(a,b){do a=a[b];while(a&&1!==a.nodeType);return a}m.each({parent:function(a){var b=a.parentNode;return b&&11!==b.nodeType?b:null},parents:function(a){return m.dir(a,"parentNode")},parentsUntil:function(a,b,c){return m.dir(a,"parentNode",c)},next:function(a){return D(a,"nextSibling")},prev:function(a){return D(a,"previousSibling")},nextAll:function(a){return m.dir(a,"nextSibling")},prevAll:function(a){return m.dir(a,"previousSibling")},nextUntil:function(a,b,c){return m.dir(a,"nextSibling",c)},prevUntil:function(a,b,c){return m.dir(a,"previousSibling",c)},siblings:function(a){return m.sibling((a.parentNode||{}).firstChild,a)},children:function(a){return m.sibling(a.firstChild)},contents:function(a){return m.nodeName(a,"iframe")?a.contentDocument||a.contentWindow.document:m.merge([],a.childNodes)}},function(a,b){m.fn[a]=function(c,d){var e=m.map(this,b,c);return"Until"!==a.slice(-5)&&(d=c),d&&"string"==typeof d&&(e=m.filter(d,e)),this.length>1&&(C[a]||(e=m.unique(e)),B.test(a)&&(e=e.reverse())),this.pushStack(e)}});var E=/\S+/g,F={};function G(a){var b=F[a]={};return m.each(a.match(E)||[],function(a,c){b[c]=!0}),b}m.Callbacks=function(a){a="string"==typeof a?F[a]||G(a):m.extend({},a);var b,c,d,e,f,g,h=[],i=!a.once&&[],j=function(l){for(c=a.memory&&l,d=!0,f=g||0,g=0,e=h.length,b=!0;h&&e>f;f++)if(h[f].apply(l[0],l[1])===!1&&a.stopOnFalse){c=!1;break}b=!1,h&&(i?i.length&&j(i.shift()):c?h=[]:k.disable())},k={add:function(){if(h){var d=h.length;!function f(b){m.each(b,function(b,c){var d=m.type(c);"function"===d?a.unique&&k.has(c)||h.push(c):c&&c.length&&"string"!==d&&f(c)})}(arguments),b?e=h.length:c&&(g=d,j(c))}return this},remove:function(){return h&&m.each(arguments,function(a,c){var d;while((d=m.inArray(c,h,d))>-1)h.splice(d,1),b&&(e>=d&&e--,f>=d&&f--)}),this},has:function(a){return a?m.inArray(a,h)>-1:!(!h||!h.length)},empty:function(){return h=[],e=0,this},disable:function(){return h=i=c=void 0,this},disabled:function(){return!h},lock:function(){return i=void 0,c||k.disable(),this},locked:function(){return!i},fireWith:function(a,c){return!h||d&&!i||(c=c||[],c=[a,c.slice?c.slice():c],b?i.push(c):j(c)),this},fire:function(){return k.fireWith(this,arguments),this},fired:function(){return!!d}};return k},m.extend({Deferred:function(a){var b=[["resolve","done",m.Callbacks("once memory"),"resolved"],["reject","fail",m.Callbacks("once memory"),"rejected"],["notify","progress",m.Callbacks("memory")]],c="pending",d={state:function(){return c},always:function(){return e.done(arguments).fail(arguments),this},then:function(){var a=arguments;return m.Deferred(function(c){m.each(b,function(b,f){var g=m.isFunction(a[b])&&a[b];e[f[1]](function(){var a=g&&g.apply(this,arguments);a&&m.isFunction(a.promise)?a.promise().done(c.resolve).fail(c.reject).progress(c.notify):c[f[0]+"With"](this===d?c.promise():this,g?[a]:arguments)})}),a=null}).promise()},promise:function(a){return null!=a?m.extend(a,d):d}},e={};return d.pipe=d.then,m.each(b,function(a,f){var g=f[2],h=f[3];d[f[1]]=g.add,h&&g.add(function(){c=h},b[1^a][2].disable,b[2][2].lock),e[f[0]]=function(){return e[f[0]+"With"](this===e?d:this,arguments),this},e[f[0]+"With"]=g.fireWith}),d.promise(e),a&&a.call(e,e),e},when:function(a){var b=0,c=d.call(arguments),e=c.length,f=1!==e||a&&m.isFunction(a.promise)?e:0,g=1===f?a:m.Deferred(),h=function(a,b,c){return function(e){b[a]=this,c[a]=arguments.length>1?d.call(arguments):e,c===i?g.notifyWith(b,c):--f||g.resolveWith(b,c)}},i,j,k;if(e>1)for(i=new Array(e),j=new Array(e),k=new Array(e);e>b;b++)c[b]&&m.isFunction(c[b].promise)?c[b].promise().done(h(b,k,c)).fail(g.reject).progress(h(b,j,i)):--f;return f||g.resolveWith(k,c),g.promise()}});var H;m.fn.ready=function(a){return m.ready.promise().done(a),this},m.extend({isReady:!1,readyWait:1,holdReady:function(a){a?m.readyWait++:m.ready(!0)},ready:function(a){if(a===!0?!--m.readyWait:!m.isReady){if(!y.body)return setTimeout(m.ready);m.isReady=!0,a!==!0&&--m.readyWait>0||(H.resolveWith(y,[m]),m.fn.triggerHandler&&(m(y).triggerHandler("ready"),m(y).off("ready")))}}});function I(){y.addEventListener?(y.removeEventListener("DOMContentLoaded",J,!1),a.removeEventListener("load",J,!1)):(y.detachEvent("onreadystatechange",J),a.detachEvent("onload",J))}function J(){(y.addEventListener||"load"===event.type||"complete"===y.readyState)&&(I(),m.ready())}m.ready.promise=function(b){if(!H)if(H=m.Deferred(),"complete"===y.readyState)setTimeout(m.ready);else if(y.addEventListener)y.addEventListener("DOMContentLoaded",J,!1),a.addEventListener("load",J,!1);else{y.attachEvent("onreadystatechange",J),a.attachEvent("onload",J);var c=!1;try{c=null==a.frameElement&&y.documentElement}catch(d){}c&&c.doScroll&&!function e(){if(!m.isReady){try{c.doScroll("left")}catch(a){return setTimeout(e,50)}I(),m.ready()}}()}return H.promise(b)};var K="undefined",L;for(L in m(k))break;k.ownLast="0"!==L,k.inlineBlockNeedsLayout=!1,m(function(){var a,b,c,d;c=y.getElementsByTagName("body")[0],c&&c.style&&(b=y.createElement("div"),d=y.createElement("div"),d.style.cssText="position:absolute;border:0;width:0;height:0;top:0;left:-9999px",c.appendChild(d).appendChild(b),typeof b.style.zoom!==K&&(b.style.cssText="display:inline;margin:0;border:0;padding:1px;width:1px;zoom:1",k.inlineBlockNeedsLayout=a=3===b.offsetWidth,a&&(c.style.zoom=1)),c.removeChild(d))}),function(){var a=y.createElement("div");if(null==k.deleteExpando){k.deleteExpando=!0;try{delete a.test}catch(b){k.deleteExpando=!1}}a=null}(),m.acceptData=function(a){var b=m.noData[(a.nodeName+" ").toLowerCase()],c=+a.nodeType||1;return 1!==c&&9!==c?!1:!b||b!==!0&&a.getAttribute("classid")===b};var M=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,N=/([A-Z])/g;function O(a,b,c){if(void 0===c&&1===a.nodeType){var d="data-"+b.replace(N,"-$1").toLowerCase();if(c=a.getAttribute(d),"string"==typeof c){try{c="true"===c?!0:"false"===c?!1:"null"===c?null:+c+""===c?+c:M.test(c)?m.parseJSON(c):c}catch(e){}m.data(a,b,c)}else c=void 0}return c}function P(a){var b;for(b in a)if(("data"!==b||!m.isEmptyObject(a[b]))&&"toJSON"!==b)return!1;
 
@@ -2260,26 +2273,27 @@ background-color: #eee;
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -2288,9 +2302,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  { background-color: #f8f8f8; }
+  {  background-color: #f8f8f8; }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ef2929; } /* Alert */
 code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
@@ -2581,7 +2595,7 @@ div.tocify {
 <h1 class="title toc-ignore">데이터 사이언스 - 자연어 처리</h1>
 <h3 class="subtitle">정규표현식(Regular Expression) - <code>R</code></h3>
 <h4 class="author">xwMOOC</h4>
-<h4 class="date">2020-02-03</h4>
+<h4 class="date">2020-02-06</h4>
 
 </div>
 
@@ -2616,8 +2630,8 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 <li><a href="regex-wrapup.html">요약</a></li>
 </ul></li>
 </ul>
-<div id="software-carepntry-v4" class="section level1">
-<h1><span class="header-section-number">1</span> 소프트웨어 카펜트리 V4 동영상</h1>
+<div id="software-carepntry-v4" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> 소프트웨어 카펜트리 V4 동영상</h1>
 <table>
 <thead>
 <tr class="header">
@@ -2649,49 +2663,49 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </tbody>
 </table>
 </div>
-<div id="frequent-usage" class="section level1">
-<h1><span class="header-section-number">2</span> 자주 사용되는 정규식 <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></h1>
+<div id="frequent-usage" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> 자주 사용되는 정규식 <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></h1>
 <p>자주 사용되는 한국어 정규표현식을 차근차근 정리해보자.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="op">*</span><span class="st"> </span>전자우편 주소<span class="op">:</span><span class="st"> </span><span class="er">/^</span>[a<span class="op">-</span>z0<span class="dv">-9</span>_<span class="op">+</span>.<span class="op">-</span>]<span class="op">+</span><span class="er">@</span>([a<span class="op">-</span>z0<span class="dv">-9</span><span class="op">-</span>]<span class="op">+</span>\.)<span class="op">+</span>[a<span class="op">-</span>z0<span class="dv">-9</span>]{<span class="dv">2</span>,<span class="dv">4</span>}<span class="op">$</span><span class="er">/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="er">*</span><span class="st"> </span>URL<span class="op">:</span><span class="st"> </span><span class="er">/^</span>(file<span class="op">|</span>gopher<span class="op">|</span>news<span class="op">|</span>nntp<span class="op">|</span>telnet<span class="op">|</span>https?<span class="op">|</span>ftps?<span class="op">|</span>sftp)<span class="op">:</span>\<span class="op">/</span>\<span class="op">/</span>([a<span class="op">-</span>z0<span class="dv">-9</span><span class="op">-</span>]<span class="op">+</span>\.)<span class="op">+</span>[a<span class="op">-</span>z0<span class="dv">-9</span>]{<span class="dv">2</span>,<span class="dv">4</span>}.<span class="op">*</span><span class="er">$/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="er">*</span><span class="st"> </span>HTML 태그 <span class="op">-</span><span class="st"> </span>HTML tags<span class="op">:</span><span class="st"> </span><span class="er">/</span>\<span class="op">&lt;</span>(<span class="op">/</span>?[<span class="op">^</span>\<span class="op">&gt;</span>]<span class="op">+</span>)\<span class="op">&gt;</span><span class="er">/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="er">*</span><span class="st"> </span>전화 번호 <span class="op">-</span><span class="st"> </span>예, <span class="dv">123-123-2344</span> 혹은 <span class="dv">123-1234-1234</span><span class="op">:</span><span class="st"> </span><span class="er">/</span>(\d{<span class="dv">3</span>}).<span class="op">*</span>(\d{<span class="dv">3</span>}).<span class="op">*</span>(\d{<span class="dv">4</span>})<span class="op">/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="er">*</span><span class="st"> </span>날짜 <span class="op">-</span><span class="st"> </span>예, <span class="dv">3</span><span class="op">/</span><span class="dv">28</span><span class="op">/</span><span class="dv">2007</span> 혹은 <span class="dv">3</span><span class="op">/</span><span class="dv">28</span><span class="op">/</span><span class="dv">07</span><span class="op">:</span><span class="st"> </span><span class="er">/^</span>\d{<span class="dv">1</span>,<span class="dv">2</span>}\<span class="op">/</span>\d{<span class="dv">1</span>,<span class="dv">2</span>}\<span class="op">/</span>\d{<span class="dv">2</span>,<span class="dv">4</span>}<span class="op">$</span><span class="er">/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="er">*</span><span class="st"> </span>jpg, gif 또는 png 확장자를 가진 그림 파일명<span class="op">:</span><span class="st"> </span><span class="er">/</span>([<span class="op">^</span>\s]<span class="op">+</span>(?=\.(jpg<span class="op">|</span>gif<span class="op">|</span>png))\.\<span class="dv">2</span>)<span class="op">/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="er">*</span><span class="st"> </span>1부터 <span class="dv">50</span> 사이의 번호 <span class="op">-</span><span class="st"> </span>1과 50 포함<span class="op">:</span><span class="st"> </span><span class="er">/^</span>[<span class="dv">1-9</span>]{<span class="dv">1</span>}<span class="op">$</span><span class="er">|^</span>[<span class="dv">1-4</span>]{<span class="dv">1</span>}[<span class="dv">0-9</span>]{<span class="dv">1</span>}<span class="op">$</span><span class="er">|^</span><span class="dv">50</span><span class="op">$</span><span class="er">/</span><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="er">*</span><span class="st"> </span><span class="dv">16</span> 진수로 된 색깔 번호<span class="op">:</span><span class="st"> </span><span class="er">/</span><span class="co">#?([A-Fa-f0-9]){3}(([A-Fa-f0-9]){3})?/  </span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="er">*</span><span class="st"> </span>적어도 소문자 하나, 대문자 하나, 숫자 하나가 포함되어 있는 문자열(8글자 이상 15글자 이하) <span class="op">-</span><span class="st"> </span>올바른 암호 형식을 확인할 때 사용될 수 있음<span class="op">:</span><span class="st"> </span><span class="er">/</span>(?=.<span class="op">*</span>\d)(?=.<span class="op">*</span>[a<span class="op">-</span>z])(?=.<span class="op">*</span>[A<span class="op">-</span>Z]).{<span class="dv">8</span>,<span class="dv">15</span>}<span class="op">/</span><span class="st">  </span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">*</span><span class="st"> </span>전자우편 주소<span class="op">:</span><span class="st"> </span><span class="er">/^</span>[a<span class="op">-</span>z0<span class="dv">-9</span>_<span class="op">+</span>.<span class="op">-</span>]<span class="op">+</span><span class="er">@</span>([a<span class="op">-</span>z0<span class="dv">-9</span><span class="op">-</span>]<span class="op">+</span>\.)<span class="op">+</span>[a<span class="op">-</span>z0<span class="dv">-9</span>]{<span class="dv">2</span>,<span class="dv">4</span>}<span class="op">$</span><span class="er">/</span><span class="st">  </span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="er">*</span><span class="st"> </span>URL<span class="op">:</span><span class="st"> </span><span class="er">/^</span>(file<span class="op">|</span>gopher<span class="op">|</span>news<span class="op">|</span>nntp<span class="op">|</span>telnet<span class="op">|</span>https?<span class="op">|</span>ftps?<span class="op">|</span>sftp)<span class="op">:</span>\<span class="op">/</span>\<span class="op">/</span>([a<span class="op">-</span>z0<span class="dv">-9</span><span class="op">-</span>]<span class="op">+</span>\.)<span class="op">+</span>[a<span class="op">-</span>z0<span class="dv">-9</span>]{<span class="dv">2</span>,<span class="dv">4</span>}.<span class="op">*</span><span class="er">$/</span><span class="st">  </span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="er">*</span><span class="st"> </span>HTML 태그 <span class="op">-</span><span class="st"> </span>HTML tags<span class="op">:</span><span class="st"> </span><span class="er">/</span>\<span class="op">&lt;</span>(<span class="op">/</span>?[<span class="op">^</span>\<span class="op">&gt;</span>]<span class="op">+</span>)\<span class="op">&gt;</span><span class="er">/</span><span class="st">  </span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="er">*</span><span class="st"> </span>전화 번호 <span class="op">-</span><span class="st"> </span>예, <span class="dv">123-123-2344</span> 혹은 <span class="dv">123-1234-1234</span><span class="op">:</span><span class="st"> </span><span class="er">/</span>(\d{<span class="dv">3</span>}).<span class="op">*</span>(\d{<span class="dv">3</span>}).<span class="op">*</span>(\d{<span class="dv">4</span>})<span class="op">/</span><span class="st">  </span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="er">*</span><span class="st"> </span>날짜 <span class="op">-</span><span class="st"> </span>예, <span class="dv">3</span><span class="op">/</span><span class="dv">28</span><span class="op">/</span><span class="dv">2007</span> 혹은 <span class="dv">3</span><span class="op">/</span><span class="dv">28</span><span class="op">/</span><span class="dv">07</span><span class="op">:</span><span class="st"> </span><span class="er">/^</span>\d{<span class="dv">1</span>,<span class="dv">2</span>}\<span class="op">/</span>\d{<span class="dv">1</span>,<span class="dv">2</span>}\<span class="op">/</span>\d{<span class="dv">2</span>,<span class="dv">4</span>}<span class="op">$</span><span class="er">/</span><span class="st">  </span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="er">*</span><span class="st"> </span>jpg, gif 또는 png 확장자를 가진 그림 파일명<span class="op">:</span><span class="st"> </span><span class="er">/</span>([<span class="op">^</span>\s]<span class="op">+</span>(?=\.(jpg<span class="op">|</span>gif<span class="op">|</span>png))\.\<span class="dv">2</span>)<span class="op">/</span><span class="st">  </span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="er">*</span><span class="st"> </span>1부터 <span class="dv">50</span> 사이의 번호 <span class="op">-</span><span class="st"> </span>1과 <span class="dv">50</span> 포함<span class="op">:</span><span class="st"> </span><span class="er">/^</span>[<span class="dv">1-9</span>]{<span class="dv">1</span>}<span class="op">$</span><span class="er">|^</span>[<span class="dv">1-4</span>]{<span class="dv">1</span>}[<span class="dv">0-9</span>]{<span class="dv">1</span>}<span class="op">$</span><span class="er">|^</span><span class="dv">50</span><span class="op">$</span><span class="er">/</span><span class="st">  </span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="er">*</span><span class="st"> </span><span class="dv">16</span> 진수로 된 색깔 번호<span class="op">:</span><span class="st"> </span><span class="er">/</span><span class="co">#?([A-Fa-f0-9]){3}(([A-Fa-f0-9]){3})?/  </span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="er">*</span><span class="st"> </span>적어도 소문자 하나, 대문자 하나, 숫자 하나가 포함되어 있는 문자열(8글자 이상 15글자 이하) <span class="op">-</span><span class="st"> </span>올바른 암호 형식을 확인할 때 사용될 수 있음<span class="op">:</span><span class="st"> </span><span class="er">/</span>(?=.<span class="op">*</span>\d)(?=.<span class="op">*</span>[a<span class="op">-</span>z])(?=.<span class="op">*</span>[A<span class="op">-</span>Z]).{<span class="dv">8</span>,<span class="dv">15</span>}<span class="op">/</span><span class="st">  </span></span></code></pre></div>
 </div>
-<div id="regex-frequently-used" class="section level1">
-<h1><span class="header-section-number">3</span> <code>R</code> 정규표현식</h1>
-<div id="regex-get-data" class="section level2">
-<h2><span class="header-section-number">3.1</span> 텍스트 헬로월드</h2>
+<div id="regex-frequently-used" class="section level1" number="3">
+<h1 number="3"><span class="header-section-number">3</span> <code>R</code> 정규표현식</h1>
+<div id="regex-get-data" class="section level2" number="3.1">
+<h2 number="3.1"><span class="header-section-number">3.1</span> 텍스트 헬로월드</h2>
 <p>가장 먼저 <code>R</code> 정규표현식으로 작업할 텍스트 데이터를 R 작업 환경으로 가져온다.</p>
 <p><a href="https://www.lucypark.kr/docs/2015-pyconkr/#1">Lucy Park (박은정), 2015-08-29, “한국어와 NLTK, Gensim의 만남 (부제: 영화 리뷰를 컴퓨터가 이해할 수 있는 형식으로 표현해서 센티멘트 분석하기)”, PyCon Korea 2015</a> 네이버 영화 리뷰 데이터를 자져와서 작업을 시작해 본다.</p>
 <p>데이터프레임에서 텍스트, 즉 영화리뷰 20개만 뽑아 텍스트 벡터로 변환시킨 후 <code>stringr</code> 팩키지의 정규표현식 <code>pattern=</code>을 적용시켜서 “영화”만 선택한다.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">## 팩키지와 재현가능하도록... 난수 seed 고정</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">set.seed</span>(<span class="dv">777</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">## 데이터 가져와서 20개 리뷰만 추출</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">review &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'</span>, <span class="dt">delim=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="st">  </span><span class="kw">sample_n</span>(<span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">## 데이터프레임으로 ... 텍스트 벡터로 변환</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">review <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="st">  </span><span class="kw">pull</span>(document) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="st">  </span><span class="kw">str_view</span>(<span class="dt">pattern=</span><span class="st">&quot;영화&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">## 팩키지와 재현가능하도록... 난수 seed 고정</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">library</span>(glue)</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">set.seed</span>(<span class="dv">777</span>)</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">## 데이터 가져와서 20개 리뷰만 추출</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>review &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&#39;https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt&#39;</span>, <span class="dt">delim=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="st">  </span><span class="kw">sample_n</span>(<span class="dv">20</span>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">## 데이터프레임으로 ... 텍스트 벡터로 변환</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>review <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="st">  </span><span class="kw">pull</span>(document) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="st">  </span><span class="kw">str_view</span>(<span class="dt">pattern=</span><span class="st">&quot;영화&quot;</span>)</span></code></pre></div>
 <div id="htmlwidget-61a4852d07c67c8ffdb3" style="width:960px;height:100%;" class="str_view html-widget"></div>
 <script type="application/json" data-for="htmlwidget-61a4852d07c67c8ffdb3">{"x":{"html":"<ul>\n  <li>정말. 좋은 <span class='match'>영화<\/span>였습니다 감동!<\/li>\n  <li>아놔 진짜 더럽게 재미없네<\/li>\n  <li>내 안에도 천사가 있을까.<\/li>\n  <li>조잡스런 장면과 억지스런 설정에 사라진 웃음, 쌓여가는 짜증<\/li>\n  <li>누구나 공감가는 이야기를 소소하게 잘 그려냈네요. 보면서 엄청 울었네요.<\/li>\n  <li>인간들아 욕 좀 그만해라 금발의 여 주인공 쌕시하고 예뻐서 시종 눈을 뗄 수 없는 명작였다 김치들이 시샘하느라 평점 구리게 줌<\/li>\n  <li>귀엽고 따뜻한 예능..☆ 재미있어요! 샘들 힘내세요~~~~<\/li>\n  <li>왜이리 평점이 낮지..베드신만을 생각하지말고전체적인 <span class='match'>영화<\/span>스토리에선 너무 재미있었다.영상도 너무 이뻣고.마지막 영상하나하나 기억에 남는다<\/li>\n  <li>뭐하자는 플레이냐. 포르노 배우로 애로<span class='match'>영화<\/span>를 찍는 사치는 뭐냐?<\/li>\n  <li>평점이 아직도 올라온다 ㄷㄷㄷ 째든 이건 내가봐도 명작임. 아주 어렸을적에 봤는데 그때는 폭뢰가 퓽퓽 터져서 무서웠는데 지금보니까 무섭긴하네<\/li>\n  <li>아... 진짜.... 시간 날렸당<\/li>\n  <li>케이블로 막 봤는데 재미지다~ 요새 할리우드 액션 <span class='match'>영화<\/span>에선 없는 맛이 있음!<\/li>\n  <li>난 1편을 생일에 보고 2편도 생일에 봐서 꽤 재미있는듯?<\/li>\n  <li>정말 이<span class='match'>영화<\/span>가 6점대라니ㅠ분이 옛날시절 사랑얘기 잠깐나오는데 왜이렇게 슬플까요 그리고 중간중간 웃기부분도 있고..정말 천국이 있다면 이런곳일까요?천국이있다면 저런모습이였으면좋겠어요 지금 하늘에 있을 아이들이나 많은 사람들이 하늘에서라도 편햇으면좋겟네요<\/li>\n  <li>다소 지루하다. 하지만 담고 있는 내용이 워낙 훌룡하다. 평점 조절이 필요하다.<\/li>\n  <li>OOO기<span class='match'>영화<\/span><\/li>\n  <li>마지막 장면은 정말 잊지못함..<\/li>\n  <li>왕가위, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리...<\/li>\n  <li>미이라, 잃어버린세계를 찾아서..등등 좋아하니까<\/li>\n  <li>역시 난 덴젤의 연기가 좋다. 점점 주름이 늘어나는 모습에 슬플뿐ㅠㅠ<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="regex-search-review" class="section level2">
-<h2><span class="header-section-number">3.2</span> 특정 단어 추출</h2>
+<div id="regex-search-review" class="section level2" number="3.2">
+<h2 number="3.2"><span class="header-section-number">3.2</span> 특정 단어 추출</h2>
 <p>검색어(“영화”)만 포함된 영화리뷰를 뽑아보자. 이를 위해서 <code>str_detect()</code> 함수 내부에 정규표현식을 전달시켜 <code>TRUE</code>/<code>FALSE</code> 마스크(mask)를 생성시킨다. 그리고 나서, 텍스트 벡터에 마스크 벡터를 넣어 <code>TRUE</code>만 즉, “영화” 단어가 포함된 애들만 추출한다.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">(word_mask &lt;-<span class="st"> </span><span class="kw">str_detect</span>(review<span class="op">$</span>document, <span class="st">&quot;영화&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>(word_mask &lt;-<span class="st"> </span><span class="kw">str_detect</span>(review<span class="op">$</span>document, <span class="st">&quot;영화&quot;</span>))</span></code></pre></div>
 <pre><code> [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE
 [13] FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">review<span class="op">$</span>document[word_mask]</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>review<span class="op">$</span>document[word_mask]</span></code></pre></div>
 <pre><code>[1] &quot;정말. 좋은 영화였습니다 감동!&quot;                                                                                                                                                                                                                                
 [2] &quot;왜이리 평점이 낮지..베드신만을 생각하지말고전체적인 영화스토리에선 너무 재미있었다.영상도 너무 이뻣고.마지막 영상하나하나 기억에 남는다&quot;                                                                                                                      
 [3] &quot;뭐하자는 플레이냐. 포르노 배우로 애로영화를 찍는 사치는 뭐냐?&quot;                                                                                                                                                                                                
@@ -2699,16 +2713,16 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 [5] &quot;정말 이영화가 6점대라니ㅠ분이 옛날시절 사랑얘기 잠깐나오는데 왜이렇게 슬플까요 그리고 중간중간 웃기부분도 있고..정말 천국이 있다면 이런곳일까요?천국이있다면 저런모습이였으면좋겠어요 지금 하늘에 있을 아이들이나 많은 사람들이 하늘에서라도 편햇으면좋겟네요&quot;
 [6] &quot;OOO기영화&quot;                                                                                                                                                                                                                                                    </code></pre>
 <p>이제 이를 확장시켜 전체 영화 리뷰 중 “영화” 단어가 포함된 리뷰는 몇개나 될까? 전체 데이터를 가져와서 앞서 적용시킨 알고리즘으로 마스크를 생성하는데, 재미있는 사실은 R에서 <code>TRUE</code>는 1, <code>FALSE</code>는 0으로 내부적으로 자연수로 저장되는 성질을 이용하여 간단히 <code>mean()</code> 함수를 적용시키면 평균을 구할 수 있다. <code>filter()</code> 함수로 결측값이 있는지 확인해보자. 이런 연유로 <code>mean(..., na.rm=TRUE)</code>가 사용된 것이다.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">## 전체 영화 리뷰 데이터</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">full_review &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">'https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt'</span>, <span class="dt">delim=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">word_mask &lt;-<span class="st"> </span><span class="kw">str_detect</span>(full_review<span class="op">$</span>document, <span class="st">&quot;영화&quot;</span>)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="kw">round</span>(<span class="kw">mean</span>(word_mask, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">## 전체 영화 리뷰 데이터</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>full_review &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&#39;https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt&#39;</span>, <span class="dt">delim=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>word_mask &lt;-<span class="st"> </span><span class="kw">str_detect</span>(full_review<span class="op">$</span>document, <span class="st">&quot;영화&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="kw">round</span>(<span class="kw">mean</span>(word_mask, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>[1] 31.3</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">## NA 확인</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">full_review <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(document))</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">## NA 확인</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>full_review <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(document))</span></code></pre></div>
 <pre><code># A tibble: 5 x 3
        id document label
     &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;
@@ -2718,8 +2732,8 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 4 5942978 &lt;NA&gt;         0
 5 1034283 &lt;NA&gt;         0</code></pre>
 </div>
-<div id="regex-basic" class="section level2">
-<h2><span class="header-section-number">3.3</span> 정규표현식 기초</h2>
+<div id="regex-basic" class="section level2" number="3.3">
+<h2 number="3.3"><span class="header-section-number">3.3</span> 정규표현식 기초</h2>
 <p>정규표현식(regular expression)을 사용하려면 키보드에 있는 특수문자를 이용한다는 사실 하나와 이를 사용해서 텍스트의 패턴을 만들어서 원하는 작업을 수행할 수 있다는 점이다. 가장 기본이 되는 정규표현식 기초에 대한 내용을 살펴보자.</p>
 <table>
 <thead>
@@ -2779,8 +2793,8 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </tbody>
 </table>
 </div>
-<div id="regex-basic-class" class="section level2">
-<h2><span class="header-section-number">3.4</span> 텍스트 유형별 작업</h2>
+<div id="regex-basic-class" class="section level2" number="3.4">
+<h2 number="3.4"><span class="header-section-number">3.4</span> 텍스트 유형별 작업</h2>
 <p>다음으로 텍스트는 문자 클래스를 갖는데 다음과 같이 구분하면 좋을 듯 싶다. 한글, 영문, 일본어, 숫자, 특수문자 등 다양한 문자 클래스가 존재하지만, 이를 추출하기 위한 정규표현식 패턴도 함께 존재한다.</p>
 <ul>
 <li>한글: [<code>ㄱ-ㅎ가-힣</code>]
@@ -2804,9 +2818,9 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 <li>한자: <code>\\p{script=Han}</code> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></li>
 </ul>
 <p>가장 관심가는</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">str_match_all</span>(<span class="st">'원문: 其戰勝不復, 而應形于無窮 </span><span class="ch">\n</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">              읽는 법: 기전승불복 이응형어무궁 </span><span class="ch">\n</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">              뜻: 그렇게 달성되는 전승에는 동일한 양상이 반복되지 않으며, 형세에 따라 융통성 있게 적용되는 방법이 무궁무진한 것이다.'</span>, <span class="dt">pattern =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">p{script=Han}+&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">str_match_all</span>(<span class="st">&#39;원문: 其戰勝不復, 而應形于無窮 </span><span class="ch">\n</span><span class="st"> </span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="st">              읽는 법: 기전승불복 이응형어무궁 </span><span class="ch">\n</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="st">              뜻: 그렇게 달성되는 전승에는 동일한 양상이 반복되지 않으며, 형세에 따라 융통성 있게 적용되는 방법이 무궁무진한 것이다.&#39;</span>, <span class="dt">pattern =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">p{script=Han}+&quot;</span>)</span></code></pre></div>
 <pre><code>[[1]]
      [,1]          
 [1,] &quot;其戰勝不復&quot;  
@@ -2854,21 +2868,21 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 <tr class="odd">
 <td align="center"><code>[:punct:]</code></td>
 <td align="left"><code>&quot;!&quot;  &quot;@&quot;  &quot;#&quot;  &quot;%&quot;  &quot;&amp;&quot;  &quot;*&quot;  &quot;(&quot;  &quot;)&quot;  &quot;,&quot;  &quot;.&quot;  &quot;?&quot;  &quot;\&quot;&quot; &quot;:&quot; &quot;{&quot;  &quot;}&quot;</code></td>
-<td><code>str_match_all('!@#$%^&amp;*(),.?&quot;:{}|', &quot;[:punct:]&quot;)</code></td>
+<td><code>str_match_all(&#39;!@#$%^&amp;*(),.?&quot;:{}|&#39;, &quot;[:punct:]&quot;)</code></td>
 <td>!, @, #, %, &amp;, *, (, ), ,, ., ?, &quot;, :, {, }</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="regex-basic-repetition" class="section level2">
-<h2><span class="header-section-number">3.5</span> 반복</h2>
+<div id="regex-basic-repetition" class="section level2" number="3.5">
+<h2 number="3.5"><span class="header-section-number">3.5</span> 반복</h2>
 <p><code>.</code>은 임의 문자 하나를 의미했다. <code>\\d</code> 이것도 마찬가지로 숫자 하나를 의미한다. 전화번호는 일반적으로 <code>000-0000-0000</code>와 같은 형태를 띄게 된다. 즉 숫자를 3번, <code>-</code> 4번, <code>-</code> 4번과 같은 순서로 쭉 매칭이 되어야 한다. 정규표현식을 <code>\\d{3}-\\d{4}-\\d{4}</code>와 같이 패턴을 적게 되면 <code>&quot;010-7622-2319&quot;</code> 번호를 추출할 수 있게 된다.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">phone_number &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;0221120001&quot;</span>, <span class="st">&quot;02-2112-2327&quot;</span>, <span class="st">&quot;0107775342&quot;</span>, <span class="st">&quot;010-7622-2319&quot;</span>, <span class="st">&quot;010-4352-2319&quot;</span>)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw">str_match_all</span>(phone_number, <span class="dt">pattern =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">d{3}-</span><span class="ch">\\</span><span class="st">d{4}-</span><span class="ch">\\</span><span class="st">d{4}&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>phone_number &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;0221120001&quot;</span>, <span class="st">&quot;02-2112-2327&quot;</span>, <span class="st">&quot;0107775342&quot;</span>, <span class="st">&quot;010-7622-2319&quot;</span>, <span class="st">&quot;010-4352-2319&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="kw">str_match_all</span>(phone_number, <span class="dt">pattern =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">d{3}-</span><span class="ch">\\</span><span class="st">d{4}-</span><span class="ch">\\</span><span class="st">d{4}&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
 <pre><code>[1] &quot;010-7622-2319&quot; &quot;010-4352-2319&quot;</code></pre>
 <p>이번에 약간 틀어서 핸드폰 뿐만 아니라 유선 전화번호도 추출하고자 하면 어떨까? <code>\\d{2,3}</code>와 같이 정의하면 숫자 두자리부터 3자리만 패턴을 매칭시킨다.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">str_match_all</span>(phone_number, <span class="dt">pattern =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">d{2,3}-</span><span class="ch">\\</span><span class="st">d{4}-</span><span class="ch">\\</span><span class="st">d{4}&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">str_match_all</span>(phone_number, <span class="dt">pattern =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">d{2,3}-</span><span class="ch">\\</span><span class="st">d{4}-</span><span class="ch">\\</span><span class="st">d{4}&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
 <pre><code>[1] &quot;02-2112-2327&quot;  &quot;010-7622-2319&quot; &quot;010-4352-2319&quot;</code></pre>
 <table>
 <thead>
@@ -2901,77 +2915,106 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 </tbody>
 </table>
 </div>
-<div id="regex-basic-repetition" class="section level2">
-<h2><span class="header-section-number">3.6</span> 여집합(inversion)</h2>
+</div>
+<div id="regex-advanced-repetition" class="section level1" number="4">
+<h1 number="4"><span class="header-section-number">4</span> 고급 정규표현식</h1>
+<div id="regex-basic-repetition" class="section level2" number="4.1">
+<h2 number="4.1"><span class="header-section-number">4.1</span> 여집합(inversion)</h2>
 <p><span class="math inline">\(\{1, 2, 3, 4, 5, 6\}\)</span>을 전체집합이라 하면, <span class="math inline">\(\{2, 3, 4, 5\}\)</span>의 여집합은 <span class="math inline">\(\{1, 6\}\)</span>이 되는 것처럼 매칭된 패턴을 도치하여 여집합을 구하고자 하는 경우 사용한다.</p>
 <p>예를 들어, <code>\\D</code>는 숫자에 대한 여집합을 구하고자 할 때 사용하는 패턴이다. 숫자를 뺀 나머지 모든 문자를 추출해보자.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">mixed_string &lt;-<span class="st"> &quot;한글과 English가 fancy하게 숫자도 777개나 뒤섞여 無窮 있어요&quot;</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">D&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_c</span>(<span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>mixed_string &lt;-<span class="st"> &quot;한글과 English가 fancy하게 숫자도 777개나 뒤섞여 無窮 있어요&quot;</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">D&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_c</span>(<span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot;한글과 English가 fancy하게 숫자도 개나 뒤섞여 無窮 있어요&quot;</code></pre>
 <p>숫자만 추출하고자 할 때는 <code>[^]</code>와 같이 <code>[]</code> 내부에 <code>^</code>을 넣게 되면 <code>a-zA-Z가-힣</code>을 만족시키지 않는 패턴을 반환시킨다. 즉, 한자와 숫자만 추출시킨다.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot; [^a-zA-Z가-힣]+&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_c</span>(<span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot; [^a-zA-Z가-힣]+&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_c</span>(<span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot; 777 無窮 &quot;</code></pre>
 <p><code>[^a-zA-Z]+</code>와 같이 패턴을 정의하게 되면 영문 대소문자를 제외한 나머지 문자를 모두 추출할 수 있다.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot;[^a-zA-Z]+&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_c</span>(<span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot;[^a-zA-Z]+&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_c</span>(<span class="dt">collapse =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot;한글과 가 하게 숫자도 777개나 뒤섞여 無窮 있어요&quot;</code></pre>
 </div>
-<div id="regex-custom-pattern" class="section level2">
-<h2><span class="header-section-number">3.7</span> 사용자 정의 패턴</h2>
+<div id="regex-custom-pattern" class="section level2" number="4.2">
+<h2 number="4.2"><span class="header-section-number">4.2</span> 사용자 정의 패턴</h2>
 <p><code>[]</code> 꺽쇄괄호 내부에 정규표현식을 적게 되면 사용자 정의 정규표현식을 사용할 수 있다. 즉, <code>\\d</code>, <code>\\w</code>, <code>\\D</code> 등은 마치 내장함수처럼 기본으로 지원되는 정규표현식이고, <code>[]</code>을 사용하게 되면 임의 사용자 정의 정규표현식을 작성할 수 있다. 숫자 혹은 공백문자(<code>\\s</code>)를 찾는 사용자 정의 정규표현식을 다음과 같이 작성할 수 있다.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot;[</span><span class="ch">\\</span><span class="st">s</span><span class="ch">\\</span><span class="st">d]&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">str_match_all</span>(mixed_string, <span class="st">&quot;[</span><span class="ch">\\</span><span class="st">s</span><span class="ch">\\</span><span class="st">d]&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
 <pre><code> [1] &quot; &quot; &quot; &quot; &quot; &quot; &quot; &quot; &quot;7&quot; &quot;7&quot; &quot;7&quot; &quot; &quot; &quot; &quot; &quot; &quot;</code></pre>
 </div>
-<div id="regex-pipe-question-mark" class="section level2">
-<h2><span class="header-section-number">3.8</span> 파이프와 물음표(<code>?</code>)</h2>
+<div id="regex-boundry" class="section level2" number="4.3">
+<h2 number="4.3"><span class="header-section-number">4.3</span> 단어경계</h2>
+<p>특정 단어 예를 들어, “왕가위”를 매칭하고자 할 때, 양 옆에 뭔가 단어가 붙은 경우 이를 무시하고 특정 단어만 단어경계를 가진 문자열만 추출하고자 할 때 유용하다. 이를 위해서 <code>\\b</code>를 추출하고자 하는 문자열 앞뒤로 붙인다.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>boundary_text &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;왕가위, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리... 왕가위짱, 왕가위, 정통왕가위짱, 왕가 왕가윙 왕가위ㄴ 마지막 왕가위 &quot;</span>)</span></code></pre></div>
+<div class="row">
+<div class="col-md-6">
+<p><strong>단어 경계 없음</strong></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">str_view_all</span>(boundary_text, <span class="st">&quot;왕가위&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-d5bad5544b4fbf47b1a4" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d5bad5544b4fbf47b1a4">{"x":{"html":"<ul>\n  <li><span class='match'>왕가위<\/span>, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리... <span class='match'>왕가위<\/span>짱, <span class='match'>왕가위<\/span>, 정통<span class='match'>왕가위<\/span>짱, 왕가 왕가윙 <span class='match'>왕가위<\/span>ㄴ 마지막 <span class='match'>왕가위<\/span> <\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="col-md-6">
+<p><strong>단어 경계 <code>\\b</code> 적용</strong></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">str_view_all</span>(boundary_text, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">b왕가위[:punct:]?</span><span class="ch">\\</span><span class="st">b&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-0548975437fde6e7ec26" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0548975437fde6e7ec26">{"x":{"html":"<ul>\n  <li><span class='match'>왕가위<\/span>, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리... 왕가위짱, <span class='match'>왕가위<\/span>, 정통왕가위짱, 왕가 왕가윙 왕가위ㄴ 마지막 <span class='match'>왕가위<\/span> <\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="regex-pipe-question-mark" class="section level2" number="4.4">
+<h2 number="4.4"><span class="header-section-number">4.4</span> 파이프와 물음표(<code>?</code>)</h2>
 <p>파이프(<code>|</code>)와 물음표(<code>?</code>)를 사용하게 되면 좀더 다양한 패턴을 매칭시킬 수가 있다. 파이프(<code>|</code>)는 혹은(<code>or</code>)에 해당되어 A 혹은 B 혹은 C 와 같은 부울식을 구현할 수 있다. 예를 들어, 영화배우 이름이 포함된 리뷰를 찾고자 할 때, 영화 배우면을 파이프(<code>|</code>)로 쭉 연결시키게 되면 영화배우가 포함된 리뷰를 걸러낼 수 있다.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">movie_star &lt;-<span class="st"> </span><span class="kw">str_detect</span>(review<span class="op">$</span>document, <span class="st">&quot;덴젤|왕가위|장국영&quot;</span>)</a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3">review<span class="op">$</span>document[movie_star]</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>movie_star &lt;-<span class="st"> </span><span class="kw">str_detect</span>(review<span class="op">$</span>document, <span class="st">&quot;덴젤|왕가위|장국영&quot;</span>)</span>
+<span id="cb28-2"><a href="#cb28-2"></a></span>
+<span id="cb28-3"><a href="#cb28-3"></a>review<span class="op">$</span>document[movie_star]</span></code></pre></div>
 <pre><code>[1] &quot;왕가위, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리...&quot;
 [2] &quot;역시 난 덴젤의 연기가 좋다. 점점 주름이 늘어나는 모습에 슬플뿐ㅠㅠ&quot;                  </code></pre>
 <p>경기, 경기도는 같은 시도지만, 이를 파이프(<code>|</code>) 연산자를 사용해서 작업할 경우 코드가 길어진다. 선택(<code>?</code>)을 넣게 되면 간결한 코드를 남길 수가 있다.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">provinces &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;경기도&quot;</span>, <span class="st">&quot;경기&quot;</span>, <span class="st">&quot;강원&quot;</span>, <span class="st">&quot;강원도&quot;</span>)</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb27-3" data-line-number="3"><span class="kw">str_match_all</span>(provinces, <span class="st">&quot;[가-힣]{2}도|[가-힣]{2}&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</a></code></pre></div>
-<pre><code>[1] &quot;경기도&quot; &quot;경기&quot;   &quot;강원&quot;   &quot;강원도&quot;</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">str_match_all</span>(provinces, <span class="st">&quot;[가-힣]{2}도?&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>provinces &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;경기도&quot;</span>, <span class="st">&quot;경기&quot;</span>, <span class="st">&quot;강원&quot;</span>, <span class="st">&quot;강원도&quot;</span>)</span></code></pre></div>
+<div class="row">
+<div class="col-md-6">
+<p><strong>파이프(<code>|</code>)</strong></p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">str_match_all</span>(provinces, <span class="st">&quot;[가-힣]{2}도|[가-힣]{2}&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
 <pre><code>[1] &quot;경기도&quot; &quot;경기&quot;   &quot;강원&quot;   &quot;강원도&quot;</code></pre>
 </div>
-<div id="regex-lazy-greedy" class="section level2">
-<h2><span class="header-section-number">3.9</span> 욕심쟁이와 게으른 연산자</h2>
+<div class="col-md-6">
+<p><strong><code>?</code>로 선택옵션을 줌</strong></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="kw">str_match_all</span>(provinces, <span class="st">&quot;[가-힣]{2}도?&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
+<pre><code>[1] &quot;경기도&quot; &quot;경기&quot;   &quot;강원&quot;   &quot;강원도&quot;</code></pre>
+</div>
+</div>
+</div>
+<div id="regex-lazy-greedy" class="section level2" number="4.5">
+<h2 number="4.5"><span class="header-section-number">4.5</span> 욕심쟁이와 게으른 연산자</h2>
 <p>다음과 같이 “한국” 단어가 여러버 나올 경우 “.<em>&quot;와 같은 정규표현식은 욕심쟁이라 최대한 많이 &quot;한국&quot;을 매칭하게 된다. 반면에 &quot;.</em>?” 와 같이 “?”을 추가하게 되면 게으른 연산이 실행되어 매칭되는 첫번째에서 멈추게 된다.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">news &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.&quot;</span>)</a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="kw">str_view</span>(news, <span class="st">&quot;.*한국&quot;</span>)</a></code></pre></div>
-<div id="htmlwidget-d5bad5544b4fbf47b1a4" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d5bad5544b4fbf47b1a4">{"x":{"html":"<ul>\n  <li><span class='match'>한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국<\/span>과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">str_view</span>(news, <span class="st">&quot;.*?한국&quot;</span>)</a></code></pre></div>
-<div id="htmlwidget-0548975437fde6e7ec26" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0548975437fde6e7ec26">{"x":{"html":"<ul>\n  <li><span class='match'>한국<\/span>은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>news &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.&quot;</span>)</span>
+<span id="cb35-2"><a href="#cb35-2"></a></span>
+<span id="cb35-3"><a href="#cb35-3"></a><span class="kw">str_view</span>(news, <span class="st">&quot;.*한국&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-aa5c0a297d2711f54b05" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-aa5c0a297d2711f54b05">{"x":{"html":"<ul>\n  <li><span class='match'>한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국<\/span>과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">str_view</span>(news, <span class="st">&quot;.*?한국&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-be32cd01e5101c41ef9d" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-be32cd01e5101c41ef9d">{"x":{"html":"<ul>\n  <li><span class='match'>한국<\/span>은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<div id="glue-pkg" class="section level1">
-<h1><span class="header-section-number">4</span> <code>glue</code> 팩키지</h1>
+<div id="glue-pkg" class="section level1" number="5">
+<h1 number="5"><span class="header-section-number">5</span> <code>glue</code> 팩키지</h1>
 <p><code>glue</code>를 정규표현식, 데이터프레임과 엮어서 사용하게 될 경우 복잡한 많은 작업을 수월하게 진행시킬 수 있다. 전자우편 주소 벡터가 있을 때, <code>glue()</code> 함수를 사용하게 되면 코드를 간결하게 하여 데이터베이스에 저장된 전자우편 주소로부터 예를 들어 메일을 보내는데 도움을 받을 수 있다.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">email &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;kwangchun@gmail.com&quot;</span>, <span class="st">&quot;lee@live.com&quot;</span>, <span class="st">&quot;kwang@naver.com&quot;</span>)</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb33-5" data-line-number="5"><span class="kw">glue</span>(<span class="st">&quot;TO: {email}&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw">library</span>(glue)</span>
+<span id="cb37-2"><a href="#cb37-2"></a></span>
+<span id="cb37-3"><a href="#cb37-3"></a>email &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;kwangchun@gmail.com&quot;</span>, <span class="st">&quot;lee@live.com&quot;</span>, <span class="st">&quot;kwang@naver.com&quot;</span>)</span>
+<span id="cb37-4"><a href="#cb37-4"></a></span>
+<span id="cb37-5"><a href="#cb37-5"></a><span class="kw">glue</span>(<span class="st">&quot;TO: {email}&quot;</span>)</span></code></pre></div>
 <pre><code>TO: kwangchun@gmail.com
 TO: lee@live.com
 TO: kwang@naver.com</code></pre>
-<div id="glue-example" class="section level2">
-<h2><span class="header-section-number">4.1</span> 몇가지 사례</h2>
+<div id="glue-example" class="section level2" number="5.1">
+<h2 number="5.1"><span class="header-section-number">5.1</span> 몇가지 사례</h2>
 <p>앞선 사례는 글로벌 환경에서 선언된 변수를 <code>glue()</code> 함수에서 가져와서 문자열을 새로 생성했다. <code>glue()</code> 내부에서 변수를 선언하는 것도 가능하다.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">glue</span>(<span class="st">&quot;현재 온도: {temp}&quot;</span>,</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">      <span class="dt">temp=</span><span class="fl">38.5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="kw">glue</span>(<span class="st">&quot;현재 온도: {temp}&quot;</span>,</span>
+<span id="cb39-2"><a href="#cb39-2"></a>      <span class="dt">temp=</span><span class="fl">38.5</span>)</span></code></pre></div>
 <pre><code>현재 온도: 38.5</code></pre>
 <p>“{}” 내부에 표현식을 넣어서 연산작업을 수행하는 것도 가능하다.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">9</span>) {</a>
-<a class="sourceLine" id="cb37-2" data-line-number="2">    <span class="kw">cat</span>(<span class="kw">glue</span>(<span class="st">&quot; 2 * {i} = {2*i}&quot;</span>), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">9</span>) {</span>
+<span id="cb41-2"><a href="#cb41-2"></a>    <span class="kw">cat</span>(<span class="kw">glue</span>(<span class="st">&quot; 2 * {i} = {2*i}&quot;</span>), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb41-3"><a href="#cb41-3"></a>}</span></code></pre></div>
 <pre><code> 2 * 1 = 2 
  2 * 2 = 4 
  2 * 3 = 6 
@@ -2982,13 +3025,13 @@ TO: kwang@naver.com</code></pre>
  2 * 8 = 16 
  2 * 9 = 18 </code></pre>
 <p><code>glue()</code> 함수와 데이터프레임을 조합하게 되면 정형데이터로부터 텍스트 문장을 생성할 수 있다.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">baseball &lt;-<span class="st"> </span><span class="kw">tribble</span>(<span class="op">~</span><span class="st">&quot;team&quot;</span>, <span class="op">~</span><span class="st">&quot;win&quot;</span>, <span class="op">~</span><span class="st">&quot;lose&quot;</span>,</a>
-<a class="sourceLine" id="cb39-2" data-line-number="2">                     <span class="st">&quot;해태&quot;</span>, <span class="dv">57</span>, <span class="dv">56</span>,</a>
-<a class="sourceLine" id="cb39-3" data-line-number="3">                     <span class="st">&quot;롯데&quot;</span>, <span class="dv">55</span>, <span class="dv">53</span>,</a>
-<a class="sourceLine" id="cb39-4" data-line-number="4">                     <span class="st">&quot;넥슨&quot;</span>, <span class="dv">71</span>, <span class="dv">67</span>)</a>
-<a class="sourceLine" id="cb39-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb39-6" data-line-number="6">baseball <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb39-7" data-line-number="7"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">text =</span> <span class="kw">glue</span>(<span class="st">&quot;올시즌 {team}는 {win}승 {lose}패를 기록했다&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>baseball &lt;-<span class="st"> </span><span class="kw">tribble</span>(<span class="op">~</span><span class="st">&quot;team&quot;</span>, <span class="op">~</span><span class="st">&quot;win&quot;</span>, <span class="op">~</span><span class="st">&quot;lose&quot;</span>,</span>
+<span id="cb43-2"><a href="#cb43-2"></a>                     <span class="st">&quot;해태&quot;</span>, <span class="dv">57</span>, <span class="dv">56</span>,</span>
+<span id="cb43-3"><a href="#cb43-3"></a>                     <span class="st">&quot;롯데&quot;</span>, <span class="dv">55</span>, <span class="dv">53</span>,</span>
+<span id="cb43-4"><a href="#cb43-4"></a>                     <span class="st">&quot;넥슨&quot;</span>, <span class="dv">71</span>, <span class="dv">67</span>)</span>
+<span id="cb43-5"><a href="#cb43-5"></a></span>
+<span id="cb43-6"><a href="#cb43-6"></a>baseball <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb43-7"><a href="#cb43-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">text =</span> <span class="kw">glue</span>(<span class="st">&quot;올시즌 {team}는 {win}승 {lose}패를 기록했다&quot;</span>))</span></code></pre></div>
 <pre><code># A tibble: 3 x 4
   team    win  lose text                              
   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;glue&gt;                            
@@ -2996,113 +3039,113 @@ TO: kwang@naver.com</code></pre>
 2 롯데     55    53 올시즌 롯데는 55승 53패를 기록했다
 3 넥슨     71    67 올시즌 넥슨는 71승 67패를 기록했다</code></pre>
 <p><code>glue_collapse()</code> 함수는 벡터를 스칼라로 변환시키는 역할을 하는 유용한 함수다. 예를 들어 영화배우가 텍스트 벡터로 된 경우 이를 <code>glue_collapse()</code> 함수로 사용할 경우 출연배우명을 쭉 붙여 텍스트 스칼라로 만들 수 있다.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">movie &lt;-<span class="st"> &quot;유열의 음악앨범&quot;</span></a>
-<a class="sourceLine" id="cb41-2" data-line-number="2">actors &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;송강호&quot;</span>, <span class="st">&quot;김고은&quot;</span>, <span class="st">&quot;정해인&quot;</span>)</a>
-<a class="sourceLine" id="cb41-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb41-4" data-line-number="4"><span class="kw">glue</span>(</a>
-<a class="sourceLine" id="cb41-5" data-line-number="5">  <span class="st">&quot;{movie} 출연배우: &quot;</span>, </a>
-<a class="sourceLine" id="cb41-6" data-line-number="6">  <span class="kw">glue_collapse</span>(actors, </a>
-<a class="sourceLine" id="cb41-7" data-line-number="7">              <span class="dt">sep=</span><span class="st">&quot;, &quot;</span>,</a>
-<a class="sourceLine" id="cb41-8" data-line-number="8">              <span class="dt">last=</span><span class="st">&quot;,  그리고 &quot;</span>)</a>
-<a class="sourceLine" id="cb41-9" data-line-number="9">)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>movie &lt;-<span class="st"> &quot;유열의 음악앨범&quot;</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a>actors &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;송강호&quot;</span>, <span class="st">&quot;김고은&quot;</span>, <span class="st">&quot;정해인&quot;</span>)</span>
+<span id="cb45-3"><a href="#cb45-3"></a></span>
+<span id="cb45-4"><a href="#cb45-4"></a><span class="kw">glue</span>(</span>
+<span id="cb45-5"><a href="#cb45-5"></a>  <span class="st">&quot;{movie} 출연배우: &quot;</span>, </span>
+<span id="cb45-6"><a href="#cb45-6"></a>  <span class="kw">glue_collapse</span>(actors, </span>
+<span id="cb45-7"><a href="#cb45-7"></a>              <span class="dt">sep=</span><span class="st">&quot;, &quot;</span>,</span>
+<span id="cb45-8"><a href="#cb45-8"></a>              <span class="dt">last=</span><span class="st">&quot;,  그리고 &quot;</span>)</span>
+<span id="cb45-9"><a href="#cb45-9"></a>)</span></code></pre></div>
 <pre><code>유열의 음악앨범 출연배우: 송강호, 김고은,  그리고 정해인</code></pre>
 <p><code>baseball</code> 데이터프레임의 변수를 하나 뽑아서 <code>glue_collapse()</code> 함수에 넣을 경우 텍스트 스카라로 만들 수 있다.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="kw">glue_collapse</span>(baseball<span class="op">$</span>team, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="kw">glue_collapse</span>(baseball<span class="op">$</span>team, <span class="dt">sep=</span><span class="st">&quot; &quot;</span>)</span></code></pre></div>
 <pre><code>해태 롯데 넥슨</code></pre>
 </div>
-<div id="regex-glue-collapse" class="section level2">
-<h2><span class="header-section-number">4.2</span> 정규표현식 + <code>glue_collapse()</code></h2>
+<div id="regex-glue-collapse" class="section level2" number="5.2">
+<h2 number="5.2"><span class="header-section-number">5.2</span> 정규표현식 + <code>glue_collapse()</code></h2>
 <p>국가명을 country 벡터에 저장한 후, 앞서 학습한 <code>glue_collapse()</code> 함수와 결합하여 <code>country_regex</code> 정규표현식 벡터로 만든 후 뉴스에 언급된 국가만 추추하는 것이 가능하다.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">country &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;한국&quot;</span>, <span class="st">&quot;중국&quot;</span>, <span class="st">&quot;일본&quot;</span>)</a>
-<a class="sourceLine" id="cb45-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb45-3" data-line-number="3">news &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.&quot;</span>)</a>
-<a class="sourceLine" id="cb45-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb45-5" data-line-number="5">(country_regex &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(country, <span class="dt">sep=</span><span class="st">&quot;|&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>country &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;한국&quot;</span>, <span class="st">&quot;중국&quot;</span>, <span class="st">&quot;일본&quot;</span>)</span>
+<span id="cb49-2"><a href="#cb49-2"></a></span>
+<span id="cb49-3"><a href="#cb49-3"></a>news &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;한국은 미국과 중국의 무역갈등으로 인해 힘든 시간을 보냈지만, 한국과 일본의 경제문제도 또 다른 현안으로 떠오르고 있다.&quot;</span>)</span>
+<span id="cb49-4"><a href="#cb49-4"></a></span>
+<span id="cb49-5"><a href="#cb49-5"></a>(country_regex &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(country, <span class="dt">sep=</span><span class="st">&quot;|&quot;</span>))</span></code></pre></div>
 <pre><code>한국|중국|일본</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">str_view_all</span>(news, country_regex)</a></code></pre></div>
-<div id="htmlwidget-aa5c0a297d2711f54b05" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-aa5c0a297d2711f54b05">{"x":{"html":"<ul>\n  <li><span class='match'>한국<\/span>은 미국과 <span class='match'>중국<\/span>의 무역갈등으로 인해 힘든 시간을 보냈지만, <span class='match'>한국<\/span>과 <span class='match'>일본<\/span>의 경제문제도 또 다른 현안으로 떠오르고 있다.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="kw">str_view_all</span>(news, country_regex)</span></code></pre></div>
+<div id="htmlwidget-1bc5f3694ee848aa9b63" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1bc5f3694ee848aa9b63">{"x":{"html":"<ul>\n  <li><span class='match'>한국<\/span>은 미국과 <span class='match'>중국<\/span>의 무역갈등으로 인해 힘든 시간을 보냈지만, <span class='match'>한국<\/span>과 <span class='match'>일본<\/span>의 경제문제도 또 다른 현안으로 떠오르고 있다.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<div id="regex-text-df" class="section level1">
-<h1><span class="header-section-number">5</span> 텍스트 → 데이터프레임</h1>
+<div id="regex-text-df" class="section level1" number="6">
+<h1 number="6"><span class="header-section-number">6</span> 텍스트 → 데이터프레임</h1>
 <p>텍스트가 깔끔하게 준비된 경우, 정규표현식을 <code>glue_collapse()</code> 함수로 작성할 경우 가독성 높은 코드를 얻을 수 있어, 나중에 코드를 다시 볼 때 보기 좋게 된다.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">baseball_text &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;올시즌 해태는 57승 56패를 기록했다</span></a>
-<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="st">                    올시즌 롯데는 55승 53패를 기록했다</span></a>
-<a class="sourceLine" id="cb48-3" data-line-number="3"><span class="st">                    올시즌 넥슨는 71승 67패를 기록했다&quot;</span>)</a>
-<a class="sourceLine" id="cb48-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb48-5" data-line-number="5">(baseball_regex &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(<span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb48-6" data-line-number="6">                <span class="st">&quot;team&quot;</span> =<span class="st"> &quot;[가-힣]+&quot;</span>,</a>
-<a class="sourceLine" id="cb48-7" data-line-number="7">                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</a>
-<a class="sourceLine" id="cb48-8" data-line-number="8">                <span class="st">&quot;win&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;승&quot;</span>,</a>
-<a class="sourceLine" id="cb48-9" data-line-number="9">                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</a>
-<a class="sourceLine" id="cb48-10" data-line-number="10">                <span class="st">&quot;lose&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;패&quot;</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>baseball_text &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;올시즌 해태는 57승 56패를 기록했다</span></span>
+<span id="cb52-2"><a href="#cb52-2"></a><span class="st">                    올시즌 롯데는 55승 53패를 기록했다</span></span>
+<span id="cb52-3"><a href="#cb52-3"></a><span class="st">                    올시즌 넥슨는 71승 67패를 기록했다&quot;</span>)</span>
+<span id="cb52-4"><a href="#cb52-4"></a></span>
+<span id="cb52-5"><a href="#cb52-5"></a>(baseball_regex &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(<span class="kw">c</span>(</span>
+<span id="cb52-6"><a href="#cb52-6"></a>                <span class="st">&quot;team&quot;</span> =<span class="st"> &quot;[가-힣]+&quot;</span>,</span>
+<span id="cb52-7"><a href="#cb52-7"></a>                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</span>
+<span id="cb52-8"><a href="#cb52-8"></a>                <span class="st">&quot;win&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;승&quot;</span>,</span>
+<span id="cb52-9"><a href="#cb52-9"></a>                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</span>
+<span id="cb52-10"><a href="#cb52-10"></a>                <span class="st">&quot;lose&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;패&quot;</span>)))</span></code></pre></div>
 <pre><code>[가-힣]+\s+\d+승\s+\d+패</code></pre>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="kw">str_match_all</span>(baseball_text, baseball_regex) <span class="op">%&gt;%</span><span class="st"> </span>unlist</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="kw">str_match_all</span>(baseball_text, baseball_regex) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
 <pre><code>[1] &quot;해태는 57승 56패&quot; &quot;롯데는 55승 53패&quot; &quot;넥슨는 71승 67패&quot;</code></pre>
-<div id="regex-capture-group" class="section level2">
-<h2><span class="header-section-number">5.1</span> 그룹(group)</h2>
+<div id="regex-capture-group" class="section level2" number="6.1">
+<h2 number="6.1"><span class="header-section-number">6.1</span> 그룹(group)</h2>
 <p>앞서 프로야구 경기팀의 승패를 기록한 텍스트에 오류가 있어, 승과 패가 뒤바뀐 일이 발생했다. 이를 바로잡고자 <strong>그룹(group)</strong>을 동원해서 문제를 풀어보자. 정규표현식에 <code>()</code>를 사용하면 그룹을 패턴에 부여할 수 있게 된다.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">(regex_group &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(<span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb52-2" data-line-number="2">                <span class="st">&quot;team&quot;</span> =<span class="st"> &quot;([가-힣]+)&quot;</span>,</a>
-<a class="sourceLine" id="cb52-3" data-line-number="3">                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</a>
-<a class="sourceLine" id="cb52-4" data-line-number="4">                <span class="st">&quot;win&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;승&quot;</span>,</a>
-<a class="sourceLine" id="cb52-5" data-line-number="5">                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</a>
-<a class="sourceLine" id="cb52-6" data-line-number="6">                <span class="st">&quot;lose&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;패&quot;</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>(regex_group &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(<span class="kw">c</span>(</span>
+<span id="cb56-2"><a href="#cb56-2"></a>                <span class="st">&quot;team&quot;</span> =<span class="st"> &quot;([가-힣]+)&quot;</span>,</span>
+<span id="cb56-3"><a href="#cb56-3"></a>                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</span>
+<span id="cb56-4"><a href="#cb56-4"></a>                <span class="st">&quot;win&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;승&quot;</span>,</span>
+<span id="cb56-5"><a href="#cb56-5"></a>                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</span>
+<span id="cb56-6"><a href="#cb56-6"></a>                <span class="st">&quot;lose&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;패&quot;</span>)))</span></code></pre></div>
 <pre><code>([가-힣]+)\s+(\d+)승\s+(\d+)패</code></pre>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="kw">str_match_all</span>(baseball_text, regex_group)</a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">str_match_all</span>(baseball_text, regex_group)</span></code></pre></div>
 <pre><code>[[1]]
      [,1]               [,2]     [,3] [,4]
 [1,] &quot;해태는 57승 56패&quot; &quot;해태는&quot; &quot;57&quot; &quot;56&quot;
 [2,] &quot;롯데는 55승 53패&quot; &quot;롯데는&quot; &quot;55&quot; &quot;53&quot;
 [3,] &quot;넥슨는 71승 67패&quot; &quot;넥슨는&quot; &quot;71&quot; &quot;67&quot;</code></pre>
 <p><code>\\1</code>, <code>\\2</code>, <code>\\3</code>을 지칭해서 위치를 바꿀 수 있다.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1">(regex_group &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(<span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb56-2" data-line-number="2">                <span class="st">&quot;team&quot;</span> =<span class="st"> &quot;([가-힣]+)&quot;</span>,</a>
-<a class="sourceLine" id="cb56-3" data-line-number="3">                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</a>
-<a class="sourceLine" id="cb56-4" data-line-number="4">                <span class="st">&quot;win&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;승&quot;</span>,</a>
-<a class="sourceLine" id="cb56-5" data-line-number="5">                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</a>
-<a class="sourceLine" id="cb56-6" data-line-number="6">                <span class="st">&quot;lose&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;패&quot;</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a>(regex_group &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(<span class="kw">c</span>(</span>
+<span id="cb60-2"><a href="#cb60-2"></a>                <span class="st">&quot;team&quot;</span> =<span class="st"> &quot;([가-힣]+)&quot;</span>,</span>
+<span id="cb60-3"><a href="#cb60-3"></a>                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</span>
+<span id="cb60-4"><a href="#cb60-4"></a>                <span class="st">&quot;win&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;승&quot;</span>,</span>
+<span id="cb60-5"><a href="#cb60-5"></a>                <span class="st">&quot;</span><span class="ch">\\</span><span class="st">s+&quot;</span>,</span>
+<span id="cb60-6"><a href="#cb60-6"></a>                <span class="st">&quot;lose&quot;</span> =<span class="st"> &quot;(</span><span class="ch">\\</span><span class="st">d+)&quot;</span>, <span class="st">&quot;패&quot;</span>)))</span></code></pre></div>
 <pre><code>([가-힣]+)\s+(\d+)승\s+(\d+)패</code></pre>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">baseball_text</a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a>baseball_text</span></code></pre></div>
 <pre><code>[1] &quot;올시즌 해태는 57승 56패를 기록했다\n                    올시즌 롯데는 55승 53패를 기록했다\n                    올시즌 넥슨는 71승 67패를 기록했다&quot;</code></pre>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1"><span class="kw">str_replace_all</span>(baseball_text, regex_group, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1 </span><span class="ch">\\</span><span class="st">3승 </span><span class="ch">\\</span><span class="st">2패&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a><span class="kw">str_replace_all</span>(baseball_text, regex_group, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1 </span><span class="ch">\\</span><span class="st">3승 </span><span class="ch">\\</span><span class="st">2패&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot;올시즌 해태는 56승 57패를 기록했다\n                    올시즌 롯데는 53승 55패를 기록했다\n                    올시즌 넥슨는 67승 71패를 기록했다&quot;</code></pre>
 </div>
-<div id="meet-regex-df" class="section level2">
-<h2><span class="header-section-number">5.2</span> <code>DF</code> + <code>regex</code>: <code>extract</code></h2>
+<div id="meet-regex-df" class="section level2" number="6.2">
+<h2 number="6.2"><span class="header-section-number">6.2</span> <code>DF</code> + <code>regex</code>: <code>extract</code></h2>
 <p>데이터프레임과 정규표현식이 만나는 교차점에 <code>extract()</code> 동사가 있다. 먼저 특정 단어를 하나 뽑아 <code>mutate()</code> 동사로 새로운 변수를 생성하는 사례를 살펴보자.</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1">review <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb62-2" data-line-number="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">is_movie =</span> <span class="kw">str_match</span>(document, <span class="st">&quot;영화&quot;</span>)) </a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a>review <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb66-2"><a href="#cb66-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">is_movie =</span> <span class="kw">str_match</span>(document, <span class="st">&quot;영화&quot;</span>)) </span></code></pre></div>
 <pre><code># A tibble: 20 x 4
          id document                                          label is_movie[,1]
       &lt;dbl&gt; &lt;chr&gt;                                             &lt;dbl&gt; &lt;chr&gt;       
  1  9212028 정말. 좋은 영화였습니다 감동!                         1 영화        
  2  1659748 아놔 진짜 더럽게 재미없네                             0 &lt;NA&gt;        
  3  1077998 내 안에도 천사가 있을까.                              1 &lt;NA&gt;        
- 4  8747167 조잡스런 장면과 억지스런 설정에 사라진 웃음, 쌓여가는 짜증~     0 &lt;NA&gt;        
- 5  6110214 누구나 공감가는 이야기를 소소하게 잘 그려냈네요. 보면서 엄청 울었네요.~     1 &lt;NA&gt;        
- 6 10276348 인간들아 욕 좀 그만해라 금발의 여 주인공 쌕시하고 예뻐서 시종 눈을 뗄 수 없는 명작~     1 &lt;NA&gt;        
- 7  8241466 귀엽고 따뜻한 예능..☆ 재미있어요! 샘들 힘내세요~~~~~     1 &lt;NA&gt;        
- 8  7631300 왜이리 평점이 낮지..베드신만을 생각하지말고전체적인 영화스토리에선 너무 재미있었다.영상~     1 영화        
- 9  5453346 뭐하자는 플레이냐. 포르노 배우로 애로영화를 찍는 사치는 뭐냐?~     0 영화        
-10  6682980 평점이 아직도 올라온다 ㄷㄷㄷ 째든 이건 내가봐도 명작임. 아주 어렸을적에 봤는데 그때~     1 &lt;NA&gt;        
+ 4  8747167 조잡스런 장면과 억지스런 설정에 사라진 웃음, 쌓여가는 짜증…     0 &lt;NA&gt;        
+ 5  6110214 누구나 공감가는 이야기를 소소하게 잘 그려냈네요. 보면서 엄청 울었네요.…     1 &lt;NA&gt;        
+ 6 10276348 인간들아 욕 좀 그만해라 금발의 여 주인공 쌕시하고 예뻐서 시종 눈을 뗄 수 없는 명작…     1 &lt;NA&gt;        
+ 7  8241466 귀엽고 따뜻한 예능..☆ 재미있어요! 샘들 힘내세요~~~~…     1 &lt;NA&gt;        
+ 8  7631300 왜이리 평점이 낮지..베드신만을 생각하지말고전체적인 영화스토리에선 너무 재미있었다.영상…     1 영화        
+ 9  5453346 뭐하자는 플레이냐. 포르노 배우로 애로영화를 찍는 사치는 뭐냐?…     0 영화        
+10  6682980 평점이 아직도 올라온다 ㄷㄷㄷ 째든 이건 내가봐도 명작임. 아주 어렸을적에 봤는데 그때…     1 &lt;NA&gt;        
 11  3775688 아... 진짜.... 시간 날렸당                            0 &lt;NA&gt;        
-12  9677551 케이블로 막 봤는데 재미지다~ 요새 할리우드 액션 영화에선 없는 맛이 있음!~     1 영화        
-13  4649132 난 1편을 생일에 보고 2편도 생일에 봐서 꽤 재미있는듯?~     1 &lt;NA&gt;        
-14  8693988 정말 이영화가 6점대라니ㅠ분이 옛날시절 사랑얘기 잠깐나오는데 왜이렇게 슬플까요 그리고 ~     1 영화        
-15  7616081 다소 지루하다. 하지만 담고 있는 내용이 워낙 훌룡하다. 평점 조절이 필요하다.~     1 &lt;NA&gt;        
+12  9677551 케이블로 막 봤는데 재미지다~ 요새 할리우드 액션 영화에선 없는 맛이 있음!…     1 영화        
+13  4649132 난 1편을 생일에 보고 2편도 생일에 봐서 꽤 재미있는듯?…     1 &lt;NA&gt;        
+14  8693988 정말 이영화가 6점대라니ㅠ분이 옛날시절 사랑얘기 잠깐나오는데 왜이렇게 슬플까요 그리고 …     1 영화        
+15  7616081 다소 지루하다. 하지만 담고 있는 내용이 워낙 훌룡하다. 평점 조절이 필요하다.…     1 &lt;NA&gt;        
 16  2183087 OOO기영화                                             0 영화        
 17   728878 마지막 장면은 정말 잊지못함..                         1 &lt;NA&gt;        
-18  7285865 왕가위, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리~     1 &lt;NA&gt;        
+18  7285865 왕가위, 장국영, 비포 선라이즈. 서울의 하얀 밤을 떠다니는 외로운 그들..그리고 우리…     1 &lt;NA&gt;        
 19  9394907 미이라, 잃어버린세계를 찾아서..등등 좋아하니까        1 &lt;NA&gt;        
-20  8189082 역시 난 덴젤의 연기가 좋다. 점점 주름이 늘어나는 모습에 슬플뿐ㅠㅠ~     1 &lt;NA&gt;        </code></pre>
+20  8189082 역시 난 덴젤의 연기가 좋다. 점점 주름이 늘어나는 모습에 슬플뿐ㅠㅠ…     1 &lt;NA&gt;        </code></pre>
 <p>그런데, 이번에는 “평점”, “영화” 두 단어를 동시에 찾아 새로운 변수로 넣는 경우를 상정해보자. 이를 위해서 필요한 동사가 <code>extract()</code>가 되고 앞서 학습한 정규표현식 그룹의 개념이 포함된다. 다음과 같이 <code>review</code> 데이터프레임에서 <code>document</code> 컬럼을 뽑아 그룹으로 정규표현식을 구성하고 이를 <code>into =</code>의 새로운 칼럼으로 넣는다.</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" data-line-number="1">review <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb64-2" data-line-number="2"><span class="st">  </span><span class="kw">extract</span>(<span class="dt">col =</span> <span class="st">&quot;document&quot;</span>,</a>
-<a class="sourceLine" id="cb64-3" data-line-number="3">          <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;is_score&quot;</span>, <span class="st">&quot;is_movie&quot;</span>),</a>
-<a class="sourceLine" id="cb64-4" data-line-number="4">          <span class="dt">regex =</span> <span class="st">&quot;(평점).*?(영화)&quot;</span>,</a>
-<a class="sourceLine" id="cb64-5" data-line-number="5">          <span class="dt">remove=</span><span class="ot">TRUE</span>) </a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1"></a>review <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb68-2"><a href="#cb68-2"></a><span class="st">  </span><span class="kw">extract</span>(<span class="dt">col =</span> <span class="st">&quot;document&quot;</span>,</span>
+<span id="cb68-3"><a href="#cb68-3"></a>          <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;is_score&quot;</span>, <span class="st">&quot;is_movie&quot;</span>),</span>
+<span id="cb68-4"><a href="#cb68-4"></a>          <span class="dt">regex =</span> <span class="st">&quot;(평점).*?(영화)&quot;</span>,</span>
+<span id="cb68-5"><a href="#cb68-5"></a>          <span class="dt">remove=</span><span class="ot">TRUE</span>) </span></code></pre></div>
 <pre><code># A tibble: 20 x 4
          id is_score is_movie label
       &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;
@@ -3127,14 +3170,34 @@ TO: kwang@naver.com</code></pre>
 19  9394907 &lt;NA&gt;     &lt;NA&gt;         1
 20  8189082 &lt;NA&gt;     &lt;NA&gt;         1</code></pre>
 </div>
+<div id="meet-regex-example" class="section level2" number="6.3">
+<h2 number="6.3"><span class="header-section-number">6.3</span> 사례 <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></h2>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1"></a>actors &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;덴젤&quot;</span>, <span class="st">&quot;장국영&quot;</span>, <span class="st">&quot;왕가위&quot;</span>)</span>
+<span id="cb70-2"><a href="#cb70-2"></a></span>
+<span id="cb70-3"><a href="#cb70-3"></a>actor_pattern &lt;-<span class="st"> </span><span class="kw">glue_collapse</span>(actors, <span class="dt">sep =</span> <span class="st">&quot;|&quot;</span>)</span>
+<span id="cb70-4"><a href="#cb70-4"></a></span>
+<span id="cb70-5"><a href="#cb70-5"></a>surronding_text &lt;-<span class="st"> &quot;([</span><span class="ch">\\</span><span class="st">w[:punct:]]+</span><span class="ch">\\</span><span class="st">s){0,5}&quot;</span></span>
+<span id="cb70-6"><a href="#cb70-6"></a></span>
+<span id="cb70-7"><a href="#cb70-7"></a>actor_surrounding_text &lt;-<span class="st"> </span><span class="kw">glue</span>(</span>
+<span id="cb70-8"><a href="#cb70-8"></a>  <span class="st">&quot;{surronding_text}?({actor_pattern})</span><span class="ch">\\</span><span class="st">s?{surronding_text}&quot;</span></span>
+<span id="cb70-9"><a href="#cb70-9"></a>)</span>
+<span id="cb70-10"><a href="#cb70-10"></a></span>
+<span id="cb70-11"><a href="#cb70-11"></a><span class="kw">str_extract_all</span>(</span>
+<span id="cb70-12"><a href="#cb70-12"></a>  review<span class="op">$</span>document,</span>
+<span id="cb70-13"><a href="#cb70-13"></a>  <span class="dt">pattern =</span> actor_surrounding_text</span>
+<span id="cb70-14"><a href="#cb70-14"></a>) <span class="op">%&gt;%</span><span class="st"> </span>unlist</span></code></pre></div>
+<pre><code>[1] &quot;왕가위, 장국영, 비포 선라이즈. 서울의 &quot;  
+[2] &quot;역시 난 덴젤의 연기가 좋다. 점점 주름이 &quot;</code></pre>
+</div>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p><a href="http://gocoding.tistory.com/93">자주 쓰이는 정규식(Regular Expression)</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p><a href="https://statkclee.github.io/ds-authoring/regex-r-char.html">R 정규표현식과 문자데이터 - <code>regexplain</code></a><a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p><a href="https://blog.rsquaredacademy.com/regular-expression-in-r/">Rsquared Academy (2019-05-27), “Demystifying Regular Expressions in R”</a><a href="#fnref3" class="footnote-back">↩</a></p></li>
-<li id="fn4"><p><a href="https://stackoverflow.com/questions/9576384/use-regular-expression-to-match-any-chinese-character-in-utf-8-encoding">stackoverflow, “Use regular expression to match ANY Chinese character in utf-8 encoding”</a><a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p><a href="http://gocoding.tistory.com/93">자주 쓰이는 정규식(Regular Expression)</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://statkclee.github.io/ds-authoring/regex-r-char.html">R 정규표현식과 문자데이터 - <code>regexplain</code></a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://blog.rsquaredacademy.com/regular-expression-in-r/">Rsquared Academy (2019-05-27), “Demystifying Regular Expressions in R”</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://stackoverflow.com/questions/9576384/use-regular-expression-to-match-any-chinese-character-in-utf-8-encoding">stackoverflow, “Use regular expression to match ANY Chinese character in utf-8 encoding”</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p><a href="https://korquad.github.io/category/1.0_KOR.html"><code>KorQuAD 1.0</code></a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
