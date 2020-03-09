@@ -3,11 +3,23 @@ layout: page
 title: 자연어 처리 (NLP)
 ---
 
-- [자연어처리 스터디](https://etherpad.net/p/nlp-study)
-    - 장소 및 일시: 역삼역 인근 / 매주 혹은 격주 
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+<div class = "blue">
+
+자연어처리 전에 텍스트 마이닝에 대해 궁금하신 분!!!
+
+- [텍스트 마이닝(R)](https://statkclee.github.io/text/)
+
+</div>
+
+아래부터는 자연어처리(NLP)에 대해 다룹니다!!!
+
+- [자연어처리 핵심개념](nlp-concept.html)
     - [R/파이썬 분석환경 준비](nlp-toolchain.html)
     - [텐서플로우(tensorflow) 설치](nlp-tensorflow-install.html)
-- [NLP 도구](nlp-tools.html)
+    - [NLP 도구](nlp-tools.html)
 - 텍스트 원재료
     - [오디오 &rarr; 텍스트](nlp-audio-transcribe.html)
     - [MP3 음악 &rarr; 텍스트](nlp-mp3-transcribe.html)
