@@ -19,14 +19,14 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
 - [자연어처리 핵심개념](nlp-concept.html)
     - [R/파이썬 분석환경 준비](nlp-toolchain.html)
     - [텐서플로우(tensorflow) 설치](nlp-tensorflow-install.html)
-    - [NLP 도구](nlp-tools.html)
-- 텍스트 원재료
-    - [오디오 &rarr; 텍스트](nlp-audio-transcribe.html)
-    - [MP3 음악 &rarr; 텍스트](nlp-mp3-transcribe.html)
+    - [파이썬 자연어 처리 기초](nlp-python-basic.html)
 - [다양한 텍스트 데이터 가져오기](regex-import-text.html)
     - [전자우편 텍스트 &rarr; CSV](nlp-ingest-text.html)
     - [네이버 블로그 (feat. 나성호)](nlp-ingest-naver-blog.html) - 실행 오류!!!
+    - [오디오 &rarr; 텍스트](nlp-audio-transcribe.html)
+    - [MP3 음악 &rarr; 텍스트](nlp-mp3-transcribe.html)
 - [정규표현식 - `R`](regex-index.html) &larr; 이것으로 끝내자!!!
+    - [파이썬3 정규표현식](regex-python3.html)
     - 소프트웨어 카펜트리 
         - [정규표현식 소개](regex-intro.html)
         - [간단한 패턴](regex-simple-pattern.html)
@@ -34,12 +34,9 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
         - [작동원리](regex-under-the-hood.html)
         - [추가 패턴](regex-more-pattern.html)
         - [참고문헌 사례](regex-last-wrinkle.html)
-        - [요약](regex-wrapup.html)
-    - 파이썬
-        - [`regex` 나래를 펴라!!!](regex-ai-nlp.html)
-        - [파이썬3 정규표현식](regex-python3.html)
+        - [요약](regex-wrapup.html) 
+    - [AI 관련 `regex`](regex-ai-nlp.html) &larr; 작업중
 - 탐색적 데이터 분석(EDA)
-    - [파이썬 자연어 처리 기초](nlp-python-basic.html)
     - [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
         - [뉴스 &rarr; 크롤링 &rarr; NER](nlp-ner-python-crawling.html)
     - [텍스트 NLP 기술통계](nlp-twitter-describe.html)

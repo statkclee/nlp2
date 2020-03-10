@@ -23,5 +23,82 @@ knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE,
 
 ```
 
-# 핵심 개념
+# 핵심 개념 {#basic-cocept}
 
+자연어 처리는 컴퓨터로 하여금 사람이 작성한 언어(음성과 글)의 의미를 이해시키는 것을 목표로 한다.
+
+1. 텍스트 데이터
+    - 트위터
+    - 소설, 신문기사
+    - 고객 평점과 리뷰
+    - 전자우편
+    - 의무기록
+1. 텍스트 저장 형식
+    - 뉴스 등 웹 페이지
+    - PDF/워드/한글 문서
+    - 트위터 등 SNS, RSS 피드, 댓글
+    - ...
+1. 응용분야
+    - 감성분석
+    - 텍스트 분류 
+    - 번역
+    - 챗봇
+    - 개인 비서
+    - ...
+1. 기술
+    - 단어주머니(Bag of Words)
+    - Word Embedding, 워드투벡(Word2Vec)
+
+
+# 단어주머니(Bag of Words) {#python-bow}
+
+## 단어주머니(Bag of Words) {#python-bow-english}
+
+
+```{python bow-english}
+from urllib import request
+url = "http://www.gutenberg.org/files/2554/2554-0.txt"
+response = request.urlopen(url)
+raw = response.read().decode('utf8')
+type(raw)
+print(raw[1:100])
+```
+
+
+```{python}
+text = "On an exceptionally hot evening early in July a young man came out of the garret in which he lodged in S. Place and walked slowly, as though in hesitation, towards K. bridge."
+
+
+```
+
+
+# NLP 도구 {#nlp-tools}
+
+## 영문 NLP 도구 [^nlp-comparison] {#nlp-tools-english}
+
+[^nlp-comparison]: [Analytics Vidhya, "Natural Language Processing Made Easy - using SpaCy (in Python)"](https://www.analyticsvidhya.com/blog/2017/04/natural-language-processing-made-easy-using-spacy-%E2%80%8Bin-python/)
+
+영어 자연어처리를 위해서 다양한 파이썬 라이브러리가 존재한다. 대표적으로 많이 사용되는 자연어 처리 파이썬 라이브러리는 다음과 같다.
+
+- Spacy: https://spacy.io/, MIT License
+- NLTK: https://www.nltk.org/, Apache 2.0
+- CoreNLP: https://stanfordnlp.github.io/CoreNLP/index.html, GPL v3
+    
+영문 자연어 처리에서 많이 사용되는 `Spacy`, `NLTK`, `CoreNLP`의 경우 라이선스에서 차이도 나지만 기능에서도 차이가 있다.
+
+
+
+| Feature | Spacy | NLTK | Core NLP |
+|---------|:--------:|:---------:|:---------:|:---------:|
+| Easy installation | Y | Y | Y |
+| Python API | Y | Y | N |
+| Multi Language support | N | Y |Y |
+| Tokenization | Y | Y | Y | |
+| Part-of-speech tagging | Y | Y | Y |
+| Sentence segmentation | Y | Y | Y |
+| Dependency parsing | Y | N | Y |
+| Entity Recognition | Y | Y | Y |
+| Integrated word vectors | Y | N | N |
+| Sentiment analysis | Y | Y | Y |
+| Coreference resolution | N | N | Y |
+    
