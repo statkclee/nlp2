@@ -18,7 +18,7 @@ editor_options:
 
 
 ``` {r, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE,
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE,
                     comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
 
 ```
@@ -52,23 +52,48 @@ knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE,
 
 # 단어주머니(Bag of Words) {#python-bow}
 
-## 단어주머니(Bag of Words) {#python-bow-english}
+## 영어 단어주머니(Bag of Words) [^bow-from-scratch] {#python-bow-english}
 
+[^bow-from-scratch]: [Usman Malik(July 04, 2019), Python for NLP: Creating Bag of Words Model from Scratch](https://stackabuse.com/python-for-nlp-creating-bag-of-words-model-from-scratch/)
 
-```{python bow-english}
-from urllib import request
-url = "http://www.gutenberg.org/files/2554/2554-0.txt"
-response = request.urlopen(url)
-raw = response.read().decode('utf8')
-type(raw)
-print(raw[1:100])
+먼저 텍스트 데이터를 준비한다. 3개 문장으로 구성된 영어문장을 텍스트 데이터로 삼아 단어주머니 언어모형을 구현해보자. `text`는 하나의 텍스트이며, `sentence`는 문장 3개를 들고 있는 리스트다.
+
+```{python text-data}
+text = "I like to play football. Did you go outside to play tennis. John and I play tennis"
+sentence = ["I like to play football.", "Did you go outside to play tennis.", "John and I play tennis"]
 ```
 
+단어주머니 모형은 오래되고 직관적이며 오래되서 잘 구현된 라이브러리가 많이 있다. `nltk`, `TextBlob` 라이브러리를 사용해서 단어주머니 모형을 구현해보자.
+"아나콘다3"을 기반으로 작업할 경우 설치가 되어 있지 않으니 `conda`를 사용해서 설치한다. 터미널에서 `conda install -c conda-forge textblob` 명령어를 실행시키면 [`TextBlob`이 설치](https://anaconda.org/conda-forge/textblob)된다.
 
-```{python}
-text = "On an exceptionally hot evening early in July a young man came out of the garret in which he lodged in S. Place and walked slowly, as though in hesitation, towards K. bridge."
+기본적인 작업흐름은 텍스트 데이터를 `blob` 객체로 변환시킨다. 그리고 나서 `blob` 객체 메쏘드를 사용해서 단어주머니를 만들고 이를 판다스 데이터프레임으로 변환시킨 후에 `groupby()` 메쏘드를 사용해서 단어 빈도수를 만든다.
 
+```{python text-bow-textblob}
+from textblob import TextBlob
+import pandas as pd
 
+blob = TextBlob(text)
+print(blob.words) 
+
+# 데이터프레임 변환
+text_df = pd.DataFrame(blob.pos_tags, columns=['word', 'pos'])
+
+text_df.groupby('word')['word'].count().sort_values(ascending=False)
+```
+
+["Sentiment Analysis using Python"](https://data-science-blog.com/blog/2018/11/04/sentiment-analysis-using-python/)은 데이터프레임 판다스를 기본 자료구조로 감성분석하는 좋은 코드를 만들어 주었다. 앞선 3문장을 대상으로 간단히 감성분석 작업을 수행해보자!
+
+```{python text-bow-textblob-sentiment}
+sentence_df = pd.DataFrame(sentence, columns=['sentence'])
+sentence_df['sentiment'] = sentence_df.sentence.apply(lambda sentence: TextBlob(sentence).sentiment)
+
+print(sentence_df)
+```
+
+명사만 추출하고자 하는 경우 앞서 단어에 대한 품사를 식별했기 때문에 판다스 행을 추출하는 방식으로 뽑아낸다.
+
+```{python text-bow-textblob-noun}
+text_df[text_df['pos'] == "NN"]
 ```
 
 
@@ -86,8 +111,6 @@ text = "On an exceptionally hot evening early in July a young man came out of th
     
 영문 자연어 처리에서 많이 사용되는 `Spacy`, `NLTK`, `CoreNLP`의 경우 라이선스에서 차이도 나지만 기능에서도 차이가 있다.
 
-
-
 | Feature | Spacy | NLTK | Core NLP |
 |---------|:--------:|:---------:|:---------:|:---------:|
 | Easy installation | Y | Y | Y |
@@ -102,3 +125,9 @@ text = "On an exceptionally hot evening early in July a young man came out of th
 | Sentiment analysis | Y | Y | Y |
 | Coreference resolution | N | N | Y |
     
+## 한국어 단어주머니 {#bow-korean}
+
+
+# 워드 임베딩 {#word-embedding}
+
+
