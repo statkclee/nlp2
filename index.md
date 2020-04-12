@@ -36,6 +36,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
         - [참고문헌 사례](regex-last-wrinkle.html)
         - [요약](regex-wrapup.html) 
     - [AI 관련 `regex`](regex-ai-nlp.html) &larr; 작업중
+- [텍스트 거리](nlp-text-distance.html)
 - 탐색적 데이터 분석(EDA)
     - [정보추출 - 개체명 인식(NER)](nlp-ner-python.html)
         - [뉴스 &rarr; 크롤링 &rarr; NER](nlp-ner-python-crawling.html)
