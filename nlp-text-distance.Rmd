@@ -158,5 +158,255 @@ stringdist(answer, query, method = "qgram", q=2)
 </div>
 
 
+# 퍼지조인(fuzzy join) {#fuzzy-join}
+
+## 데이터셋 {#fuzzy-join-dataset}
+
+
+[대한민국 제21대 국회의원 선거, "출마자 신상정보: 데이터"](https://statkclee.github.io/election/election-candidate.html) 데이터를 얻었으나 문제는 선거구를 지도와 연결하는데 문제가 있다는 점이다. 즉, 선거구별로 몇명 출마했는지 단순한 정보를 지도상에 표현하는데 있어 퍼지조인이 유용하다.
+
+```{r two-datasets}
+library(tidyverse)
+library(sf)
+
+## 대구 선거구 지도
+대구_선거구 <- st_read("../election/data/shapefile/2020_21_elec_253_simple.json") %>% 
+  filter(str_detect(SGG_1, "대구"))
+
+# 대구 선거구별 출마자수
+candidate_df  <- read_rds("../election/data/candidate_253_df.rds") 
+
+대구_출마자 <- candidate_df %>% 
+  filter(str_detect(시도명, "대구")) %>% 
+  group_by(선거구명, 시도명) %>% 
+  summarise(출마자수 = n()) %>% 
+  ungroup() %>% 
+  arrange(desc(출마자수)) %>% 
+  mutate(SGG_2 = glue::glue("{시도명} {선거구명}"))
+  
+대구_출마자
+```
+
+## 매칭 작업 {#fuzzy-join-matching}
+
+`대구_선거구` 지도에서 "SGG_3" 칼럼과 `대구_출마자` 데이터프레임에서 "선거구명"간 `stringdist` 거리를 계산해서 `max_dist`가 3인 경우 매칭이 원활이 됨을 확인할 수 있다.
+
+```{r two-dataset-matching}
+library(fuzzyjoin)
+
+joined <- stringdist_join(
+  대구_선거구,
+  대구_출마자,
+  by = c("SGG_3" = "선거구명"),
+  max_dist = 3,
+  distance_col = "distance"
+)
+
+대구_선거구_sf <- joined %>% 
+  select(SGG_Code, 시도명, 선거구명, 출마자수, distance, geometry)
+
+대구_선거구_sf
+```
+
+하지만, 전체 대구 선거구 10곳에 대해서 제대로 매칭을 하지 못하고 있는 것이 확인 되어 이에 대한 보완작업이 필요한 것도 사실이다.
+
+
+<div class = "row">
+  <div class = "col-md-6">
+**대구선거구(12)**
+
+```{r two-dataset-matching-viz-answer}
+대구_선거구 %>% 
+  ggplot(aes(fill=SGG_Code)) +
+    geom_sf() +
+    theme_void() +
+    theme(panel.grid.major = element_line(color = "white")) +
+    scale_fill_gradientn(colors = viridis::viridis(10)) +
+     geom_sf_label(aes(label = SGG_3))
+```
+
+  </div>
+  <div class = "col-md-6">
+**`fuzzyjoin` 대구선거구(7)**
+
+```{r two-dataset-matching-viz}
+대구_선거구_sf %>% 
+  ggplot(aes(fill=출마자수)) +
+    geom_sf() +
+    theme_void() +
+    theme(panel.grid.major = element_line(color = "white")) +
+    scale_fill_gradientn(colors = viridis::viridis(7)) +
+     geom_sf_label(aes(label = 선거구명))
+```
+
+  </div>
+</div>
+
+
+## 사용자 정의 매칭 {#fuzzy-join-custom-matching}
+
+사용자 정의 함수(`calc_sgg_distance`)를 지정한 후에 `match_fun`에 `fuzzy_left_join`을 걸어 출마자수를 지도에 연결시킬 수 있다. 
+
+```{r fuzzyjoin-custom-matching}
+library(stringdist)
+
+calc_sgg_distance <- function(map, data) {
+  stringdist(map, data) < 1
+}
+
+대구_fuzzy_join_sf <- fuzzy_left_join(
+  대구_선거구,
+  대구_출마자,
+  by = "SGG_2",
+  match_fun = calc_sgg_distance)
+
+대구_fuzzy_join_sf %>% 
+  ggplot(aes(fill=출마자수)) +
+    geom_sf() +
+    theme_void() +
+    theme(panel.grid.major = element_line(color = "white")) +
+    scale_fill_gradientn(colors = viridis::viridis(7)) +
+     geom_sf_label(aes(label = 선거구명))
+```
+
+# Record Linkage {#record-linkage}
+
+[`reclin`](https://github.com/djvanderlaan/reclin)
+
+## 데이터셋 {#example-dataset}
+
+[Duplicate Detection, Record Linkage, and Identity Uncertainty: Datasets](http://www.cs.utexas.edu/users/ml/riddle/data.html) 웹사이트에 중복 레코드 탐지와 Record Linkage와 관련된 데이터셋이 있다. 
+
+그중 Fodor and Zagat 식당 데이터셋은 112개의 중복이 내재되어 있다. 참고로 저갯 서베이(zagat survey)는 미국에서 발간되는 세계적인 레스토랑 안내서로 1979년 미국 뉴욕에서 저갯 부부가 창업했다. 
+
+```{r record-linkage}
+library(reclin)
+
+download.file(url="http://www.cs.utexas.edu/users/ml/riddle/data/restaurant.tar.gz", destfile = "data/restaurant.tar.gz")
+
+untar("data/restaurant.tar.gz", exdir = "data")
+```
+
+
+```{bash}
+ls -al data/restaurant
+```
+
+Fodors 데이터셋와 Zagat 데이터셋을 일별하면 다음과 같다.
+
+
+<div class = "row">
+  <div class = "col-md-6">
+**Fodors 데이터셋**
+
+
+```{r record-linkage-fodor}
+fodors_df <- read_csv("data/restaurant/fodors.csv")
+
+fodors_df %>% 
+  glimpse
+
+zagat_df <- read_csv("data/restaurant/zagat.csv")
+```
+
+  </div>
+  <div class = "col-md-6">
+**Zagat 데이터셋**
+
+```{r record-linkage-zagat}
+zagat_df <- read_csv("data/restaurant/zagat.csv")
+
+zagat_df %>% 
+  glimpse
+```
+
+  </div>
+</div>
+
+
+## 1단계: 짝 생성(Generate Pairs) {#reclin-step-one}
+
+가장 먼저 짝을 생성한다. 이를 위해서 `reclin` 팩키지 `pair_blocking()` 함수를 사용하는데 `fodors_df`가 533 개 식당, `zagat_df`가 310개 식당을 보유하고 있어 이를 짝짓게 되면 $533 \times 310 = 165,230$ 경우의 수가 나오게 된다.
+
+```{r step-1-generate-pairs}
+pair_blocking(fodors_df, zagat_df)
+```
+
+경우의 수가 너무 많아 격리변수를 두어 평개해야될 수를 줄인다. 이를 블로킹(blocking)이라고 하고 `blocking_var` 변수를 지정하면 경우의 수를 획기적으로 줄일 수 있다.
+
+```{r step-1-generate-pairs-blocking}
+pair_blocking(fodors_df, zagat_df, blocking_var = c("city", "type"))
+```
+
+## 2단계: 짝 평가 {#reclin-step-two}
+
+두번째 단계는 앞서 생성된 경우의 수에 대해서 평가를 진행하는 것이다. 이를 위해서 `compare_pairs()` 함수를 사용하고 음식점 이름(`name`) 뿐만 아니라 주소(`addr`), 전화번호(`phone`)에 대해서 평가 작업을 수행하고 앞서 문자열 거리 비교를 위해서 사용된 다양한 거리 측정 함수를 사용한다.
+
+- `identical()`
+- `jaro_winkler(threshold = 0.95)`
+- `lcs(threshold = 0.8)`
+- `jaccard(threshold = 0.8)`
+
+
+```{r step-2-compare}
+pair_blocking(fodors_df, zagat_df, blocking_var = c("city", "type")) %>% 
+    compare_pairs(by = c("name", "addr", "phone"), default_comparator = jaro_winkler())
+```
+
+## 3단계: 점수매기기 {#reclin-step-three}
+
+다음 단계로 점수를 매기는데 단순합산하는 `score_simsum()` 방식과 EM-알고리즘을 구현한 `problink_em()` 을 이용하여 점수를 구하는 `score_problink()`을 활용한다.
+
+```{r step-3-score}
+pair_blocking(fodors_df, zagat_df, blocking_var = c("city", "type")) %>% 
+  compare_pairs(by = c("name", "addr", "phone"), default_comparator = jaro_winkler()) %>% 
+  score_problink()
+```
+
+
+## 4단계: 선택과 연결 {#reclin-step-four}
+
+마지막 단계로 점수를 바탕으로 선택하여 데이터에 연결하는 과정을 `select_n_to_m()` 함수와 `link()` 함수로 구현하면 된다.
+
+```{r step-3-four}
+reclin_df <- pair_blocking(fodors_df, zagat_df, blocking_var = c("city", "type")) %>% 
+  compare_pairs(by = c("name", "addr", "phone"), default_comparator = jaro_winkler()) %>% 
+  score_problink() %>% 
+  select_n_to_m() %>% 
+  link()
+```
+
+
+## 5단계: 검증 {#reclin-step-five-check}
+
+`RWeka` 팩키지 `read.arff()` 함수를 사용해서 중복된 음식점에 대한 사항을 확인한다.
+
+```{r reclin-arff}
+library(RWeka)
+fz_df <- read.arff("data/restaurant/fz.arff")
+
+fz_dup_df <- fz_df %>% 
+  filter(class %in% factor(c(0, seq(1:111)))) %>% 
+  tbl_df %>% 
+  arrange(name)
+
+fz_dup_df
+```
+
+전화번호를 키값으로 추출하여 일치여부를 파악한다. 110개로 112개 중복된 음식점을 찾아낸 것으로 파악된다.
+
+```{r reclin-check-dedup}
+fz_dup_phone <- fz_dup_df %>% 
+  mutate(phone = str_replace_all(phone, "/", "-") %>% str_remove(., " ")) %>% 
+  pull(phone) %>% 
+  unique()
+
+reclin_df %>% 
+  filter(!is.na(id.y)) %>% 
+  tbl_df() %>% 
+  arrange(name.x)
+```
+
+
 
 
