@@ -3,7 +3,7 @@ layout: page
 title: "자연어 처리"
 subtitle: "챗봇(chatbot)"
 author:
-    name: xwMOOC
+    name: "[Tidyverse Korea](https://www.facebook.com/groups/tidyverse/)"
 date: "`r Sys.Date()`"
 output:
   html_document: 
@@ -21,22 +21,19 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
                       comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
 
-library(reticulate)
-use_condaenv("anaconda3")
-# reticulate::repl_python()
+library(slackr)
+
 ```
 
 # 대화 인터페이스 [^chatbot-pyohio] {#chatbot-conversational-interface}
 
 [^chatbot-pyohio]: [Don Holloway (Aug 6, 2018), "Conversational interfaces for chatbots and artificial intelligence](https://www.slideshare.net/DonHolloway1/conversational-interfaces-for-chatbots-and-artificial-intelligence-final-108785826)
 
-
 2020년까지 고객 응대(interaction) 85%는 사람의 개입없이 기계(bot)으로 처리될 것이고, 2021년 디지털 가상비서 시장은 $15.8 Billion 달러에 이를 것으로 추정된다.
 
-# 챗봇개발 파이썬 라이브러리 {#chatbot-python-library}
+## 챗봇개발 파이썬 라이브러리 {#chatbot-python-library}
 
 파이썬 3.6.5. 를 근간으로 챗봇개발 파이썬 라이브러리는 다음과 같다.
-
 
 - 기계학습(Machine Learning)
     - Numpy
@@ -49,4 +46,68 @@ use_condaenv("anaconda3")
     - Management
 - Connectors
     - Flask
+
+
+# `slack` 챗봇 {#setup-slackr}
+
+## 환경설정 {#setup-slackr-setup}
+
+[`slackr`](https://github.com/hrbrmstr/slackr) 팩키지 안내에 따라 기본 디폴트 설정된 `~/.slackr` 파일에 다음 정보를 저장시킨다.
+
+> `.slackr` 파일에 저장된 내용
+>
+> api_token: xoxp-xxxxxxxxxxxxxxxxxxx <br>
+> channel: #tidyverse <br>
+> username: tidyverse.korea <br>
+> incoming_webhook_url: https://hooks.slack.com/services/xxxxxxxxxx 
+
+상기 정보는 사용자인증을 위해서 `api_token`을 발급받고, 슬랙 작업공간(workspace) 채널을 특정하기 위해서 `Webhook URL`을 설정한다.
+
+1. [`Create New App`](https://api.slack.com/apps) 앱생성
+    - `Incoming Webhooks`을 통해서 해당 채널(`#tidyverse`)에 "Webhook URL"을 지정
+1. [Legacy tokens](https://api.slack.com/legacy/custom-integrations/legacy-tokens) 토근 생성
+    - Workspace와 User 사용자명 확인
+
+```{r slack-check, eval = FALSE}
+library(slackr)
+
+slackr_setup(echo = TRUE)
+{
+  "SLACK_CHANNEL": ["#tidyverse"],
+  "SLACK_USERNAME": ["tidyverse.korea"],
+  "SLACK_ICON_EMOJI": ["NA"],
+  "SLACK_INCOMING_URL_PREFIX": ["https://hooks.slack.com/services/XXXXX/XXXXX/XXXXX"],
+  "SLACK_API_TOKEN": ["xoxp-xxxxxxxxxxxxxxxxxxxxxxxxxxx"]
+} 
+```
+
+![](fig/slack-meets-R.png)
     
+## 슬랙 작업 {#chatbot-slack-r}
+
+R 작업 결과를 `slack` 채널에 바로 다양한 형태로 보낼 수 있다.
+
+### 텍스트 {#slack-text}
+
+```{r slack-text}
+slackr("지금 Tidyverse를 하셔야 합니다. 대표님!")
+```
+
+### 데이터프레임 {#slack-dataframe}
+
+```{r slack-dataframe}
+slackr(head(mtcars))
+```
+
+### 시각화 {#slack-ggplot}
+
+```{r slack-ggplot}
+library(tidyverse)
+
+mpg_g <- mtcars %>% 
+  ggplot(aes(x=wt, y=mpg)) +
+    geom_point() +
+    theme_bw()
+
+ggslackr(mpg_g)
+```
