@@ -1,0 +1,171 @@
+---
+layout: page
+title: "자연어 처리"
+subtitle: "영화 평론 찬반(polarity) 예측모형"
+author:
+    name: "[Tidyverse Korea](https://www.facebook.com/groups/tidyverse/)"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+    highlight: tango
+    code_folding: show
+    number_section: true
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
+                      comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
+
+```
+
+# 영화평론 데이터 {#polarity-dataset}
+
+영화 평론 찬반/긍부정(polarity)에 대한 영문 데이터를 얻어 이를 데이터프레임으로 변환시킨다.
+특징적인 것은 긍정부정 영화 평론 정보가 텍스트 파일로 담겨있어 이를 예측 모형을 구축할 수 있는 형태로 변환시킨다.
+
+```{r polarity-dataset}
+library(tidyverse)
+library(tidytext)
+library(glue)
+
+## 부정 파일...
+neg_files <- list.files("data/review_polarity/txt_sentoken/neg/")
+neg_path_files <- glue("data/review_polarity/txt_sentoken/neg/{neg_files}")
+
+neg_file <- map(neg_path_files, read_file)
+neg_dat <- tibble(filename = neg_files, review = neg_file)
+
+neg_df <- neg_dat %>% 
+  mutate(polarity = "neg") %>% 
+  mutate(review = map_chr(review, unlist)) %>% 
+  select(polarity, review)
+
+## 긍정 파일...
+pos_files <- list.files("data/review_polarity/txt_sentoken/pos/")
+pos_path_files <- glue("data/review_polarity/txt_sentoken/pos/{pos_files}")
+
+pos_file <- map(pos_path_files, read_file)
+pos_dat <- tibble(filename = pos_files, review = pos_file)
+
+pos_df <- pos_dat %>% 
+  mutate(polarity = "pos") %>% 
+  mutate(review = map_chr(review, unlist)) %>% 
+  select(polarity, review)
+
+## 데이터프레임
+review_df <- bind_rows(neg_df, pos_df)
+
+review_df %>% 
+  sample_n(10) %>% 
+  DT::datatable()
+```
+
+# 찬반 예측모형 {#build-polarity-models}
+
+## 훈련/시험 데이터 {#build-polarity-models-split}
+
+```{r build-polarity-model-split}
+library(tidymodels)
+review_split <- initial_split(review_df)
+
+review_train <- training(review_split)
+review_test <- testing(review_split)
+```
+
+## 피처 공학 {#build-polarity-models-feature}
+
+```{r build-polarity-model-feature}
+library(textrecipes)
+
+review_rec <- recipe(polarity ~ review, review_train) %>% 
+  step_tokenize(review) %>% 
+  step_stopwords(review) %>% 
+  step_tokenfilter(review, max_tokens = 500) %>% 
+  step_tfidf(review) %>% 
+  step_normalize(all_predictors())
+
+review_prep <- prep(review_rec)
+
+review_prep
+```
+
+
+## 모형 적합 {#build-polarity-models-fit}
+
+```{r build-polarity-model-fit}
+library(workflows)
+
+lasso_spec <- logistic_reg(penalty = tune(), mixture = 1) %>%
+  set_engine("glmnet")
+
+lasso_wf <- workflow() %>%
+  add_recipe(review_rec) %>%
+  add_model(lasso_spec)
+
+lasso_wf
+```
+
+## 초모수 튜닝 {#build-polarity-models-tuning}
+
+```{r build-polarity-model-tuning}
+## 멀티코어 병렬처리 활성화
+all_cores <- parallel::detectCores(logical = TRUE)
+
+library(doParallel)
+cl <- makePSOCKcluster(all_cores)
+registerDoParallel(cl)
+
+## k-fold 설정
+review_folds <- bootstraps(review_train, strata = polarity)
+review_folds
+
+## 초모수 탐색
+library(tune)
+
+lambda_grid <- grid_regular(penalty(), levels = 40)
+
+lasso_grid <- tune_grid(
+  lasso_wf,
+  resamples = review_folds,
+  grid = lambda_grid,
+  metrics = metric_set(roc_auc, ppv, npv)
+)
+
+lasso_grid %>%
+  collect_metrics()
+```
+
+```{r build-polarity-model-tuning-viz}
+lasso_grid %>%
+  collect_metrics() %>%
+  ggplot(aes(penalty, mean, color = .metric)) +
+  geom_line(size = 1.5, show.legend = FALSE) +
+  facet_wrap(~.metric) +
+  scale_x_log10()
+```
+
+
+## 최종모형과 성능 {#model-best}
+
+
+```{r polarity-last-fit}
+# 모형 성능지표 
+best_auc <- lasso_grid %>%
+  select_best("roc_auc")
+best_auc
+
+
+final_lasso <- finalize_workflow(lasso_wf, best_auc)
+final_lasso
+
+review_final <- last_fit(final_lasso, review_split)
+
+review_final %>%
+  collect_metrics()
+```
+
