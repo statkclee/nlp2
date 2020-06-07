@@ -1,0 +1,46 @@
+---
+layout: page
+title: "자연어 처리"
+subtitle: "영화 평론 찬반(polarity) 예측모형: `keras`"
+author:
+    name: "[Tidyverse Korea](https://www.facebook.com/groups/tidyverse/)"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: yes
+    toc_float: true
+    highlight: tango
+    code_folding: show
+    number_section: true
+    self_contained: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE,
+                      comment="", digits = 3, tidy = FALSE, prompt = FALSE, fig.align = 'center')
+
+library(reticulate)
+```
+
+# 
+
+```{python python-preprocess, eval = TRUE}
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(texts)
+
+texts = ['Trump was born and raised in Queens, a borough of New York City, and received a bachelor's degree in economics from the Wharton School. He took charge of his family's real-estate business in 1971, renamed it The Trump Organization, and expanded its operations from Queens and Brooklyn into Manhattan.', 
+'The company built or renovated skyscrapers, hotels, casinos, and golf courses. Trump later started various side ventures, mostly by licensing his name. He bought the Miss Universe brand of beauty pageants in 1996, and sold it in 2015.', 
+'He produced and hosted The Apprentice, a reality television series, from 2003 to 2015. As of 2020, Forbes estimated his net worth to be $2.1 billion.']
+ 
+texts_numeric = tokenizer.texts_to_sequences(texts)
+print("sample text: ({0}, {1})".format(len(texts_numeric[0]), len(texts_numeric[1])))
+
+texts_pad = pad_sequences(texts_numeric, 60)
+print("check: \n{0}".format(texts_pad[0]))
+```
+
