@@ -61,7 +61,8 @@ pos_df <- pos_dat %>%
 review_df <- bind_rows(neg_df, pos_df)
 
 review_df %>% 
-  sample_n(10) %>% 
+  group_by(polarity) %>% 
+  sample_n(1) %>% 
   DT::datatable()
 ```
 
@@ -85,7 +86,7 @@ library(textrecipes)
 review_rec <- recipe(polarity ~ review, review_train) %>% 
   step_tokenize(review) %>% 
   step_stopwords(review) %>% 
-  step_tokenfilter(review, max_tokens = 500) %>% 
+  step_tokenfilter(review, max_tokens = 300) %>% 
   step_tfidf(review) %>% 
   step_normalize(all_predictors())
 
@@ -93,7 +94,6 @@ review_prep <- prep(review_rec)
 
 review_prep
 ```
-
 
 ## 모형 적합 {#build-polarity-models-fit}
 
@@ -114,11 +114,13 @@ lasso_wf
 
 ```{r build-polarity-model-tuning}
 ## 멀티코어 병렬처리 활성화
-all_cores <- parallel::detectCores(logical = TRUE)
+# all_cores <- parallel::detectCores(logical = TRUE)
+# 
+# library(doParallel)
+# cl <- makePSOCKcluster(all_cores)
+# registerDoParallel(cl)
 
-library(doParallel)
-cl <- makePSOCKcluster(all_cores)
-registerDoParallel(cl)
+doParallel::registerDoParallel()
 
 ## k-fold 설정
 review_folds <- bootstraps(review_train, strata = polarity)

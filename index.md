@@ -58,6 +58,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
         - [문서분류 - 뉴스기사 분류 (M/L)](nlp-newsgroup-classification.html)
         - [문서분류 - 뉴스기사 분류 (D/L)](nlp-newsgroup-classification-dl.html)
     - [영화 평론 찬반(polarity) 예측모형](nlp-movie-review.html)
+    - [영화 평론 찬반(polarity) 예측모형: `keras`](nlp-movie-review-keras.html)
 - 제품과 서비스
     - [챗봇(chatbot)](nlp-chatbot.html)
     - [특허(patent)](nlp-patent.html)
