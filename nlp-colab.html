@@ -13087,7 +13087,7 @@ div#notebook {
 <script>
 $( document ).ready(function(){
 
-            var cfg = {};
+            var cfg = {"base_numbering": 1, "nav_menu": {}, "number_sections": true, "sideBar": true, "skip_h1_title": false, "title_cell": "Table of Contents", "title_sidebar": "Contents", "toc_cell": false, "toc_position": {}, "toc_section_display": true, "toc_window_display": false};
 
             // fire the main function with these parameters
             require(['nbextensions/toc2/toc2'], function (toc2) {
@@ -13238,20 +13238,16 @@ x_train, x_test = x_train / 255.0, x_test / 255.0</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="&#46373;&#47084;&#45789;-&#54532;&#47112;&#51076;&#50892;&#53356;">&#46373;&#47084;&#45789; &#54532;&#47112;&#51076;&#50892;&#53356;<a class="anchor-link" href="#&#46373;&#47084;&#45789;-&#54532;&#47112;&#51076;&#50892;&#53356;">&#182;</a></h1><p>딥러닝 개발을 위한 하드웨어 및 관련 IDE 설정이 되었다면, 다음 단계로 적절한 프레임워크를 고르는 것이 무척이나 중요하다. 사실 많은 프레임워크가 그동안 짧은 딥러능 전성기에도 나타나고 사라졌다. 현재 시점에서는 아마도 <a href="https://huggingface.co/transformers/index.html">허깅페이스(Hugging Face)</a>가 아닐까 싶다. 물론 그 이면에는 Transformer가 가장 큰 역할을 했을테지만 말이다.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#54728;&#44613;&#54168;&#51060;&#49828;-&#49444;&#52824;">&#54728;&#44613;&#54168;&#51060;&#49828; &#49444;&#52824;<a class="anchor-link" href="#&#54728;&#44613;&#54168;&#51060;&#49828;-&#49444;&#52824;">&#182;</a></h2><p><a href="https://huggingface.co/transformers/installation.html">huggingface.co 설치 페이지</a>를 참조하여 단순하게 설치작업을 수행한다. 딥러닝 작업을 수행할 프로세서 유형에 따라 적절한 허깅페이스 transformer를 설치한다.</p>
-<ul>
-<li>CPU: <code>pip install transformers</code></li>
-<li>GPU: <code>pip install transformers-gpu</code></li>
-</ul>
-<p>!pip install transformers</p>
+<h2 id="&#54728;&#44613;&#54168;&#51060;&#49828;-&#54764;&#47196;&#50864;&#50900;&#46300;">&#54728;&#44613;&#54168;&#51060;&#49828; &#54764;&#47196;&#50864;&#50900;&#46300;<a class="anchor-link" href="#&#54728;&#44613;&#54168;&#51060;&#49828;-&#54764;&#47196;&#50864;&#50900;&#46300;">&#182;</a></h2><p>딥러닝 개발을 위한 하드웨어 및 관련 IDE 설정이 되었다면, 다음 단계로 적절한 프레임워크를 고르는 것이 무척이나 중요하다. 사실 많은 프레임워크가 그동안 짧은 딥러능 전성기에도 나타나고 사라졌다. 현재 시점에서는 아마도 <a href="https://huggingface.co/transformers/index.html">허깅페이스(Hugging Face)</a>가 아닐까 싶다. 물론 그 이면에는 Transformer가 가장 큰 역할을 했을테지만 말이다.</p>
+<p><a href="https://huggingface.co/transformers/installation.html">huggingface.co 설치 페이지</a>를 참조하여 단순하게 설치작업을 수행한다. 딥러닝 작업을 수행할 프로세서 유형에 따라 적절한 허깅페이스 transformer를 설치한다. 앞서 Tensorflow 2.0을 설치했기 때문에 단순히 다음 명령어로 <code>transformers</code>만 설치하면 된다. 제대로 설치되었는지는 <code>transformers</code>에서 감성분석을 가져와서 제대로 감성점수가 뽑히는지를 확인한다.</p>
+<p><code>!pip install transformers</code></p>
+<p><code>!python -c "from transformers import pipeline; print(pipeline('sentiment-analysis')('I hate you'))"</code></p>
+<p><code>2020-09-02 00:13:51.445416: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
+Downloading: 100% 629/629 [00:00&lt;00:00, 615kB/s]
+Downloading: 100% 232k/232k [00:00&lt;00:00, 1.14MB/s]
+Downloading: 100% 230/230 [00:00&lt;00:00, 194kB/s]
+Downloading: 100% 268M/268M [00:04&lt;00:00, 54.4MB/s]
+[{'label': 'NEGATIVE', 'score': 0.9991129040718079}]</code></p>
 
 </div>
 </div>
