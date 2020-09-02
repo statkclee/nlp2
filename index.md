@@ -64,7 +64,7 @@ div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
     - [챗봇(chatbot)](nlp-chatbot.html)
     - [특허(patent)](nlp-patent.html)
     - [텍스트 삭제(text redaction)](nlp-text-redaction.html)
-
+    - [문서를 텍스트 데이터로 살펴보기!](https://colab.research.google.com/drive/1TrRJtSaR1TNiaNAhKHue0naBUvDv8Z5K#scrollTo=7TLsE7fhgEAq)
 
 `jupyter nbconvert --execute --to html --ExecutePreprocessor.enabled=True --ExecutePreprocessor.timeout=300 --template toc2  nlp-` <br>
 
